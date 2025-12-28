@@ -1,3 +1,18 @@
+../rtl/_package.sv
+../rtl/mux2.sv 
 
-../rtl/mips_top.sv
+../rtl/datapath_signextend.sv 
+../rtl/datapath_regfile.sv 
+../rtl/datapath_pc.sv 
+../rtl/datapath_alu.sv 
+../rtl/datapath.sv  
+
+../rtl/controller.sv
+
+../rtl/mips_core.sv
+
+../rtl/data_mem.sv 
+../rtl/instr_mem.sv 
+../rtl/_top.sv
+ 
 ../testbench/tb_mips_top.sv
