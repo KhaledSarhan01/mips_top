@@ -4,6 +4,7 @@ module mips_core (
     // To instruction Memory
     output [PC_WIDTH-1:0]     pc,
     input  [INSTR_WITDTH-1:0] instr,
+    output [31:0] s0,
     // To Data Memory
     output memwrite,
     output [DATA_MEM_WIDTH-1:0] memaddr,writedata,
@@ -51,6 +52,7 @@ module mips_core (
         .regdst(regdst),
         .regwrite(regwrite),
         .jump(jump),
-        .alucontrl(alucontrl)
+        .alucontrl(alucontrl),
+        .s0(s0)
     );
 endmodule

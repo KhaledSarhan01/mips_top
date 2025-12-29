@@ -8,6 +8,7 @@ module mips_datapath(
     output logic [DATA_MEM_WIDTH-1:0] aluout,
     output logic [DATA_MEM_WIDTH-1:0] writedata,
     input  logic [DATA_MEM_WIDTH-1:0] readdata,
+    output logic [31:0] s0,
     // Status signals 
     output logic zero,
     // Control Signals
@@ -56,7 +57,8 @@ module mips_datapath(
             // Write port
             .write_addr(writereg),
             .write_data(result),
-            .write_enable(regwrite)
+            .write_enable(regwrite),
+            .s0(s0)
         );
         
         mux2 #(5) u_mips_datapath_wrmux(

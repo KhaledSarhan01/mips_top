@@ -1,0 +1,16 @@
++-------------------------------------------------------------------------------------------+
+; Power Analyzer Summary                                                                    ;
++----------------------------------------+--------------------------------------------------+
+; Power Analyzer Status                  ; Successful - Mon Dec 29 18:09:16 2025            ;
+; Quartus Prime Version                  ; 18.1.0 Build 625 09/12/2018 SJ Standard Edition  ;
+; Revision Name                          ; mips_top                                         ;
+; Top-level Entity Name                  ; mips_top                                         ;
+; Family                                 ; Cyclone V                                        ;
+; Device                                 ; 5CSEMA5F31C6                                     ;
+; Power Models                           ; Final                                            ;
+; Total Thermal Power Dissipation        ; 430.11 mW                                        ;
+; Core Dynamic Thermal Power Dissipation ; 5.11 mW                                          ;
+; Core Static Thermal Power Dissipation  ; 411.30 mW                                        ;
+; I/O Thermal Power Dissipation          ; 13.70 mW                                         ;
+; Power Estimation Confidence            ; Low: user provided insufficient toggle rate data ;
++----------------------------------------+--------------------------------------------------+
