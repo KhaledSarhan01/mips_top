@@ -1,10 +1,16 @@
 # No Backup files
 *.bak 
 # --- Simulation Files ---
-sim/*.mpf
-sim/*.mti
-sim/*.wlf
-sim/work
+sim/sim1/*.mpf
+sim/sim1/*.mti
+sim/sim1/*.wlf
+sim/sim1/work/*
+sim/sim1/work/@_opt/*
+
+sim/sim2/*.mpf
+sim/sim2/*.mti
+sim/sim2/*.wlf
+sim/sim2/work/*
 
 # --- Synthesis Files ---
 # Database and temporary compilation files
