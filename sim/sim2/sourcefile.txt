@@ -10,4 +10,5 @@
 ../../rtl/data_mem.sv 
 ../../rtl/instr_mem.sv 
 ../../rtl/_top.sv
-../../testbench/testbench_1/tb_mips_top.sv
+../../testbench/testbench_2/mips_isa_pkg.sv 
+../../testbench/testbench_2/tb_mips_top.sv
