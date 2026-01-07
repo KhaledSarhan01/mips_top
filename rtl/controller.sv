@@ -39,24 +39,17 @@ module mips_controller (
     // ALU Decoder 
         always_comb begin
             case(aluop)
-                2'b00: alucontrl = 4'b0010; // add
-                2'b01: alucontrl = 4'b0110; // sub
-                2'b10,2'b11: begin 
+                2'b00: alucontrl = 3'b010; // add
+                2'b01: alucontrl = 3'b110; // sub
+                default: begin 
                     case(instr_funct)        // RTYPE
-                        6'b000000: alucontrl = 4'b1000; // SLL 
-                        6'b000010: alucontrl = 4'b1001; // SRL 
-                        6'b000011: alucontrl = 4'b1010; // SRA 
-                        6'b000100: alucontrl = 4'b1011; // SLLV 
-                        6'b000110: alucontrl = 4'b1100; // SRLV 
-                        6'b000111: alucontrl = 4'b1101; // SRAV 
-                        6'b100000: alucontrl = 4'b0010; // ADD
-                        6'b100010: alucontrl = 4'b0110; // SUB
-                        6'b100100: alucontrl = 4'b0000; // AND
-                        6'b100101: alucontrl = 4'b0001; // OR
-                        6'b100110: alucontrl = 4'b0011; // XOR
-                        6'b100111: alucontrl = 4'b0100; // NOR
-                        6'b101010: alucontrl = 4'b0111; // SLT
-                        default:   alucontrl = 4'bxxxx; // ???
+                        6'b000000: alucontrl = 3'b010; // NOP 
+                        6'b100000: alucontrl = 3'b010; // ADD
+                        6'b100010: alucontrl = 3'b110; // SUB
+                        6'b100100: alucontrl = 3'b000; // AND
+                        6'b100101: alucontrl = 3'b001; // OR
+                        6'b101010: alucontrl = 3'b111; // SLT
+                        default:   alucontrl = 3'bxxx; // ???
                     endcase
                 end
             endcase
