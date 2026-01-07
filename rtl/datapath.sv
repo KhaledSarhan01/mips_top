@@ -26,13 +26,13 @@ module mips_datapath(
     wire [31:0] result;
     
     wire [4:0] instr_rs,instr_rt,instr_rd;
+    wire [4:0] instr_shmat;
     wire [15:0] instr_imm;
     assign instr_rs  = instr[25:21];
     assign instr_rt  = instr[20:16];
     assign instr_rd  = instr[15:11];
     assign instr_imm = instr[15:0];
-    // wire [4:0] instr_shamt;
-    // assign instr_shamt = instr[10:6];
+    assign instr_shmat = instr[10:6];
 
     // next PC logic
         pc_reg u_mips_datapath_pc(
@@ -62,7 +62,7 @@ module mips_datapath(
         );
         
         mux2 #(5) u_mips_datapath_wrmux(
-            .in0(instr[20:16]), 
+            .in0(instr_rt), 
             .in1(instr_rd),
             .sel(regdst), 
             .out(writereg)
@@ -91,6 +91,7 @@ module mips_datapath(
             // input operands 
             .operand_a(srca),
             .operand_b(srcb),
+            .shmat(instr_shmat),
             // ALU control signal
             .alu_control(alucontrl),
             // output result

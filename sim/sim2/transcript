@@ -1,0 +1,1477 @@
+# Reading pref.tcl
+# //  Questa Sim-64
+# //  Version 2021.1 win64 Jan 19 2021
+# //
+# //  Copyright 1991-2021 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  QuestaSim and its associated documentation contain trade
+# //  secrets and commercial or financial information that are the property of
+# //  Mentor Graphics Corporation and are privileged, confidential,
+# //  and exempt from disclosure under the Freedom of Information Act,
+# //  5 U.S.C. Section 552. Furthermore, this information
+# //  is prohibited from disclosure under the Trade Secrets Act,
+# //  18 U.S.C. Section 1905.
+# //
+# OpenFile D:/Digital/SoC/mips_top/sim/sim2/mips_2.mpf
+# Loading project mips_2
+do start.do
+# ** Warning: (vlib-34) Library already exists at "work".
+# Errors: 0, Warnings: 1
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 18:38:09 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling module alu
+# ** Error: ../../rtl/datapath_alu.sv(27): (vlog-2730) Undefined variable: 'rs'.
+# End time: 18:38:09 on Jan 07,2026, Elapsed time: 0:00:00
+# Errors: 1, Warnings: 0
+# ** Error: D:/Programs/Questasim/win64/vlog failed.
+# Error in macro ./start.do line 3
+# D:/Programs/Questasim/win64/vlog failed.
+#     while executing
+# "vlog -f sourcefile.txt -svinputport=relaxed"
+do start.do
+# ** Warning: (vlib-34) Library already exists at "work".
+# Errors: 0, Warnings: 1
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 18:38:57 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling module alu
+# -- Compiling package datapath_sv_unit
+# -- Importing package mips_pkg
+# -- Compiling module mips_datapath
+# -- Compiling package controller_sv_unit
+# -- Compiling module mips_controller
+# -- Compiling package mips_core_sv_unit
+# -- Compiling module mips_core
+# -- Compiling module data_mem
+# -- Compiling module instr_mem
+# -- Compiling package _top_sv_unit
+# -- Compiling module mips_top
+# -- Compiling package mips_isa_pkg
+# -- Compiling module tb_mips_top
+# -- Importing package mips_isa_pkg
+# 
+# Top level modules:
+# 	mips_top
+# 	tb_mips_top
+# End time: 18:38:58 on Jan 07,2026, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0
+# vsim -voptargs="+acc" work.tb_mips_top 
+# Start time: 18:38:58 on Jan 07,2026
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# ** Warning: ../../testbench/testbench_2/tb_mips_top.sv(45): (vopt-2685) [TFMPC] - Too few port connections for 'u_mips_core'.  Expected 9, found 8.
+# ** Warning: ../../testbench/testbench_2/tb_mips_top.sv(45): (vopt-2718) [TFMPC] - Missing connection for port 's0'.
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=2.
+# Loading sv_std.std
+# Loading work.mips_pkg(fast)
+# Loading work.mips_isa_pkg(fast)
+# Loading work.tb_mips_top(fast)
+# Loading work.data_mem(fast)
+# Loading work.mips_core_sv_unit(fast)
+# Loading work.mips_core(fast)
+# Loading work.controller_sv_unit(fast)
+# Loading work.mips_controller(fast)
+# Loading work.datapath_sv_unit(fast)
+# Loading work.mips_datapath(fast)
+# Loading work.pc_reg(fast)
+# Loading work.reg_file(fast)
+# Loading work.mux2(fast)
+# Loading work.mux2(fast__1)
+# Loading work.sign_extended(fast)
+# Loading work.alu(fast)
+# ** Warning: (vsim-3015) [PCDPC] - Port size (5) does not match connection size (1) for port 'shmat'. The port definition is at: ../../rtl/datapath_alu.sv(5).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_mips_top/u_mips_core/u_mips_datapath/u_mips_datapath_alu File: ../../rtl/datapath.sv Line: 90
+# ** Warning: (vsim-3015) [PCDPC] - Port size (3) does not match connection size (4) for port 'alu_control'. The port definition is at: ../../rtl/datapath_alu.sv(7).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_mips_top/u_mips_core/u_mips_datapath/u_mips_datapath_alu File: ../../rtl/datapath.sv Line: 90
+# ** Note: $stop    : ../../testbench/testbench_2/tb_mips_top.sv(78)
+#    Time: 290 ns  Iteration: 1  Instance: /tb_mips_top
+# Break in Task Finish at ../../testbench/testbench_2/tb_mips_top.sv line 78
+do wave.do
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/instr'.
+# Executing ONERROR command at macro ./wave.do line 6
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/instr_opcode'.
+# Executing ONERROR command at macro ./wave.do line 7
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_datapath/instr_rs'.
+# Executing ONERROR command at macro ./wave.do line 8
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_datapath/instr_rt'.
+# Executing ONERROR command at macro ./wave.do line 9
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_datapath/instr_rd'.
+# Executing ONERROR command at macro ./wave.do line 10
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_datapath/instr_imm'.
+# Executing ONERROR command at macro ./wave.do line 11
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/instr_funct'.
+# Executing ONERROR command at macro ./wave.do line 12
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/pc'.
+# Executing ONERROR command at macro ./wave.do line 14
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_datapath/u_mips_datapath_regfile/registers'.
+# Executing ONERROR command at macro ./wave.do line 15
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/zero'.
+# Executing ONERROR command at macro ./wave.do line 17
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/regwrite'.
+# Executing ONERROR command at macro ./wave.do line 18
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/regdst'.
+# Executing ONERROR command at macro ./wave.do line 19
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/alusrc'.
+# Executing ONERROR command at macro ./wave.do line 20
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/branch'.
+# Executing ONERROR command at macro ./wave.do line 21
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/memwrite'.
+# Executing ONERROR command at macro ./wave.do line 22
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/memtoreg'.
+# Executing ONERROR command at macro ./wave.do line 23
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/pcsrc'.
+# Executing ONERROR command at macro ./wave.do line 24
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/aluop'.
+# Executing ONERROR command at macro ./wave.do line 25
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/jump'.
+# Executing ONERROR command at macro ./wave.do line 26
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/alucontrl'.
+# Executing ONERROR command at macro ./wave.do line 27
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_instr_mem/address'.
+# Executing ONERROR command at macro ./wave.do line 29
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_instr_mem/data_out'.
+# Executing ONERROR command at macro ./wave.do line 30
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_instr_mem/addr_reg'.
+# Executing ONERROR command at macro ./wave.do line 31
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_instr_mem/mem'.
+# Executing ONERROR command at macro ./wave.do line 32
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_data_mem/address'.
+# Executing ONERROR command at macro ./wave.do line 34
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_data_mem/write_en'.
+# Executing ONERROR command at macro ./wave.do line 35
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_data_mem/data_in'.
+# Executing ONERROR command at macro ./wave.do line 36
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_data_mem/data_out'.
+# Executing ONERROR command at macro ./wave.do line 37
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_data_mem/addr_reg'.
+# Executing ONERROR command at macro ./wave.do line 38
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_data_mem/mem'.
+# Executing ONERROR command at macro ./wave.do line 39
+delete wave *
+do wave.do
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/instr'.
+# Executing ONERROR command at macro ./wave.do line 6
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/instr_opcode'.
+# Executing ONERROR command at macro ./wave.do line 7
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_datapath/instr_rs'.
+# Executing ONERROR command at macro ./wave.do line 8
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_datapath/instr_rt'.
+# Executing ONERROR command at macro ./wave.do line 9
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_datapath/instr_rd'.
+# Executing ONERROR command at macro ./wave.do line 10
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_datapath/instr_imm'.
+# Executing ONERROR command at macro ./wave.do line 11
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/instr_funct'.
+# Executing ONERROR command at macro ./wave.do line 12
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/pc'.
+# Executing ONERROR command at macro ./wave.do line 14
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_datapath/u_mips_datapath_regfile/registers'.
+# Executing ONERROR command at macro ./wave.do line 15
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/zero'.
+# Executing ONERROR command at macro ./wave.do line 17
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/regwrite'.
+# Executing ONERROR command at macro ./wave.do line 18
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/regdst'.
+# Executing ONERROR command at macro ./wave.do line 19
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/alusrc'.
+# Executing ONERROR command at macro ./wave.do line 20
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/branch'.
+# Executing ONERROR command at macro ./wave.do line 21
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/memwrite'.
+# Executing ONERROR command at macro ./wave.do line 22
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/memtoreg'.
+# Executing ONERROR command at macro ./wave.do line 23
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/pcsrc'.
+# Executing ONERROR command at macro ./wave.do line 24
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/aluop'.
+# Executing ONERROR command at macro ./wave.do line 25
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/jump'.
+# Executing ONERROR command at macro ./wave.do line 26
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_mips_core/u_mips_control/alucontrl'.
+# Executing ONERROR command at macro ./wave.do line 27
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_instr_mem/address'.
+# Executing ONERROR command at macro ./wave.do line 29
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_instr_mem/data_out'.
+# Executing ONERROR command at macro ./wave.do line 30
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_instr_mem/addr_reg'.
+# Executing ONERROR command at macro ./wave.do line 31
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_instr_mem/mem'.
+# Executing ONERROR command at macro ./wave.do line 32
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_data_mem/address'.
+# Executing ONERROR command at macro ./wave.do line 34
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_data_mem/write_en'.
+# Executing ONERROR command at macro ./wave.do line 35
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_data_mem/data_in'.
+# Executing ONERROR command at macro ./wave.do line 36
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_data_mem/data_out'.
+# Executing ONERROR command at macro ./wave.do line 37
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_data_mem/addr_reg'.
+# Executing ONERROR command at macro ./wave.do line 38
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_mips_top/DUT/u_data_mem/mem'.
+# Executing ONERROR command at macro ./wave.do line 39
+add wave -position insertpoint  \
+sim:/tb_mips_top/u_mips_core/u_mips_control/regwrite
+add wave -position insertpoint  \
+sim:/tb_mips_top/u_mips_core/u_mips_control/regdst
+add wave -position insertpoint  \
+sim:/tb_mips_top/u_mips_core/u_mips_control/alusrc
+add wave -position insertpoint  \
+sim:/tb_mips_top/u_mips_core/u_mips_control/pcsrc
+add wave -position insertpoint  \
+sim:/tb_mips_top/u_mips_core/u_mips_control/memwrite
+add wave -position insertpoint  \
+sim:/tb_mips_top/u_mips_core/u_mips_control/memtoreg
+add wave -position insertpoint  \
+sim:/tb_mips_top/u_mips_core/u_mips_control/jump
+add wave -position insertpoint  \
+sim:/tb_mips_top/u_mips_core/u_mips_control/alucontrl
+add wave -position insertpoint  \
+sim:/tb_mips_top/u_mips_core/u_mips_control/aluop
+# ** Error: Acs sdne.
+# 
+#        Unable to replace existing ini file (D:/Digital/SoC/mips_top/sim/sim2/mips_2.mpf).  File can not be renamed.
+# ** Error: Acs sdne.
+# 
+#        Unable to replace existing ini file (D:/Digital/SoC/mips_top/sim/sim2/mips_2.mpf).  File can not be renamed.
+delete wave *
+add wave -position insertpoint  \
+sim:/tb_mips_top/clk \
+sim:/tb_mips_top/rst_n \
+sim:/tb_mips_top/pc \
+sim:/tb_mips_top/instr \
+sim:/tb_mips_top/memwrite \
+sim:/tb_mips_top/memaddr \
+sim:/tb_mips_top/writedata \
+sim:/tb_mips_top/readdata \
+sim:/tb_mips_top/mips_instr
+add wave -position insertpoint  \
+sim:/tb_mips_top/u_mips_core/u_mips_control/instr_funct \
+sim:/tb_mips_top/u_mips_core/u_mips_control/instr_opcode
+add wave -position insertpoint  \
+sim:/tb_mips_top/u_mips_core/u_mips_datapath/instr_rs \
+sim:/tb_mips_top/u_mips_core/u_mips_datapath/instr_rt \
+sim:/tb_mips_top/u_mips_core/u_mips_datapath/instr_rd \
+sim:/tb_mips_top/u_mips_core/u_mips_datapath/instr_shamt \
+sim:/tb_mips_top/u_mips_core/u_mips_datapath/instr_imm \
+sim:/tb_mips_top/u_mips_core/u_mips_datapath/instr_shmat
+add wave -position insertpoint  \
+sim:/tb_mips_top/u_mips_core/u_mips_control/regdst \
+sim:/tb_mips_top/u_mips_core/u_mips_control/regwrite
+add wave -position insertpoint  \
+sim:/tb_mips_top/u_mips_core/u_mips_control/alusrc
+add wave -position insertpoint  \
+sim:/tb_mips_top/u_mips_core/u_mips_control/memwrite
+add wave -position insertpoint  \
+sim:/tb_mips_top/u_mips_core/u_mips_control/memtoreg
+add wave -position insertpoint  \
+sim:/tb_mips_top/u_mips_core/u_mips_control/jump
+add wave -position insertpoint  \
+sim:/tb_mips_top/u_mips_core/u_mips_control/alucontrl
+add wave -position insertpoint  \
+sim:/tb_mips_top/u_mips_core/u_mips_control/branch
+add wave -position insertpoint  \
+sim:/tb_mips_top/u_mips_core/u_mips_control/aluop
+add wave -position insertpoint  \
+sim:/tb_mips_top/u_mips_core/u_mips_datapath/u_mips_datapath_regfile/registers
+write format wave -window .main_pane.wave.interior.cs.body.pw.wf D:/Digital/SoC/mips_top/sim/sim2/wave.do
+do reset.do
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 18:45:18 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling module alu
+# -- Compiling package datapath_sv_unit
+# -- Importing package mips_pkg
+# -- Compiling module mips_datapath
+# -- Compiling package controller_sv_unit
+# -- Compiling module mips_controller
+# -- Compiling package mips_core_sv_unit
+# -- Compiling module mips_core
+# -- Compiling module data_mem
+# -- Compiling module instr_mem
+# -- Compiling package _top_sv_unit
+# -- Compiling module mips_top
+# -- Compiling package mips_isa_pkg
+# -- Compiling module tb_mips_top
+# -- Importing package mips_isa_pkg
+# 
+# Top level modules:
+# 	mips_top
+# 	tb_mips_top
+# End time: 18:45:18 on Jan 07,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Note: (vsim-8009) Loading existing optimized design _opt
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=2.
+# Loading work.mips_pkg(fast)
+# Loading work.mips_isa_pkg(fast)
+# Loading work.tb_mips_top(fast)
+# Loading work.data_mem(fast)
+# Loading work.mips_core_sv_unit(fast)
+# Loading work.mips_core(fast)
+# Loading work.controller_sv_unit(fast)
+# Loading work.mips_controller(fast)
+# Loading work.datapath_sv_unit(fast)
+# Loading work.mips_datapath(fast)
+# Loading work.pc_reg(fast)
+# Loading work.reg_file(fast)
+# Loading work.mux2(fast)
+# Loading work.mux2(fast__1)
+# Loading work.sign_extended(fast)
+# Loading work.alu(fast)
+# ** Warning: (vsim-3015) [PCDPC] - Port size (5) does not match connection size (1) for port 'shmat'. The port definition is at: ../../rtl/datapath_alu.sv(5).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_mips_top/u_mips_core/u_mips_datapath/u_mips_datapath_alu File: ../../rtl/datapath.sv Line: 90
+# ** Warning: (vsim-3015) [PCDPC] - Port size (3) does not match connection size (4) for port 'alu_control'. The port definition is at: ../../rtl/datapath_alu.sv(7).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_mips_top/u_mips_core/u_mips_datapath/u_mips_datapath_alu File: ../../rtl/datapath.sv Line: 90
+# ** Note: $stop    : ../../testbench/testbench_2/tb_mips_top.sv(78)
+#    Time: 290 ns  Iteration: 1  Instance: /tb_mips_top
+# Break in Task Finish at ../../testbench/testbench_2/tb_mips_top.sv line 78
+do reset.do
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 18:45:47 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling module alu
+# -- Compiling package datapath_sv_unit
+# -- Importing package mips_pkg
+# -- Compiling module mips_datapath
+# -- Compiling package controller_sv_unit
+# -- Compiling module mips_controller
+# -- Compiling package mips_core_sv_unit
+# -- Compiling module mips_core
+# -- Compiling module data_mem
+# -- Compiling module instr_mem
+# -- Compiling package _top_sv_unit
+# -- Compiling module mips_top
+# -- Compiling package mips_isa_pkg
+# -- Compiling module tb_mips_top
+# -- Importing package mips_isa_pkg
+# 
+# Top level modules:
+# 	mips_top
+# 	tb_mips_top
+# End time: 18:45:47 on Jan 07,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Note: (vsim-8009) Loading existing optimized design _opt
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=2.
+# Loading work.mips_pkg(fast)
+# Loading work.mips_isa_pkg(fast)
+# Loading work.tb_mips_top(fast)
+# Loading work.data_mem(fast)
+# Loading work.mips_core_sv_unit(fast)
+# Loading work.mips_core(fast)
+# Loading work.controller_sv_unit(fast)
+# Loading work.mips_controller(fast)
+# Loading work.datapath_sv_unit(fast)
+# Loading work.mips_datapath(fast)
+# Loading work.pc_reg(fast)
+# Loading work.reg_file(fast)
+# Loading work.mux2(fast)
+# Loading work.mux2(fast__1)
+# Loading work.sign_extended(fast)
+# Loading work.alu(fast)
+# ** Warning: (vsim-3015) [PCDPC] - Port size (5) does not match connection size (1) for port 'shmat'. The port definition is at: ../../rtl/datapath_alu.sv(5).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_mips_top/u_mips_core/u_mips_datapath/u_mips_datapath_alu File: ../../rtl/datapath.sv Line: 90
+# ** Warning: (vsim-3015) [PCDPC] - Port size (3) does not match connection size (4) for port 'alu_control'. The port definition is at: ../../rtl/datapath_alu.sv(7).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_mips_top/u_mips_core/u_mips_datapath/u_mips_datapath_alu File: ../../rtl/datapath.sv Line: 90
+# ** Note: $stop    : ../../testbench/testbench_2/tb_mips_top.sv(78)
+#    Time: 290 ns  Iteration: 1  Instance: /tb_mips_top
+# Break in Task Finish at ../../testbench/testbench_2/tb_mips_top.sv line 78
+add wave -position insertpoint  \
+sim:@mips_instruction@1.opcode \
+sim:@mips_instruction@1.funct
+write format wave -window .main_pane.wave.interior.cs.body.pw.wf D:/Digital/SoC/mips_top/sim/sim2/wave.do
+do reset.do
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 18:52:25 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling module alu
+# -- Compiling package datapath_sv_unit
+# -- Importing package mips_pkg
+# -- Compiling module mips_datapath
+# -- Compiling package controller_sv_unit
+# -- Compiling module mips_controller
+# -- Compiling package mips_core_sv_unit
+# -- Compiling module mips_core
+# -- Compiling module data_mem
+# -- Compiling module instr_mem
+# -- Compiling package _top_sv_unit
+# -- Compiling module mips_top
+# -- Compiling package mips_isa_pkg
+# -- Compiling module tb_mips_top
+# -- Importing package mips_isa_pkg
+# 
+# Top level modules:
+# 	mips_top
+# 	tb_mips_top
+# End time: 18:52:25 on Jan 07,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# Loading sv_std.std
+# Loading work.mips_pkg(fast)
+# Loading work.mips_isa_pkg(fast)
+# Loading work.tb_mips_top(fast)
+# Loading work.data_mem(fast)
+# Loading work.mips_core_sv_unit(fast)
+# Loading work.mips_core(fast)
+# Loading work.controller_sv_unit(fast)
+# Loading work.mips_controller(fast)
+# Loading work.datapath_sv_unit(fast)
+# Loading work.mips_datapath(fast)
+# Loading work.pc_reg(fast)
+# Loading work.reg_file(fast)
+# Loading work.mux2(fast)
+# Loading work.mux2(fast__1)
+# Loading work.sign_extended(fast)
+# Loading work.alu(fast)
+# ** Warning: (vsim-3015) [PCDPC] - Port size (3) does not match connection size (4) for port 'alu_control'. The port definition is at: ../../rtl/datapath_alu.sv(7).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_mips_top/u_mips_core/u_mips_datapath/u_mips_datapath_alu File: ../../rtl/datapath.sv Line: 90
+# Warning in wave window restart: (vish-4014) No objects found matching '/tb_mips_top/u_mips_core/u_mips_datapath/instr_shamt'. 
+# ** Note: $stop    : ../../testbench/testbench_2/tb_mips_top.sv(78)
+#    Time: 290 ns  Iteration: 1  Instance: /tb_mips_top
+# Break in Task Finish at ../../testbench/testbench_2/tb_mips_top.sv line 78
+add wave -position insertpoint  \
+sim:/tb_mips_top/u_mips_core/u_mips_datapath/instr_shmat
+write format wave -window .main_pane.wave.interior.cs.body.pw.wf D:/Digital/SoC/mips_top/sim/sim2/wave.do
+do reset.do
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 18:53:52 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling module alu
+# -- Compiling package datapath_sv_unit
+# -- Importing package mips_pkg
+# -- Compiling module mips_datapath
+# -- Compiling package controller_sv_unit
+# -- Compiling module mips_controller
+# -- Compiling package mips_core_sv_unit
+# -- Compiling module mips_core
+# -- Compiling module data_mem
+# -- Compiling module instr_mem
+# -- Compiling package _top_sv_unit
+# -- Compiling module mips_top
+# -- Compiling package mips_isa_pkg
+# -- Compiling module tb_mips_top
+# -- Importing package mips_isa_pkg
+# 
+# Top level modules:
+# 	mips_top
+# 	tb_mips_top
+# End time: 18:53:52 on Jan 07,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# ** Warning: ../../testbench/testbench_2/tb_mips_top.sv(45): (vopt-2685) [TFMPC] - Too few port connections for 'u_mips_core'.  Expected 9, found 8.
+# ** Warning: ../../testbench/testbench_2/tb_mips_top.sv(45): (vopt-2718) [TFMPC] - Missing connection for port 's0'.
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=2.
+# Loading sv_std.std
+# Loading work.mips_pkg(fast)
+# Loading work.mips_isa_pkg(fast)
+# Loading work.tb_mips_top(fast)
+# Loading work.data_mem(fast)
+# Loading work.mips_core_sv_unit(fast)
+# Loading work.mips_core(fast)
+# Loading work.controller_sv_unit(fast)
+# Loading work.mips_controller(fast)
+# Loading work.datapath_sv_unit(fast)
+# Loading work.mips_datapath(fast)
+# Loading work.pc_reg(fast)
+# Loading work.reg_file(fast)
+# Loading work.mux2(fast)
+# Loading work.mux2(fast__1)
+# Loading work.sign_extended(fast)
+# Loading work.alu(fast)
+# ** Warning: (vsim-3015) [PCDPC] - Port size (3) does not match connection size (4) for port 'alu_control'. The port definition is at: ../../rtl/datapath_alu.sv(7).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_mips_top/u_mips_core/u_mips_datapath/u_mips_datapath_alu File: ../../rtl/datapath.sv Line: 90
+# ** Note: $stop    : ../../testbench/testbench_2/tb_mips_top.sv(78)
+#    Time: 120 ns  Iteration: 1  Instance: /tb_mips_top
+# Break in Task Finish at ../../testbench/testbench_2/tb_mips_top.sv line 78
+do reset.do
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 18:58:34 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling module alu
+# -- Compiling package datapath_sv_unit
+# -- Importing package mips_pkg
+# -- Compiling module mips_datapath
+# -- Compiling package controller_sv_unit
+# -- Compiling module mips_controller
+# -- Compiling package mips_core_sv_unit
+# -- Compiling module mips_core
+# -- Compiling module data_mem
+# -- Compiling module instr_mem
+# -- Compiling package _top_sv_unit
+# -- Compiling module mips_top
+# -- Compiling package mips_isa_pkg
+# -- Compiling module tb_mips_top
+# -- Importing package mips_isa_pkg
+# ** Error: ../../testbench/testbench_2/tb_mips_top.sv(101): Positional arguments must come before Named arguments.
+# ** Error: ../../testbench/testbench_2/tb_mips_top.sv(101): Positional arguments must come before Named arguments.
+# End time: 18:58:34 on Jan 07,2026, Elapsed time: 0:00:00
+# Errors: 2, Warnings: 0
+# ** Error: D:/Programs/Questasim/win64/vlog failed.
+# Error in macro ./reset.do line 2
+# D:/Programs/Questasim/win64/vlog failed.
+#     while executing
+# "vlog -f sourcefile.txt -svinputport=relaxed"
+do reset.do
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 18:59:02 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling module alu
+# -- Compiling package datapath_sv_unit
+# -- Importing package mips_pkg
+# -- Compiling module mips_datapath
+# -- Compiling package controller_sv_unit
+# -- Compiling module mips_controller
+# -- Compiling package mips_core_sv_unit
+# -- Compiling module mips_core
+# -- Compiling module data_mem
+# -- Compiling module instr_mem
+# -- Compiling package _top_sv_unit
+# -- Compiling module mips_top
+# -- Compiling package mips_isa_pkg
+# -- Compiling module tb_mips_top
+# -- Importing package mips_isa_pkg
+# 
+# Top level modules:
+# 	mips_top
+# 	tb_mips_top
+# End time: 18:59:02 on Jan 07,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# ** Warning: ../../testbench/testbench_2/tb_mips_top.sv(45): (vopt-2685) [TFMPC] - Too few port connections for 'u_mips_core'.  Expected 9, found 8.
+# ** Warning: ../../testbench/testbench_2/tb_mips_top.sv(45): (vopt-2718) [TFMPC] - Missing connection for port 's0'.
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=2.
+# Loading sv_std.std
+# Loading work.mips_pkg(fast)
+# Loading work.mips_isa_pkg(fast)
+# Loading work.tb_mips_top(fast)
+# Loading work.data_mem(fast)
+# Loading work.mips_core_sv_unit(fast)
+# Loading work.mips_core(fast)
+# Loading work.controller_sv_unit(fast)
+# Loading work.mips_controller(fast)
+# Loading work.datapath_sv_unit(fast)
+# Loading work.mips_datapath(fast)
+# Loading work.pc_reg(fast)
+# Loading work.reg_file(fast)
+# Loading work.mux2(fast)
+# Loading work.mux2(fast__1)
+# Loading work.sign_extended(fast)
+# Loading work.alu(fast)
+# ** Warning: (vsim-3015) [PCDPC] - Port size (3) does not match connection size (4) for port 'alu_control'. The port definition is at: ../../rtl/datapath_alu.sv(7).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_mips_top/u_mips_core/u_mips_datapath/u_mips_datapath_alu File: ../../rtl/datapath.sv Line: 90
+# ** Note: $stop    : ../../testbench/testbench_2/tb_mips_top.sv(78)
+#    Time: 450 ns  Iteration: 1  Instance: /tb_mips_top
+# Break in Task Finish at ../../testbench/testbench_2/tb_mips_top.sv line 78
+do reset.do
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 19:04:23 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling module alu
+# -- Compiling package datapath_sv_unit
+# -- Importing package mips_pkg
+# -- Compiling module mips_datapath
+# -- Compiling package controller_sv_unit
+# -- Compiling module mips_controller
+# -- Compiling package mips_core_sv_unit
+# -- Compiling module mips_core
+# -- Compiling module data_mem
+# -- Compiling module instr_mem
+# -- Compiling package _top_sv_unit
+# -- Compiling module mips_top
+# -- Compiling package mips_isa_pkg
+# -- Compiling module tb_mips_top
+# -- Importing package mips_isa_pkg
+# 
+# Top level modules:
+# 	mips_top
+# 	tb_mips_top
+# End time: 19:04:23 on Jan 07,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# ** Warning: ../../testbench/testbench_2/tb_mips_top.sv(45): (vopt-2685) [TFMPC] - Too few port connections for 'u_mips_core'.  Expected 9, found 8.
+# ** Warning: ../../testbench/testbench_2/tb_mips_top.sv(45): (vopt-2718) [TFMPC] - Missing connection for port 's0'.
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=2.
+# Loading sv_std.std
+# Loading work.mips_pkg(fast)
+# Loading work.mips_isa_pkg(fast)
+# Loading work.tb_mips_top(fast)
+# Loading work.data_mem(fast)
+# Loading work.mips_core_sv_unit(fast)
+# Loading work.mips_core(fast)
+# Loading work.controller_sv_unit(fast)
+# Loading work.mips_controller(fast)
+# Loading work.datapath_sv_unit(fast)
+# Loading work.mips_datapath(fast)
+# Loading work.pc_reg(fast)
+# Loading work.reg_file(fast)
+# Loading work.mux2(fast)
+# Loading work.mux2(fast__1)
+# Loading work.sign_extended(fast)
+# Loading work.alu(fast)
+# ** Warning: (vsim-3015) [PCDPC] - Port size (3) does not match connection size (4) for port 'alu_control'. The port definition is at: ../../rtl/datapath_alu.sv(7).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_mips_top/u_mips_core/u_mips_datapath/u_mips_datapath_alu File: ../../rtl/datapath.sv Line: 90
+# ** Note: $stop    : ../../testbench/testbench_2/tb_mips_top.sv(78)
+#    Time: 460 ns  Iteration: 1  Instance: /tb_mips_top
+# Break in Task Finish at ../../testbench/testbench_2/tb_mips_top.sv line 78
+do reset.do
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 19:07:21 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling module alu
+# -- Compiling package datapath_sv_unit
+# -- Importing package mips_pkg
+# -- Compiling module mips_datapath
+# -- Compiling package controller_sv_unit
+# -- Compiling module mips_controller
+# -- Compiling package mips_core_sv_unit
+# -- Compiling module mips_core
+# -- Compiling module data_mem
+# -- Compiling module instr_mem
+# -- Compiling package _top_sv_unit
+# -- Compiling module mips_top
+# -- Compiling package mips_isa_pkg
+# -- Compiling module tb_mips_top
+# -- Importing package mips_isa_pkg
+# 
+# Top level modules:
+# 	mips_top
+# 	tb_mips_top
+# End time: 19:07:21 on Jan 07,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# ** Warning: ../../testbench/testbench_2/tb_mips_top.sv(45): (vopt-2685) [TFMPC] - Too few port connections for 'u_mips_core'.  Expected 9, found 8.
+# ** Warning: ../../testbench/testbench_2/tb_mips_top.sv(45): (vopt-2718) [TFMPC] - Missing connection for port 's0'.
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=2.
+# Loading sv_std.std
+# Loading work.mips_pkg(fast)
+# Loading work.mips_isa_pkg(fast)
+# Loading work.tb_mips_top(fast)
+# Loading work.data_mem(fast)
+# Loading work.mips_core_sv_unit(fast)
+# Loading work.mips_core(fast)
+# Loading work.controller_sv_unit(fast)
+# Loading work.mips_controller(fast)
+# Loading work.datapath_sv_unit(fast)
+# Loading work.mips_datapath(fast)
+# Loading work.pc_reg(fast)
+# Loading work.reg_file(fast)
+# Loading work.mux2(fast)
+# Loading work.mux2(fast__1)
+# Loading work.sign_extended(fast)
+# Loading work.alu(fast)
+# ** Warning: (vsim-3015) [PCDPC] - Port size (3) does not match connection size (4) for port 'alu_control'. The port definition is at: ../../rtl/datapath_alu.sv(7).
+#    Time: 0 ns  Iteration: 0  Instance: /tb_mips_top/u_mips_core/u_mips_datapath/u_mips_datapath_alu File: ../../rtl/datapath.sv Line: 90
+# ** Note: $stop    : ../../testbench/testbench_2/tb_mips_top.sv(78)
+#    Time: 470 ns  Iteration: 1  Instance: /tb_mips_top
+# Break in Task Finish at ../../testbench/testbench_2/tb_mips_top.sv line 78
+do reset.do
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 19:21:03 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling package datapath_alu_sv_unit
+# -- Importing package mips_pkg
+# -- Compiling module alu
+# -- Compiling package datapath_sv_unit
+# -- Compiling module mips_datapath
+# -- Compiling package controller_sv_unit
+# -- Compiling module mips_controller
+# -- Compiling package mips_core_sv_unit
+# -- Compiling module mips_core
+# -- Compiling module data_mem
+# -- Compiling module instr_mem
+# -- Compiling package _top_sv_unit
+# -- Compiling module mips_top
+# -- Compiling package mips_isa_pkg
+# -- Compiling module tb_mips_top
+# -- Importing package mips_isa_pkg
+# 
+# Top level modules:
+# 	mips_top
+# 	tb_mips_top
+# End time: 19:21:05 on Jan 07,2026, Elapsed time: 0:00:02
+# Errors: 0, Warnings: 0
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# Loading sv_std.std
+# Loading work.mips_pkg(fast)
+# Loading work.mips_isa_pkg(fast)
+# Loading work.tb_mips_top(fast)
+# Loading work.data_mem(fast)
+# Loading work.mips_core_sv_unit(fast)
+# Loading work.mips_core(fast)
+# Loading work.controller_sv_unit(fast)
+# Loading work.mips_controller(fast)
+# Loading work.datapath_sv_unit(fast)
+# Loading work.mips_datapath(fast)
+# Loading work.pc_reg(fast)
+# Loading work.reg_file(fast)
+# Loading work.mux2(fast)
+# Loading work.mux2(fast__1)
+# Loading work.sign_extended(fast)
+# Loading work.datapath_alu_sv_unit(fast)
+# Loading work.alu(fast)
+# ** Note: $stop    : ../../testbench/testbench_2/tb_mips_top.sv(78)
+#    Time: 470 ns  Iteration: 1  Instance: /tb_mips_top
+# Break in Task Finish at ../../testbench/testbench_2/tb_mips_top.sv line 78
+do reset.do
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 20:03:06 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling package datapath_alu_sv_unit
+# -- Importing package mips_pkg
+# -- Compiling module alu
+# -- Compiling package datapath_sv_unit
+# -- Compiling module mips_datapath
+# -- Compiling package controller_sv_unit
+# -- Compiling module mips_controller
+# -- Compiling package mips_core_sv_unit
+# -- Compiling module mips_core
+# -- Compiling module data_mem
+# -- Compiling module instr_mem
+# -- Compiling package _top_sv_unit
+# -- Compiling module mips_top
+# -- Compiling package mips_isa_pkg
+# -- Compiling module tb_mips_top
+# -- Importing package mips_isa_pkg
+# 
+# Top level modules:
+# 	mips_top
+# 	tb_mips_top
+# End time: 20:03:06 on Jan 07,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# Loading sv_std.std
+# Loading work.mips_pkg(fast)
+# Loading work.mips_isa_pkg(fast)
+# Loading work.tb_mips_top(fast)
+# Loading work.data_mem(fast)
+# Loading work.mips_core_sv_unit(fast)
+# Loading work.mips_core(fast)
+# Loading work.controller_sv_unit(fast)
+# Loading work.mips_controller(fast)
+# Loading work.datapath_sv_unit(fast)
+# Loading work.mips_datapath(fast)
+# Loading work.pc_reg(fast)
+# Loading work.reg_file(fast)
+# Loading work.mux2(fast)
+# Loading work.mux2(fast__1)
+# Loading work.sign_extended(fast)
+# Loading work.datapath_alu_sv_unit(fast)
+# Loading work.alu(fast)
+# ** Note: $stop    : ../../testbench/testbench_2/tb_mips_top.sv(78)
+#    Time: 470 ns  Iteration: 1  Instance: /tb_mips_top
+# Break in Task Finish at ../../testbench/testbench_2/tb_mips_top.sv line 78
+add wave -position insertpoint sim:/tb_mips_top/u_mips_core/u_mips_datapath/u_mips_datapath_regfile/*
+do reset.do
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 20:09:54 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling package datapath_alu_sv_unit
+# -- Importing package mips_pkg
+# -- Compiling module alu
+# -- Compiling package datapath_sv_unit
+# -- Compiling module mips_datapath
+# -- Compiling package controller_sv_unit
+# -- Compiling module mips_controller
+# -- Compiling package mips_core_sv_unit
+# -- Compiling module mips_core
+# -- Compiling module data_mem
+# -- Compiling module instr_mem
+# -- Compiling package _top_sv_unit
+# -- Compiling module mips_top
+# -- Compiling package mips_isa_pkg
+# -- Compiling module tb_mips_top
+# -- Importing package mips_isa_pkg
+# 
+# Top level modules:
+# 	mips_top
+# 	tb_mips_top
+# End time: 20:09:54 on Jan 07,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# ** Note: (vsim-8009) Loading existing optimized design _opt
+# Loading work.mips_pkg(fast)
+# Loading work.mips_isa_pkg(fast)
+# Loading work.tb_mips_top(fast)
+# Loading work.data_mem(fast)
+# Loading work.mips_core_sv_unit(fast)
+# Loading work.mips_core(fast)
+# Loading work.controller_sv_unit(fast)
+# Loading work.mips_controller(fast)
+# Loading work.datapath_sv_unit(fast)
+# Loading work.mips_datapath(fast)
+# Loading work.pc_reg(fast)
+# Loading work.reg_file(fast)
+# Loading work.mux2(fast)
+# Loading work.mux2(fast__1)
+# Loading work.sign_extended(fast)
+# Loading work.datapath_alu_sv_unit(fast)
+# Loading work.alu(fast)
+# ** Note: $stop    : ../../testbench/testbench_2/tb_mips_top.sv(78)
+#    Time: 470 ns  Iteration: 1  Instance: /tb_mips_top
+# Break in Task Finish at ../../testbench/testbench_2/tb_mips_top.sv line 78
+add wave -position insertpoint sim:/tb_mips_top/u_mips_core/u_mips_datapath/u_mips_datapath_alu/*
+do reset.do
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 20:11:12 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling package datapath_alu_sv_unit
+# -- Importing package mips_pkg
+# -- Compiling module alu
+# -- Compiling package datapath_sv_unit
+# -- Compiling module mips_datapath
+# -- Compiling package controller_sv_unit
+# -- Compiling module mips_controller
+# -- Compiling package mips_core_sv_unit
+# -- Compiling module mips_core
+# -- Compiling module data_mem
+# -- Compiling module instr_mem
+# -- Compiling package _top_sv_unit
+# -- Compiling module mips_top
+# -- Compiling package mips_isa_pkg
+# -- Compiling module tb_mips_top
+# -- Importing package mips_isa_pkg
+# 
+# Top level modules:
+# 	mips_top
+# 	tb_mips_top
+# End time: 20:11:12 on Jan 07,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# ** Note: (vsim-8009) Loading existing optimized design _opt
+# Loading work.mips_pkg(fast)
+# Loading work.mips_isa_pkg(fast)
+# Loading work.tb_mips_top(fast)
+# Loading work.data_mem(fast)
+# Loading work.mips_core_sv_unit(fast)
+# Loading work.mips_core(fast)
+# Loading work.controller_sv_unit(fast)
+# Loading work.mips_controller(fast)
+# Loading work.datapath_sv_unit(fast)
+# Loading work.mips_datapath(fast)
+# Loading work.pc_reg(fast)
+# Loading work.reg_file(fast)
+# Loading work.mux2(fast)
+# Loading work.mux2(fast__1)
+# Loading work.sign_extended(fast)
+# Loading work.datapath_alu_sv_unit(fast)
+# Loading work.alu(fast)
+# ** Note: $stop    : ../../testbench/testbench_2/tb_mips_top.sv(78)
+#    Time: 470 ns  Iteration: 1  Instance: /tb_mips_top
+# Break in Task Finish at ../../testbench/testbench_2/tb_mips_top.sv line 78
+add wave -position insertpoint sim:/tb_mips_top/u_mips_core/u_mips_datapath/u_mips_datapath_regfile/*
+add wave -position insertpoint sim:/tb_mips_top/u_mips_core/u_mips_datapath/u_mips_datapath_srcbmux/*
+do reset.do
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 20:14:12 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling package datapath_alu_sv_unit
+# -- Importing package mips_pkg
+# -- Compiling module alu
+# -- Compiling package datapath_sv_unit
+# -- Compiling module mips_datapath
+# -- Compiling package controller_sv_unit
+# -- Compiling module mips_controller
+# -- Compiling package mips_core_sv_unit
+# -- Compiling module mips_core
+# -- Compiling module data_mem
+# -- Compiling module instr_mem
+# -- Compiling package _top_sv_unit
+# -- Compiling module mips_top
+# -- Compiling package mips_isa_pkg
+# -- Compiling module tb_mips_top
+# -- Importing package mips_isa_pkg
+# 
+# Top level modules:
+# 	mips_top
+# 	tb_mips_top
+# End time: 20:14:12 on Jan 07,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# ** Note: (vsim-8009) Loading existing optimized design _opt
+# Loading work.mips_pkg(fast)
+# Loading work.mips_isa_pkg(fast)
+# Loading work.tb_mips_top(fast)
+# Loading work.data_mem(fast)
+# Loading work.mips_core_sv_unit(fast)
+# Loading work.mips_core(fast)
+# Loading work.controller_sv_unit(fast)
+# Loading work.mips_controller(fast)
+# Loading work.datapath_sv_unit(fast)
+# Loading work.mips_datapath(fast)
+# Loading work.pc_reg(fast)
+# Loading work.reg_file(fast)
+# Loading work.mux2(fast)
+# Loading work.mux2(fast__1)
+# Loading work.sign_extended(fast)
+# Loading work.datapath_alu_sv_unit(fast)
+# Loading work.alu(fast)
+# ** Note: $stop    : ../../testbench/testbench_2/tb_mips_top.sv(78)
+#    Time: 470 ns  Iteration: 1  Instance: /tb_mips_top
+# Break in Task Finish at ../../testbench/testbench_2/tb_mips_top.sv line 78
+do reset.do
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 20:15:54 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling package datapath_alu_sv_unit
+# -- Importing package mips_pkg
+# -- Compiling module alu
+# -- Compiling package datapath_sv_unit
+# -- Compiling module mips_datapath
+# -- Compiling package controller_sv_unit
+# -- Compiling module mips_controller
+# -- Compiling package mips_core_sv_unit
+# -- Compiling module mips_core
+# -- Compiling module data_mem
+# -- Compiling module instr_mem
+# -- Compiling package _top_sv_unit
+# -- Compiling module mips_top
+# -- Compiling package mips_isa_pkg
+# -- Compiling module tb_mips_top
+# -- Importing package mips_isa_pkg
+# 
+# Top level modules:
+# 	mips_top
+# 	tb_mips_top
+# End time: 20:15:54 on Jan 07,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# Loading sv_std.std
+# Loading work.mips_pkg(fast)
+# Loading work.mips_isa_pkg(fast)
+# Loading work.tb_mips_top(fast)
+# Loading work.data_mem(fast)
+# Loading work.mips_core_sv_unit(fast)
+# Loading work.mips_core(fast)
+# Loading work.controller_sv_unit(fast)
+# Loading work.mips_controller(fast)
+# Loading work.datapath_sv_unit(fast)
+# Loading work.mips_datapath(fast)
+# Loading work.pc_reg(fast)
+# Loading work.reg_file(fast)
+# Loading work.mux2(fast)
+# Loading work.mux2(fast__1)
+# Loading work.sign_extended(fast)
+# Loading work.datapath_alu_sv_unit(fast)
+# Loading work.alu(fast)
+# ** Note: $stop    : ../../testbench/testbench_2/tb_mips_top.sv(78)
+#    Time: 470 ns  Iteration: 1  Instance: /tb_mips_top
+# Break in Task Finish at ../../testbench/testbench_2/tb_mips_top.sv line 78
+do reset.do
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 20:17:37 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling package datapath_alu_sv_unit
+# -- Importing package mips_pkg
+# -- Compiling module alu
+# -- Compiling package datapath_sv_unit
+# -- Compiling module mips_datapath
+# -- Compiling package controller_sv_unit
+# -- Compiling module mips_controller
+# -- Compiling package mips_core_sv_unit
+# -- Compiling module mips_core
+# -- Compiling module data_mem
+# -- Compiling module instr_mem
+# -- Compiling package _top_sv_unit
+# -- Compiling module mips_top
+# -- Compiling package mips_isa_pkg
+# -- Compiling module tb_mips_top
+# -- Importing package mips_isa_pkg
+# 
+# Top level modules:
+# 	mips_top
+# 	tb_mips_top
+# End time: 20:17:37 on Jan 07,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# ** Warning: ../../testbench/testbench_2/tb_mips_top.sv(45): (vopt-2685) [TFMPC] - Too few port connections for 'u_mips_core'.  Expected 9, found 8.
+# ** Warning: ../../testbench/testbench_2/tb_mips_top.sv(45): (vopt-2718) [TFMPC] - Missing connection for port 's0'.
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=2.
+# Loading sv_std.std
+# Loading work.mips_pkg(fast)
+# Loading work.mips_isa_pkg(fast)
+# Loading work.tb_mips_top(fast)
+# Loading work.data_mem(fast)
+# Loading work.mips_core_sv_unit(fast)
+# Loading work.mips_core(fast)
+# Loading work.controller_sv_unit(fast)
+# Loading work.mips_controller(fast)
+# Loading work.datapath_sv_unit(fast)
+# Loading work.mips_datapath(fast)
+# Loading work.pc_reg(fast)
+# Loading work.reg_file(fast)
+# Loading work.mux2(fast)
+# Loading work.mux2(fast__1)
+# Loading work.sign_extended(fast)
+# Loading work.datapath_alu_sv_unit(fast)
+# Loading work.alu(fast)
+# ** Note: $stop    : ../../testbench/testbench_2/tb_mips_top.sv(78)
+#    Time: 480 ns  Iteration: 1  Instance: /tb_mips_top
+# Break in Task Finish at ../../testbench/testbench_2/tb_mips_top.sv line 78
+do reset.do
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 20:20:04 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling package datapath_alu_sv_unit
+# -- Importing package mips_pkg
+# -- Compiling module alu
+# -- Compiling package datapath_sv_unit
+# -- Compiling module mips_datapath
+# -- Compiling package controller_sv_unit
+# -- Compiling module mips_controller
+# -- Compiling package mips_core_sv_unit
+# -- Compiling module mips_core
+# -- Compiling module data_mem
+# -- Compiling module instr_mem
+# -- Compiling package _top_sv_unit
+# -- Compiling module mips_top
+# -- Compiling package mips_isa_pkg
+# -- Compiling module tb_mips_top
+# -- Importing package mips_isa_pkg
+# 
+# Top level modules:
+# 	mips_top
+# 	tb_mips_top
+# End time: 20:20:04 on Jan 07,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Note: (vsim-8009) Loading existing optimized design _opt
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=2.
+# Loading work.mips_pkg(fast)
+# Loading work.mips_isa_pkg(fast)
+# Loading work.tb_mips_top(fast)
+# Loading work.data_mem(fast)
+# Loading work.mips_core_sv_unit(fast)
+# Loading work.mips_core(fast)
+# Loading work.controller_sv_unit(fast)
+# Loading work.mips_controller(fast)
+# Loading work.datapath_sv_unit(fast)
+# Loading work.mips_datapath(fast)
+# Loading work.pc_reg(fast)
+# Loading work.reg_file(fast)
+# Loading work.mux2(fast)
+# Loading work.mux2(fast__1)
+# Loading work.sign_extended(fast)
+# Loading work.datapath_alu_sv_unit(fast)
+# Loading work.alu(fast)
+# ** Note: $stop    : ../../testbench/testbench_2/tb_mips_top.sv(78)
+#    Time: 480 ns  Iteration: 1  Instance: /tb_mips_top
+# Break in Task Finish at ../../testbench/testbench_2/tb_mips_top.sv line 78
+do reset.do
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 20:20:41 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling package datapath_alu_sv_unit
+# -- Importing package mips_pkg
+# -- Compiling module alu
+# -- Compiling package datapath_sv_unit
+# -- Compiling module mips_datapath
+# -- Compiling package controller_sv_unit
+# -- Compiling module mips_controller
+# -- Compiling package mips_core_sv_unit
+# -- Compiling module mips_core
+# -- Compiling module data_mem
+# -- Compiling module instr_mem
+# -- Compiling package _top_sv_unit
+# -- Compiling module mips_top
+# -- Compiling package mips_isa_pkg
+# -- Compiling module tb_mips_top
+# -- Importing package mips_isa_pkg
+# 
+# Top level modules:
+# 	mips_top
+# 	tb_mips_top
+# End time: 20:20:41 on Jan 07,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# ** Warning: ../../testbench/testbench_2/tb_mips_top.sv(45): (vopt-2685) [TFMPC] - Too few port connections for 'u_mips_core'.  Expected 9, found 8.
+# ** Warning: ../../testbench/testbench_2/tb_mips_top.sv(45): (vopt-2718) [TFMPC] - Missing connection for port 's0'.
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=2.
+# Loading sv_std.std
+# Loading work.mips_pkg(fast)
+# Loading work.mips_isa_pkg(fast)
+# Loading work.tb_mips_top(fast)
+# Loading work.data_mem(fast)
+# Loading work.mips_core_sv_unit(fast)
+# Loading work.mips_core(fast)
+# Loading work.controller_sv_unit(fast)
+# Loading work.mips_controller(fast)
+# Loading work.datapath_sv_unit(fast)
+# Loading work.mips_datapath(fast)
+# Loading work.pc_reg(fast)
+# Loading work.reg_file(fast)
+# Loading work.mux2(fast)
+# Loading work.mux2(fast__1)
+# Loading work.sign_extended(fast)
+# Loading work.datapath_alu_sv_unit(fast)
+# Loading work.alu(fast)
+# ** Note: $stop    : ../../testbench/testbench_2/tb_mips_top.sv(78)
+#    Time: 520 ns  Iteration: 1  Instance: /tb_mips_top
+# Break in Task Finish at ../../testbench/testbench_2/tb_mips_top.sv line 78
+do reset.do
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 20:35:18 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling package datapath_alu_sv_unit
+# -- Importing package mips_pkg
+# -- Compiling module alu
+# -- Compiling package datapath_sv_unit
+# -- Compiling module mips_datapath
+# -- Compiling package controller_sv_unit
+# -- Compiling module mips_controller
+# -- Compiling package mips_core_sv_unit
+# -- Compiling module mips_core
+# -- Compiling module data_mem
+# -- Compiling module instr_mem
+# -- Compiling package _top_sv_unit
+# -- Compiling module mips_top
+# -- Compiling package mips_isa_pkg
+# -- Compiling module tb_mips_top
+# -- Importing package mips_isa_pkg
+# 
+# Top level modules:
+# 	mips_top
+# 	tb_mips_top
+# End time: 20:35:18 on Jan 07,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# ** Warning: ../../testbench/testbench_2/tb_mips_top.sv(45): (vopt-2685) [TFMPC] - Too few port connections for 'u_mips_core'.  Expected 9, found 8.
+# ** Warning: ../../testbench/testbench_2/tb_mips_top.sv(45): (vopt-2718) [TFMPC] - Missing connection for port 's0'.
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=2.
+# Loading sv_std.std
+# Loading work.mips_pkg(fast)
+# Loading work.mips_isa_pkg(fast)
+# Loading work.tb_mips_top(fast)
+# Loading work.data_mem(fast)
+# Loading work.mips_core_sv_unit(fast)
+# Loading work.mips_core(fast)
+# Loading work.controller_sv_unit(fast)
+# Loading work.mips_controller(fast)
+# Loading work.datapath_sv_unit(fast)
+# Loading work.mips_datapath(fast)
+# Loading work.pc_reg(fast)
+# Loading work.reg_file(fast)
+# Loading work.mux2(fast)
+# Loading work.mux2(fast__1)
+# Loading work.sign_extended(fast)
+# Loading work.datapath_alu_sv_unit(fast)
+# Loading work.alu(fast)
+# ** Note: $stop    : ../../testbench/testbench_2/tb_mips_top.sv(78)
+#    Time: 730 ns  Iteration: 1  Instance: /tb_mips_top
+# Break in Task Finish at ../../testbench/testbench_2/tb_mips_top.sv line 78
+do reset.do
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 20:41:39 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling package datapath_alu_sv_unit
+# -- Importing package mips_pkg
+# -- Compiling module alu
+# -- Compiling package datapath_sv_unit
+# -- Compiling module mips_datapath
+# -- Compiling package controller_sv_unit
+# -- Compiling module mips_controller
+# -- Compiling package mips_core_sv_unit
+# -- Compiling module mips_core
+# -- Compiling module data_mem
+# -- Compiling module instr_mem
+# -- Compiling package _top_sv_unit
+# -- Compiling module mips_top
+# -- Compiling package mips_isa_pkg
+# -- Compiling module tb_mips_top
+# -- Importing package mips_isa_pkg
+# ** Error: ../../testbench/testbench_2/tb_mips_top.sv(9): (vlog-13006) Could not find the package (TestSequence).  Design read will continue, but expect a cascade of errors after this failure.  Furthermore if you experience a vopt-7 error immediately before this error then please check the package names or the library search paths on the command line.
+# End time: 20:41:39 on Jan 07,2026, Elapsed time: 0:00:00
+# Errors: 1, Warnings: 0
+# ** Error: D:/Programs/Questasim/win64/vlog failed.
+# Error in macro ./reset.do line 2
+# D:/Programs/Questasim/win64/vlog failed.
+#     while executing
+# "vlog -f sourcefile.txt -svinputport=relaxed"
+do start.do
+# ** Warning: (vlib-34) Library already exists at "work".
+# Errors: 0, Warnings: 1
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 20:42:51 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling package datapath_alu_sv_unit
+# -- Importing package mips_pkg
+# -- Compiling module alu
+# -- Compiling package datapath_sv_unit
+# -- Compiling module mips_datapath
+# -- Compiling package controller_sv_unit
+# -- Compiling module mips_controller
+# -- Compiling package mips_core_sv_unit
+# -- Compiling module mips_core
+# -- Compiling module data_mem
+# -- Compiling module instr_mem
+# -- Compiling package _top_sv_unit
+# -- Compiling module mips_top
+# -- Compiling package TestSequence
+# -- Importing package mips_isa_pkg
+# ** Error: ../../testbench/testbench_2/test_sequence.sv(11): (vlog-2730) Undefined variable: 'clk'.
+# ** Error: ../../testbench/testbench_2/test_sequence.sv(13): (vlog-2730) Undefined variable: 'instr'.
+# ** Error: ../../testbench/testbench_2/test_sequence.sv(27): (vlog-2730) Undefined variable: 'clk'.
+# ** Error: ../../testbench/testbench_2/test_sequence.sv(29): (vlog-2730) Undefined variable: 'instr'.
+# ** Error: ../../testbench/testbench_2/test_sequence.sv(34): (vlog-2730) Undefined variable: 'clk'.
+# ** Error: ../../testbench/testbench_2/test_sequence.sv(36): (vlog-2730) Undefined variable: 'instr'.
+# ** Error: ../../testbench/testbench_2/test_sequence.sv(76): (vlog-2730) Undefined variable: 'clk'.
+# ** Error: ../../testbench/testbench_2/test_sequence.sv(78): (vlog-2730) Undefined variable: 'instr'.
+# -- Compiling package mips_isa_pkg
+# -- Compiling module tb_mips_top
+# ** Error: ../../testbench/testbench_2/tb_mips_top.sv(9): (vlog-13006) Could not find the package (TestSequence).  Design read will continue, but expect a cascade of errors after this failure.  Furthermore if you experience a vopt-7 error immediately before this error then please check the package names or the library search paths on the command line.
+# End time: 20:42:51 on Jan 07,2026, Elapsed time: 0:00:00
+# Errors: 9, Warnings: 0
+# ** Error: D:/Programs/Questasim/win64/vlog failed.
+# Error in macro ./start.do line 3
+# D:/Programs/Questasim/win64/vlog failed.
+#     while executing
+# "vlog -f sourcefile.txt -svinputport=relaxed"
+do start.do
+# ** Warning: (vlib-34) Library already exists at "work".
+# Errors: 0, Warnings: 1
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 20:43:54 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling package datapath_alu_sv_unit
+# -- Importing package mips_pkg
+# -- Compiling module alu
+# -- Compiling package datapath_sv_unit
+# -- Compiling module mips_datapath
+# -- Compiling package controller_sv_unit
+# -- Compiling module mips_controller
+# -- Compiling package mips_core_sv_unit
+# -- Compiling module mips_core
+# -- Compiling module data_mem
+# -- Compiling module instr_mem
+# -- Compiling package _top_sv_unit
+# -- Compiling module mips_top
+# -- Compiling package TestSequence
+# -- Importing package mips_isa_pkg
+# ** Error: ../../testbench/testbench_2/test_sequence.sv(11): (vlog-2730) Undefined variable: 'clk'.
+# ** Error: ../../testbench/testbench_2/test_sequence.sv(13): (vlog-2730) Undefined variable: 'instr'.
+# ** Error: ../../testbench/testbench_2/test_sequence.sv(27): (vlog-2730) Undefined variable: 'clk'.
+# ** Error: ../../testbench/testbench_2/test_sequence.sv(29): (vlog-2730) Undefined variable: 'instr'.
+# ** Error: ../../testbench/testbench_2/test_sequence.sv(34): (vlog-2730) Undefined variable: 'clk'.
+# ** Error: ../../testbench/testbench_2/test_sequence.sv(36): (vlog-2730) Undefined variable: 'instr'.
+# ** Error: ../../testbench/testbench_2/test_sequence.sv(76): (vlog-2730) Undefined variable: 'clk'.
+# ** Error: ../../testbench/testbench_2/test_sequence.sv(78): (vlog-2730) Undefined variable: 'instr'.
+# -- Compiling package mips_isa_pkg
+# -- Compiling module tb_mips_top
+# ** Error: ../../testbench/testbench_2/tb_mips_top.sv(9): (vlog-13006) Could not find the package (TestSequence).  Design read will continue, but expect a cascade of errors after this failure.  Furthermore if you experience a vopt-7 error immediately before this error then please check the package names or the library search paths on the command line.
+# End time: 20:43:54 on Jan 07,2026, Elapsed time: 0:00:00
+# Errors: 9, Warnings: 0
+# ** Error: D:/Programs/Questasim/win64/vlog failed.
+# Error in macro ./start.do line 3
+# D:/Programs/Questasim/win64/vlog failed.
+#     while executing
+# "vlog -f sourcefile.txt -svinputport=relaxed"
+do reset.do
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 20:44:06 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling package datapath_alu_sv_unit
+# -- Importing package mips_pkg
+# -- Compiling module alu
+# -- Compiling package datapath_sv_unit
+# -- Compiling module mips_datapath
+# -- Compiling package controller_sv_unit
+# -- Compiling module mips_controller
+# -- Compiling package mips_core_sv_unit
+# -- Compiling module mips_core
+# -- Compiling module data_mem
+# -- Compiling module instr_mem
+# -- Compiling package _top_sv_unit
+# -- Compiling module mips_top
+# -- Compiling package mips_isa_pkg
+# -- Compiling module tb_mips_top
+# -- Importing package mips_isa_pkg
+# ** Error: ../../testbench/testbench_2/tb_mips_top.sv(9): (vlog-13006) Could not find the package (TestSequence).  Design read will continue, but expect a cascade of errors after this failure.  Furthermore if you experience a vopt-7 error immediately before this error then please check the package names or the library search paths on the command line.
+# End time: 20:44:06 on Jan 07,2026, Elapsed time: 0:00:00
+# Errors: 1, Warnings: 0
+# ** Error: D:/Programs/Questasim/win64/vlog failed.
+# Error in macro ./reset.do line 2
+# D:/Programs/Questasim/win64/vlog failed.
+#     while executing
+# "vlog -f sourcefile.txt -svinputport=relaxed"
+do reset.do
+# QuestaSim-64 vlog 2021.1 Compiler 2021.01 Jan 19 2021
+# Start time: 20:44:19 on Jan 07,2026
+# vlog -reportprogress 300 -f sourcefile.txt -svinputport=relaxed 
+# -- Compiling package mips_pkg
+# -- Compiling module mux2
+# -- Compiling module sign_extended
+# -- Compiling module reg_file
+# -- Compiling module pc_reg
+# -- Compiling package datapath_alu_sv_unit
+# -- Importing package mips_pkg
+# -- Compiling module alu
+# -- Compiling package datapath_sv_unit
+# -- Compiling module mips_datapath
+# -- Compiling package controller_sv_unit
+# -- Compiling module mips_controller
+# -- Compiling package mips_core_sv_unit
+# -- Compiling module mips_core
+# -- Compiling module data_mem
+# -- Compiling module instr_mem
+# -- Compiling package _top_sv_unit
+# -- Compiling module mips_top
+# -- Compiling package mips_isa_pkg
+# -- Compiling module tb_mips_top
+# -- Importing package mips_isa_pkg
+# 
+# Top level modules:
+# 	mips_top
+# 	tb_mips_top
+# End time: 20:44:19 on Jan 07,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# ** Warning: ../../testbench/testbench_2/tb_mips_top.sv(46): (vopt-2685) [TFMPC] - Too few port connections for 'u_mips_core'.  Expected 9, found 8.
+# ** Warning: ../../testbench/testbench_2/tb_mips_top.sv(46): (vopt-2718) [TFMPC] - Missing connection for port 's0'.
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=2.
+# Loading sv_std.std
+# Loading work.mips_pkg(fast)
+# Loading work.mips_isa_pkg(fast)
+# Loading work.tb_mips_top(fast)
+# Loading work.data_mem(fast)
+# Loading work.mips_core_sv_unit(fast)
+# Loading work.mips_core(fast)
+# Loading work.controller_sv_unit(fast)
+# Loading work.mips_controller(fast)
+# Loading work.datapath_sv_unit(fast)
+# Loading work.mips_datapath(fast)
+# Loading work.pc_reg(fast)
+# Loading work.reg_file(fast)
+# Loading work.mux2(fast)
+# Loading work.mux2(fast__1)
+# Loading work.sign_extended(fast)
+# Loading work.datapath_alu_sv_unit(fast)
+# Loading work.alu(fast)
+# ** Note: $stop    : ../../testbench/testbench_2/tb_mips_top.sv(79)
+#    Time: 730 ns  Iteration: 1  Instance: /tb_mips_top
+# Break in Task Finish at ../../testbench/testbench_2/tb_mips_top.sv line 79

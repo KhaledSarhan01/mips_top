@@ -6,6 +6,7 @@
 module tb_mips_top ;
 import mips_isa_pkg::*;
 import mips_pkg::*;
+// import TestSequence::*;
 //////////////////////////////////////
 ////////////// Signals //////////////
 ////////////////////////////////////
@@ -32,27 +33,27 @@ import mips_pkg::*;
 ////////////////////////////////////
 
     data_mem #(.DEPTH(256),.WIDTH(8)) u_data_mem (
-    .clk(clk),
-    .rst_n(rst_n),
-    .address(memaddr),
-    // input for write operation
-    .write_en(memwrite),
-    .data_in(writedata),
-    // output for read operation
-    .data_out(readdata)
+        .clk(clk),
+        .rst_n(rst_n),
+        .address(memaddr),
+        // input for write operation
+        .write_en(memwrite),
+        .data_in(writedata),
+        // output for read operation
+        .data_out(readdata)
     );
 
     mips_core u_mips_core(
-    .clk(clk),
-    .rst_n(rst_n),
-    // To instruction Memory
-    .pc(pc),
-    .instr(instr),
-    // To Data Memory
-    .memwrite(memwrite),
-    .memaddr(memaddr),
-    .writedata(writedata),
-    .readdata(readdata)
+        .clk(clk),
+        .rst_n(rst_n),
+        // To instruction Memory
+        .pc(pc),
+        .instr(instr),
+        // To Data Memory
+        .memwrite(memwrite),
+        .memaddr(memaddr),
+        .writedata(writedata),
+        .readdata(readdata)
     );
 
 //////////////////////////////////////
@@ -93,7 +94,41 @@ import mips_pkg::*;
         instr = mips_instr.get_Instr();
     endtask
     task Main_Scenario();
+        // Direct Testing
+            DirectTesting();
+        // Randomized Testing
+            RandomTesting(10);                                         
+    endtask
+
+        // Random Testing
+    task automatic RandomTesting(int RepeatNumber = 10);
+            // Reset
+                Reset();
+            // Phase 1 Part 1 Testing
+            mips_instr.phase1_part1.constraint_mode(1);
+            repeat(RepeatNumber)begin
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr();
+            end
+    endtask 
+    // Direct Testing
+    task automatic DirectTesting();
+        //Filling the Register with random Data 
+            RegisterFileFilling();
         // Testing the already implemented instructions
+            AluRemainingOpearations();
+            Phase1Part1();
+    endtask 
+    task automatic RegisterFileFilling();
+        for (int i = 0; i<= 32; i++) begin
+            // `addi`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(ADDI),.i_rs(0),.i_rt(i));
+        end
+    endtask //automatic
+    task automatic Phase1Part1();
             // `lw`
                 @(negedge clk);
                 assert (mips_instr.randomize());
@@ -134,15 +169,47 @@ import mips_pkg::*;
                 @(negedge clk);
                 assert (mips_instr.randomize());
                 instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SLT));
-        // Randomized Testing 
-            Reset();
-            // Phase 1 Part 1 Testing
-            mips_instr.phase1_part1.constraint_mode(1);
-            repeat(10)begin
+    endtask //automatic
+    task automatic AluRemainingOpearations();
+        // `xor`
                 @(negedge clk);
                 assert (mips_instr.randomize());
-                instr = mips_instr.get_Instr();
-            end
-                                        
-    endtask
+                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(XOR));    
+            
+            // `nor`
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(NOR));
+            
+            // `sll`
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SLL));
+           
+            // `srl`
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SRL));
+
+            // `sra`
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SRA));
+                
+            // `sllv`
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SLLV));
+             
+            // `srlv`
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SRLV));
+            
+            // `srav`
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SRAV));            
+            
+    endtask //automatic 
 endmodule
