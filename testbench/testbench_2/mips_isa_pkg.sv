@@ -14,38 +14,15 @@ package mips_isa_pkg;
             rand jaddress_t  address;
             rand shmat_t     shmat; 
         // Constriants
-            // Constraint 1: Syntax Correctness (The "Shape" of the instruction)
-                constraint c_syntax_rules {
-                    
-                    // --- R-Type Rules ---
-                    // Active: rs, rt, rd
-                    // Inactive: imm, address. (shamt is 0 for add/sub, used only for shifts)
-                    (opcode inside {R_group}) -> {
-                        imm     == 0;
-                        address == 0;
-                        // shamt   == 0; // Assuming standard arithmetic, not shifts
-                    };
-
-                    // --- I-Type Rules ---
-                    // Active: rs, rt, imm
-                    // Inactive: rd, shamt, address
-                    (opcode inside {I_group}) -> {
-                        rd      == 0;
-                        shamt   == 0;
-                        address == 0;
-                    };
-
-                    // --- J-Type Rules ---
-                    // Active: address
-                    // Inactive: rs, rt, rd, shamt, imm
-                    (opcode inside {J_group}) -> {
-                        rs      == 0;
-                        rt      == 0;
-                        rd      == 0;
-                        shamt   == 0;
-                        imm     == 0;
-                    };
-                }
+            // Constraint 1: Phase 1 Part 1
+            // implement the following 10 instructions:
+            //(`lw`, `sw`, `beq`, `addi`, `j`, `add`, `sub`, `and`, `or`, `slt`)
+            const static opcode_t phase1_part1_opcode[] = '{RType,LW,Sw,BEQ,ADDI,J};
+            const static funct_t  phase1_part1_funct[]  = '{ADD,SUB,AND,OR,SLT};
+            constraint phase1_part1 {
+                opcode  inside {phase1_part1_opcode};
+                funct   inside {phase1_part1_funct}; 
+            }
         function new();
         //NOP Opearation
             opcode      = RType;// all zeros
@@ -59,25 +36,53 @@ package mips_isa_pkg;
         endfunction 
 
         // General Instruction with random Fields
-        function bit [31:0] get_Instr();
-            
+        function bit [31:0] get_Instr(
+            input opcode_t    i_opcode = opcode_t'('hxx),
+            input funct_t     i_funct = funct_t'('hxx),
+            input rfaddr_t    i_rs = rfaddr_t'('hxx),
+            input rfaddr_t    i_rt = rfaddr_t'('hxx),
+            input rfaddr_t    i_rd = rfaddr_t'('hxx),
+            input immediate_t i_immediate = immediate_t'('hxx),
+            input jaddress_t  i_address = jaddress_t'('hxx),
+            input shmat_t     i_shmat = shmat_t'('hxx)
+            );
+            if (i_opcode === opcode_t'('hxx)) begin
+                i_opcode = this.opcode;
+            end 
+            if (i_opcode inside {R_group}) begin // R Type 
+                if (i_funct === funct_t'('hxx)) begin
+                    i_funct = this.funct;
+                end 
+                if (i_rd === rfaddr_t'('hxx)) begin
+                    i_rd = this.rd;
+                end 
+                if (i_rs === rfaddr_t'('hxx)) begin
+                    i_rs = this.rs;
+                end 
+                if (i_rt === rfaddr_t'('hxx)) begin
+                    i_rt = this.rt;
+                end                    
+                if (i_shmat === shmat_t'('hxx)) begin
+                    i_shmat = this.shmat;
+                end 
+                return {i_opcode,i_rs,i_rt,i_rd,i_shmat,i_funct};
+            end else if (i_opcode inside {J_group})begin // J Type                  
+                if (i_address === jaddress_t'('hxx)) begin
+                    i_address = this.address;
+                end 
+                return {i_opcode,i_address};
+            end else if (i_opcode inside {I_group}) begin // I Type
+                if (i_rs === rfaddr_t'('hxx)) begin
+                    i_rs = this.rs;
+                end 
+                if (i_rt === rfaddr_t'('hxx)) begin
+                    i_rt = this.rt;
+                end  
+                if (i_immediate === immediate_t'('hxx)) begin
+                    i_immediate = this.immediate;
+                end 
+                return {i_opcode,i_rs,i_rt,i_immediate};
+            end
         endfunction
-
-        // Specific R Type Instruction
-        function bit [31:0] get_R_Instr();
-            
-        endfunction
-
-        // Specific I Type Instruction        
-        function bit [31:0] get_I_Instr();
-            
-        endfunction
-
-        // Specific J Type Instruction
-        function bit [31:0] get_J_Instr();
-            
-        endfunction
-
-
     endclass 
 endpackage

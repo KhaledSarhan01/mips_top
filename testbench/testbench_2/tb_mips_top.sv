@@ -4,11 +4,20 @@
 ////////////////////////////////////////////////
 
 module tb_mips_top ;
+import mips_isa_pkg::*;
+import mips_pkg::*;
 //////////////////////////////////////
 ////////////// Signals //////////////
 ////////////////////////////////////
     logic clk,rst_n;
-    
+    // To instruction Memory
+    logic [PC_WIDTH-1:0]     pc;
+    logic [INSTR_WITDTH-1:0] instr;
+    // To Data Memory
+    logic memwrite;
+    logic [DATA_MEM_WIDTH-1:0] memaddr,writedata;
+    logic [DATA_MEM_WIDTH-1:0] readdata;
+
 //////////////////////////////////////
 ///////// Clock Generation //////////
 ////////////////////////////////////
@@ -21,7 +30,30 @@ module tb_mips_top ;
 //////////////////////////////////////
 /////////// Instantiation ///////////
 ////////////////////////////////////
-    mips_top DUT (.*);
+
+    data_mem #(.DEPTH(256),.WIDTH(8)) u_data_mem (
+    .clk(clk),
+    .rst_n(rst_n),
+    .address(memaddr),
+    // input for write operation
+    .write_en(memwrite),
+    .data_in(writedata),
+    // output for read operation
+    .data_out(readdata)
+    );
+
+    mips_core u_mips_core(
+    .clk(clk),
+    .rst_n(rst_n),
+    // To instruction Memory
+    .pc(pc),
+    .instr(instr),
+    // To Data Memory
+    .memwrite(memwrite),
+    .memaddr(memaddr),
+    .writedata(writedata),
+    .readdata(readdata)
+    );
 
 //////////////////////////////////////
 ////////// Testbench Core ///////////
@@ -42,7 +74,7 @@ module tb_mips_top ;
     endtask
     
     task Finish;
-        repeat(100) @(negedge clk);
+        repeat(10) @(negedge clk);
         $stop;
     endtask
 // Watch dog works after 10 ms in simulation time 
@@ -55,11 +87,62 @@ module tb_mips_top ;
 //////////////////////////////////////
 //////// Testbench Scenarios ////////
 ////////////////////////////////////
+    mips_instruction mips_instr = new();
     task Initialization;
         // Initialize your Signals Here
-        
+        instr = mips_instr.get_Instr();
     endtask
     task Main_Scenario();
-        // Write your Test Scenario Here
+        // Testing the already implemented instructions
+            // `lw`
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(LW));
+            // `sw`
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(Sw));
+            // `beq`
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(BEQ));
+            // `addi`
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(ADDI));
+            // `j`
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(J));
+            //  `add`
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(ADD));
+            // `sub`
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SUB));
+            //  `and`
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(AND));
+            //  `or`
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(OR));
+            //  `slt`
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SLT));
+        // Randomized Testing 
+            Reset();
+            // Phase 1 Part 1 Testing
+            mips_instr.phase1_part1.constraint_mode(1);
+            repeat(10)begin
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr();
+            end
+                                        
     endtask
 endmodule
