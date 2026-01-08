@@ -4,6 +4,7 @@ module pc_reg(
     input logic pcsrc,
     input logic jump,
     input logic [31:0] signimm,
+    input logic [31:0] regfile,
     input logic [31:0] instr,
     output logic [31:0] pc_next
 );
@@ -21,7 +22,7 @@ module pc_reg(
             2'b00: pc_next_comb = pc_next + 4;                             // Sequential execution
             2'b01: pc_next_comb = pc_next + 4 + (signimm << 2);            // Branch target
             2'b10: pc_next_comb = {pc_next[31:28], instr[25:0], 2'b00};    // Jump target
-            2'b11: pc_next_comb = 32'b0;                                   // Reserved for future use  
+            2'b11: pc_next_comb = regfile;                                 // PC = [rs]  
             default: pc_next_comb = pc_next + 4; 
         endcase
     end

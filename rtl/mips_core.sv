@@ -12,7 +12,7 @@ module mips_core (
 );
     // Control Signals 
         logic pcsrc;
-        logic alusrc;
+        logic [1:0] alusrc;
         logic regdst;
         logic regwrite;
         logic jump;

@@ -13,7 +13,7 @@ module mips_datapath(
     output logic zero,
     // Control Signals
     input  logic pcsrc,
-    input  logic alusrc,
+    input  logic [1:0] alusrc,
     input  logic regdst,
     input  logic regwrite,
     input  logic jump,
@@ -48,6 +48,7 @@ module mips_datapath(
             .signimm(signimm),
             .jump(jump),
             .instr(instr),
+            .regfile(data_regwrite),
             .pc_next(pc)
         );
     // register file logic
@@ -80,9 +81,11 @@ module mips_datapath(
         );
         
     // ALU logic
-        mux2 #(32) u_mips_datapath_srcbmux (   
+        mux4 #(32) u_mips_datapath_srcbmux (   
             .in0(data_rt),
-            .in1(signimm), 
+            .in1(signimm),
+            .in2('b0),
+            .in3('b0), 
             .sel(alusrc),
             .out(srcb)
         );

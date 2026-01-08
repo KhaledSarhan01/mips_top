@@ -24,7 +24,7 @@ add wave -noupdate /tb_mips_top/u_mips_core/u_mips_control/memwrite
 add wave -noupdate /tb_mips_top/u_mips_core/u_mips_control/memtoreg
 add wave -noupdate /tb_mips_top/u_mips_core/u_mips_control/aluop
 add wave -noupdate /tb_mips_top/u_mips_core/u_mips_control/jump
-add wave -noupdate /tb_mips_top/u_mips_core/u_mips_control/branch
+add wave -noupdate /tb_mips_top/u_mips_core/u_mips_control/pcsrc
 add wave -noupdate /tb_mips_top/u_mips_core/u_mips_control/alucontrl
 add wave -noupdate /tb_mips_top/u_mips_core/u_mips_control/select_regwrite
 add wave -noupdate /tb_mips_top/u_mips_core/u_mips_control/hi_write

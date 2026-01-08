@@ -5,7 +5,7 @@ module mips_controller (
         input zero,
         output logic memwrite,
         output logic pcsrc,
-        output logic alusrc,
+        output logic [1:0] alusrc,
         output logic regdst,
         output logic regwrite,
         output logic jump,    
@@ -17,32 +17,117 @@ module mips_controller (
 
     // Main Decoder
         logic memtoreg;
-        logic [8:0] controls;
-        logic branch;
         logic [1:0] aluop;
         logic [5:0] instr_funct;
         logic [5:0] instr_opcode;
         assign instr_opcode = instr[31:26];
         assign instr_funct  = instr[5:0];
-        assign {regwrite, regdst, alusrc, branch, memwrite, memtoreg, jump, aluop} = controls;
-
+        
         always_comb begin
             case(instr_opcode)
                 6'b000000: begin 
                     if (instr_funct == 6'b010000 || instr_funct == 6'b010010) begin 
-                        controls = 9'b110000000; // Move From Hi/Lo
-                    end else if (instr_funct == 6'b010001 || instr_funct == 6'b010011) begin 
-                        controls = 9'b000000000; // Move into Hi/Lo
+                    // Move From Hi/Lo
+                        regwrite = 1'b1;
+                        regdst   = 1'b1; 
+                        alusrc   = 2'b0; 
+                        pcsrc = 1'b0;
+                        memwrite = 1'b0;
+                        memtoreg = 1'b0;
+                        jump     = 1'b0;
+                        aluop    = 2'b00;
+                    end else if (instr_funct == 6'b010001 || instr_funct == 6'b010011 ||instr_funct == 6'b011010 || instr_funct == 6'b011000 ) begin 
+                    // Move into Hi/Lo OR mult/div
+                        regwrite = 1'b0;
+                        regdst   = 1'b0; 
+                        alusrc   = 2'b0; 
+                        pcsrc    = 1'b0;
+                        memwrite = 1'b0;
+                        memtoreg = 1'b0;
+                        jump     = 1'b0;
+                        aluop    = 2'b00;
+                    end else if(instr_funct == 6'b001000)begin
+                    // Jump Register
+                        regwrite = 1'b0;
+                        regdst   = 1'b0; 
+                        alusrc   = 2'b10;
+                        aluop    = 2'b00; 
+                        memwrite = 1'b0;
+                        memtoreg = 1'b0;
+                        pcsrc    = 1'b1;
+                        jump     = 1'b1;
                     end else begin
-                        controls = 9'b110000010; //Rtype
+                    //Rtype
+                        regwrite = 1'b1;
+                        regdst   = 1'b1; 
+                        alusrc   = 2'b0; 
+                        pcsrc    = 1'b0;
+                        memwrite = 1'b0;
+                        memtoreg = 1'b0;
+                        jump     = 1'b0;
+                        aluop    = 2'b10;
                     end
                 end 
-                6'b100011: controls = 9'b101001000; //LW
-                6'b101011: controls = 9'b001010000; //SW
-                6'b000100: controls = 9'b000100001; //BEQ
-                6'b001000: controls = 9'b101000000; //ADDI
-                6'b000010: controls = 9'b000000100; //J
-                default:   controls = 9'bxxxxxxxxx; //???
+                6'b100011: begin //LW
+                    regwrite = 1'b1;
+                    regdst   = 1'b0; 
+                    alusrc   = 2'b1; 
+                    pcsrc    = 1'b0;
+                    memwrite = 1'b0;
+                    memtoreg = 1'b1;
+                    jump     = 1'b0;
+                    aluop    = 2'b00;
+                end
+                6'b101011:begin //SW
+                    regwrite = 1'b0;
+                    regdst   = 1'b0; 
+                    alusrc   = 2'b1; 
+                    pcsrc    = 1'b0;
+                    memwrite = 1'b1;
+                    memtoreg = 1'b0;
+                    jump     = 1'b0;
+                    aluop    = 2'b00;
+                end
+                6'b000100:begin //BEQ
+                    regwrite = 1'b0;
+                    regdst   = 1'b0; 
+                    alusrc   = 2'b0; 
+                    pcsrc    = zero;
+                    memwrite = 1'b0;
+                    memtoreg = 1'b0;
+                    jump     = 1'b0;
+                    aluop    = 2'b01;
+                end
+                6'b001000:begin //ADDI
+                    regwrite = 1'b1;
+                    regdst   = 1'b0; 
+                    alusrc   = 2'b1; 
+                    pcsrc    = 1'b0;
+                    memwrite = 1'b0;
+                    memtoreg = 1'b0;
+                    jump     = 1'b0;
+                    aluop    = 2'b00;
+                end
+                6'b000010: begin //J
+                    regwrite = 1'b0;
+                    regdst   = 1'b0; 
+                    alusrc   = 2'b0; 
+                    pcsrc    = 1'b0;
+                    memwrite = 1'b0;
+                    memtoreg = 1'b0;
+                    jump     = 1'b1;
+                    aluop    = 2'b00;
+                end
+                default: begin
+                    regwrite = 1'bx;
+                    regdst   = 1'bx; 
+                    alusrc   = 2'bx; 
+                    pcsrc    = 1'bx;
+                    memwrite = 1'bx;
+                    memtoreg = 1'bx;
+                    jump     = 1'bx;
+                    aluop    = 2'bxx;
+                end
             endcase
         end 
 
@@ -71,8 +156,6 @@ module mips_controller (
                 end
             endcase
         end
-    // PC Source
-        assign pcsrc = branch & zero;
     // LO & HI Register Controls
         logic [1:0] lo_hi_select;
         logic [7:0] controls_lo_hi; 
@@ -81,10 +164,12 @@ module mips_controller (
 
         always_comb begin 
             case (instr_funct)
-                6'b010000: controls_lo_hi = 8'b10_0_0_00_00; 
-                6'b010001: controls_lo_hi = 8'b00_1_0_01_00;
-                6'b010010: controls_lo_hi = 8'b11_0_0_00_00;
-                6'b010011: controls_lo_hi = 8'b00_0_1_00_01;
+                6'b010000: controls_lo_hi = 8'b10_0_0_00_00; //MFHI  
+                6'b010001: controls_lo_hi = 8'b00_1_0_01_00; //MTHI
+                6'b010010: controls_lo_hi = 8'b11_0_0_00_00; //MFLO
+                6'b010011: controls_lo_hi = 8'b00_0_1_00_01; //MTLO
+                6'b011000: controls_lo_hi = 8'b00_1_1_11_11; //MULT
+                6'b011010: controls_lo_hi = 8'b00_1_1_10_10; //DIV
                 default: controls_lo_hi = 'b0;
             endcase
         end
