@@ -6,11 +6,15 @@ sim/sim1/*.mti
 sim/sim1/*.wlf
 sim/sim1/work/*
 sim/sim1/work/@_opt/*
+sim/sim1/*.mpf_new 
+sim/sim1/transcript
 
 sim/sim2/*.mpf
 sim/sim2/*.mti
 sim/sim2/*.wlf
 sim/sim2/work/*
+sim/sim2/*.mpf_new 
+sim/sim2/transcript
 
 # --- Synthesis Files ---
 # Database and temporary compilation files

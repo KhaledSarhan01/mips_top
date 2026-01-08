@@ -86,8 +86,10 @@ package mips_pkg;
     typedef logic [R_SHMAT_WIDTH-1:0] shmat_t;       // Shmat length
     
     // Design Parameters
-    parameter PC_WIDTH       = 32;
-    parameter INSTR_WITDTH   = 32;
-    parameter DATA_MEM_WIDTH = 32;
-    parameter ALU_CTRL_WIDTH = 4; 
+    parameter PC_WIDTH          = 32;
+    parameter INSTR_WITDTH      = 32;
+    parameter DATA_MEM_WIDTH    = 32;
+    parameter ALU_CTRL_WIDTH    = 4; 
+    parameter REG_WR_SRC_WIDTH  = 2;
+    parameter HI_LO_SEL_WIDTH   = 2;
 endpackage

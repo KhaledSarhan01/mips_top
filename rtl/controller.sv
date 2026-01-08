@@ -3,18 +3,20 @@ module mips_controller (
         input clk,rst_n,
         input [INSTR_WITDTH-1:0] instr,
         input zero,
-        output logic memtoreg,
         output logic memwrite,
         output logic pcsrc,
         output logic alusrc,
         output logic regdst,
         output logic regwrite,
-        output logic jump,
-        output logic [ALU_CTRL_WIDTH-1:0] alucontrl
+        output logic jump,    
+        output logic [ALU_CTRL_WIDTH-1:0] alucontrl,
+        output logic [REG_WR_SRC_WIDTH-1:0] select_regwrite,
+        output logic hi_write,lo_write,
+        output logic [HI_LO_SEL_WIDTH-1:0] hi_select,lo_select
     );
 
-
     // Main Decoder
+        logic memtoreg;
         logic [8:0] controls;
         logic branch;
         logic [1:0] aluop;
@@ -26,7 +28,15 @@ module mips_controller (
 
         always_comb begin
             case(instr_opcode)
-                6'b000000: controls = 9'b110000010; //Rtyp
+                6'b000000: begin 
+                    if (instr_funct == 6'b010000 || instr_funct == 6'b010010) begin 
+                        controls = 9'b110000000; // Move From Hi/Lo
+                    end else if (instr_funct == 6'b010001 || instr_funct == 6'b010011) begin 
+                        controls = 9'b000000000; // Move into Hi/Lo
+                    end else begin
+                        controls = 9'b110000010; //Rtype
+                    end
+                end 
                 6'b100011: controls = 9'b101001000; //LW
                 6'b101011: controls = 9'b001010000; //SW
                 6'b000100: controls = 9'b000100001; //BEQ
@@ -62,5 +72,20 @@ module mips_controller (
             endcase
         end
     // PC Source
-        assign pcsrc = branch & zero;    
-    endmodule
+        assign pcsrc = branch & zero;
+    // LO & HI Register Controls
+        logic [1:0] lo_hi_select;
+        logic [7:0] controls_lo_hi; 
+        assign {lo_hi_select,hi_write,lo_write,hi_select,lo_select} = controls_lo_hi; 
+        assign select_regwrite = lo_hi_select[1]? {1'b1,lo_hi_select[0]}:{1'b0,memtoreg};
+
+        always_comb begin 
+            case (instr_funct)
+                6'b010000: controls_lo_hi = 8'b10_0_0_00_00; 
+                6'b010001: controls_lo_hi = 8'b00_1_0_01_00;
+                6'b010010: controls_lo_hi = 8'b11_0_0_00_00;
+                6'b010011: controls_lo_hi = 8'b00_0_1_00_01;
+                default: controls_lo_hi = 'b0;
+            endcase
+        end
+endmodule

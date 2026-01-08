@@ -1,6 +1,10 @@
 ../../rtl/_package.sv
 ../../rtl/mux2.sv 
+../../rtl/mux4.sv
 ../../rtl/datapath_signextend.sv 
+../../rtl/datapath_div.sv 
+../../rtl/datapath_lo_hi_reg.sv 
+../../rtl/datapath_mult.sv
 ../../rtl/datapath_regfile.sv 
 ../../rtl/datapath_pc.sv 
 ../../rtl/datapath_alu.sv 

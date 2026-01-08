@@ -11,13 +11,15 @@ module mips_core (
     input  [DATA_MEM_WIDTH-1:0] readdata
 );
     // Control Signals 
-        logic memtoreg;
         logic pcsrc;
         logic alusrc;
         logic regdst;
         logic regwrite;
         logic jump;
         logic [ALU_CTRL_WIDTH-1:0] alucontrl;
+        logic [REG_WR_SRC_WIDTH-1:0] select_regwrite;
+        logic hi_write,lo_write;
+        logic [HI_LO_SEL_WIDTH-1:0] hi_select,lo_select;
 
     // Status Signals
         logic zero;
@@ -27,14 +29,18 @@ module mips_core (
         .rst_n(rst_n),
         .instr(instr),
         .zero(zero),
-        .memtoreg(memtoreg),
         .memwrite(memwrite),
         .pcsrc(pcsrc),
         .alusrc(alusrc),
         .regdst(regdst),
         .regwrite(regwrite),
         .jump(jump),
-        .alucontrl(alucontrl)
+        .alucontrl(alucontrl),
+        .select_regwrite(select_regwrite),
+        .hi_write(hi_write),
+        .lo_write(lo_write),
+        .hi_select(hi_select),
+        .lo_select(lo_select)
     );
 
     mips_datapath u_mips_datapath(
@@ -46,13 +52,17 @@ module mips_core (
         .writedata(writedata),
         .readdata(readdata),
         .zero(zero),
-        .memtoreg(memtoreg),
         .pcsrc(pcsrc),
         .alusrc(alusrc),
         .regdst(regdst),
         .regwrite(regwrite),
         .jump(jump),
         .alucontrl(alucontrl),
+        .select_regwrite(select_regwrite),
+        .hi_write(hi_write),
+        .lo_write(lo_write),
+        .hi_select(hi_select),
+        .lo_select(lo_select),
         .s0(s0)
     );
 endmodule

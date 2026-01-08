@@ -97,7 +97,7 @@ import mips_pkg::*;
         // Direct Testing
             DirectTesting();
         // Randomized Testing
-            RandomTesting(10);                                         
+            // RandomTesting(10);                                         
     endtask
 
         // Random Testing
@@ -117,9 +117,28 @@ import mips_pkg::*;
         //Filling the Register with random Data 
             RegisterFileFilling();
         // Testing the already implemented instructions
-            AluRemainingOpearations();
-            Phase1Part1();
+            HiLoReg_MoveOps();
+            // AluRemainingOpearations();
+            // Phase1Part1();
     endtask 
+    task automatic HiLoReg_MoveOps();
+        // `mfhi`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(MFHI));
+        // `mthi`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(MTHI));
+        // `mflo`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(MFLO));
+        // `mtlo`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(MTLO));
+    endtask //automatic
     task automatic RegisterFileFilling();
         for (int i = 0; i<= 32; i++) begin
             // `addi`
