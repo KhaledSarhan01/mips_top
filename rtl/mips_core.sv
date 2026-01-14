@@ -12,12 +12,12 @@ module mips_core (
 );
     // Control Signals 
         logic pcsrc;
-        logic [1:0] alusrc;
-        logic regdst;
+        logic [ALU_SRC_WIDTH-1:0] alusrc;
+        logic [REG_WR_ADDR_WIDTH-1:0] regdst;
         logic regwrite;
-        logic jump;
+        logic jump; // To be removed in future    
         logic [ALU_CTRL_WIDTH-1:0] alucontrl;
-        logic [REG_WR_SRC_WIDTH-1:0] select_regwrite;
+        logic [REG_WR_SRC_WIDTH-1:0] write_back_sel;
         logic hi_write,lo_write;
         logic [HI_LO_SEL_WIDTH-1:0] hi_select,lo_select;
 
@@ -36,7 +36,7 @@ module mips_core (
         .regwrite(regwrite),
         .jump(jump),
         .alucontrl(alucontrl),
-        .select_regwrite(select_regwrite),
+        .write_back_sel(write_back_sel),
         .hi_write(hi_write),
         .lo_write(lo_write),
         .hi_select(hi_select),
@@ -58,7 +58,7 @@ module mips_core (
         .regwrite(regwrite),
         .jump(jump),
         .alucontrl(alucontrl),
-        .select_regwrite(select_regwrite),
+        .write_back_sel(write_back_sel),
         .hi_write(hi_write),
         .lo_write(lo_write),
         .hi_select(hi_select),

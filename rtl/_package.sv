@@ -90,6 +90,8 @@ package mips_pkg;
     parameter INSTR_WITDTH      = 32;
     parameter DATA_MEM_WIDTH    = 32;
     parameter ALU_CTRL_WIDTH    = 4; 
-    parameter REG_WR_SRC_WIDTH  = 2;
+    parameter ALU_SRC_WIDTH     = 2;
+    parameter REG_WR_SRC_WIDTH  = 3;
+    parameter REG_WR_ADDR_WIDTH = 2;
     parameter HI_LO_SEL_WIDTH   = 2;
 endpackage

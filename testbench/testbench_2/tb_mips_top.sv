@@ -19,6 +19,21 @@ import mips_pkg::*;
     logic [DATA_MEM_WIDTH-1:0] memaddr,writedata;
     logic [DATA_MEM_WIDTH-1:0] readdata;
 
+    opcode_t    instr_opcode;
+    funct_t     instr_funct;
+    rfaddr_t    instr_rs,instr_rt,instr_rd;
+    shmat_t     instr_shmat;
+    immediate_t instr_imm;
+    jaddress_t  instr_jaddr;
+    
+    assign instr_opcode = opcode_t'(instr[31:26]);
+    assign instr_funct  = funct_t'(instr[5:0]);
+    assign instr_rs  = rfaddr_t'(instr[25:21]);
+    assign instr_rt  = rfaddr_t'(instr[20:16]);
+    assign instr_rd  = rfaddr_t'(instr[15:11]);
+    assign instr_imm = immediate_t'(instr[15:0]);
+    assign instr_shmat = shmat_t'(instr[10:6]);
+    assign instr_jaddr = jaddress_t'(instr[25:0]);
 //////////////////////////////////////
 ///////// Clock Generation //////////
 ////////////////////////////////////
@@ -124,6 +139,14 @@ import mips_pkg::*;
                 Phase1Part1();
         endtask 
         task automatic JumpInstructions();
+            // `jal`
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(JAL));
+            // `jalr`
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(JALR));               
             // `jr`
                 @(negedge clk);
                 assert (mips_instr.randomize());

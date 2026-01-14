@@ -1,6 +1,7 @@
 ../../rtl/_package.sv
 ../../rtl/mux2.sv 
 ../../rtl/mux4.sv
+../../rtl/mux8.sv
 ../../rtl/datapath_signextend.sv 
 ../../rtl/datapath_div.sv 
 ../../rtl/datapath_lo_hi_reg.sv 

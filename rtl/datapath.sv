@@ -12,18 +12,19 @@ module mips_datapath(
     // Status signals 
     output logic zero,
     // Control Signals
-    input  logic pcsrc,
-    input  logic [1:0] alusrc,
-    input  logic regdst,
-    input  logic regwrite,
-    input  logic jump,
-    input  logic [REG_WR_SRC_WIDTH-1:0] select_regwrite,
-    input  logic [ALU_CTRL_WIDTH-1:0] alucontrl,
-    input  logic hi_write,lo_write,
-    input  logic [HI_LO_SEL_WIDTH-1:0] hi_select,lo_select
+    input logic pcsrc,
+    input logic [ALU_SRC_WIDTH-1:0] alusrc,
+    input logic [REG_WR_ADDR_WIDTH-1:0] regdst,
+    input logic regwrite,
+    input logic jump, // To be removed in future    
+    input logic [ALU_CTRL_WIDTH-1:0] alucontrl,
+    input logic [REG_WR_SRC_WIDTH-1:0] write_back_sel,
+    input logic hi_write,lo_write,
+    input logic [HI_LO_SEL_WIDTH-1:0] hi_select,lo_select
 );
     wire [4:0]  writereg;
     wire [31:0] signimm;
+    wire [31:0] pc_plus4;
     wire [31:0] data_rs, data_rt;
     wire [31:0] srcb;
     wire [31:0] hi_reg,lo_reg;
@@ -48,7 +49,8 @@ module mips_datapath(
             .signimm(signimm),
             .jump(jump),
             .instr(instr),
-            .regfile(data_regwrite),
+            .regfile(data_rs),
+            .pc_plus4(pc_plus4),
             .pc_next(pc)
         );
     // register file logic
@@ -68,9 +70,11 @@ module mips_datapath(
             .s0(s0)
         );
         
-        mux2 #(5) u_mips_datapath_wrmux(
+        mux4 #(5) u_mips_datapath_wrmux(
             .in0(instr_rt), 
             .in1(instr_rd),
+            .in2(5'd31),
+            .in3(5'd0),
             .sel(regdst), 
             .out(writereg)
         );
@@ -136,12 +140,16 @@ module mips_datapath(
                 .lo_reg(lo_reg),
                 .hi_reg(hi_reg)        
         );
-        mux4 #(32) u_mips_datapath_resmux(
+        mux8 #(32) u_mips_datapath_wbmux(
             .in0(aluout), 
             .in1(readdata),
             .in2(hi_reg),
             .in3(lo_reg),
-            .sel(select_regwrite), 
+            .in4(pc_plus4),
+            .in5('b0),
+            .in6('b0),
+            .in7('b0),
+            .sel(write_back_sel), 
             .out(data_regwrite)
         ); 
     // Data Memory Output    
