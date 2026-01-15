@@ -23,11 +23,11 @@ package mips_pkg;
     // Opcode
     typedef enum logic[OPCODE_WIDTH-1:0] { 
         RType = 0,
-        BLT   = 1,
+        BLT_BGEZ  = 1,
         J     = 2,
         JAL   = 3,
         BEQ   = 4,
-        BNQ   = 5,
+        BNE   = 5,
         BLEZ  = 6,
         BGTZ  = 7,
         ADDI  = 8,

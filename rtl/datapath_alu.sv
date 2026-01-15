@@ -9,7 +9,8 @@ module alu (
     // output result
     output logic [31:0] alu_result,
     // Flag 
-    output logic zero_flag
+    output logic zero_flag,
+    output logic neg_flag
 );
     // ALU operation
     always_comb begin 
@@ -33,4 +34,5 @@ module alu (
     end
     // Flags
     assign zero_flag = (alu_result == 32'b0) ? 1'b1 : 1'b0;
+    assign neg_flag  = alu_result[31]; // MSB is one to determine negitive sign
 endmodule

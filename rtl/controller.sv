@@ -2,7 +2,8 @@ import mips_pkg::*;
 module mips_controller (
         input clk,rst_n,
         input [INSTR_WITDTH-1:0] instr,
-        input zero,
+        input  logic zero_flag,
+        input  logic neg_flag,
         output logic memwrite,
         output logic pcsrc,
         output logic [ALU_SRC_WIDTH-1:0] alusrc,
@@ -14,12 +15,26 @@ module mips_controller (
         output logic hi_write,lo_write,
         output logic [HI_LO_SEL_WIDTH-1:0] hi_select,lo_select
     );
-
+    // Derived Conditions
+        logic e_zero;   // Equal     to  zero
+        assign e_zero = zero_flag;
+        logic n_zero;   // Not Equal to  zero
+        assign n_zero = ~zero_flag;
+        logic lt_zero;  // Less     than zero
+        assign lt_zero = neg_flag; 
+        logic le_zero;  // Less/Equal    zero
+        assign le_zero = neg_flag | zero_flag;
+        logic gt_zero;  // Greater  than zero
+        assign gt_zero = ~(neg_flag | zero_flag);
+        logic ge_zero;  // Greater/Equal zero
+        assign ge_zero = ~neg_flag;
     // Main Decoder
         // logic write_back_sel;
         logic [1:0] aluop;
         opcode_t instr_opcode;
         funct_t instr_funct;
+        wire [4:0] instr_rt;
+        assign instr_rt     = instr[20:16];
         assign instr_opcode = opcode_t'(instr[31:26]);
         assign instr_funct  = funct_t'(instr[5:0]);
         
@@ -106,8 +121,33 @@ module mips_controller (
                     memwrite = 'b1;
                 end
                 BEQ:begin //BEQ
-                    pcsrc    = zero;
+                    pcsrc    = e_zero;
                     aluop    = 'b01;
+                end
+                BNE:begin //BNE
+                    pcsrc    = n_zero;
+                    aluop    = 'b01;
+                end
+                BLT_BGEZ: begin
+                    if(instr_rt == 'b0) begin // BLT
+                        pcsrc    = lt_zero;
+                        aluop    = 'b01;
+                        alusrc   = 'b10;
+                    end else begin           // BGEZ
+                        pcsrc    = ge_zero;
+                        aluop    = 'b01;
+                        alusrc   = 'b10;
+                    end
+                end
+                BLEZ:begin  // BGEZ
+                    pcsrc    = le_zero;
+                    aluop    = 'b01;
+                    alusrc   = 'b10;
+                end
+                BGTZ:begin  // BGEZ
+                    pcsrc    = gt_zero;
+                    aluop    = 'b01;
+                    alusrc   = 'b10;
                 end
                 ADDI:begin //ADDI
                     regwrite = 'b1; 
@@ -159,21 +199,4 @@ module mips_controller (
                 end
             endcase
         end
-    // // LO & HI Register Controls
-    //     logic [1:0] lo_hi_select;
-    //     logic [7:0] controls_lo_hi; 
-    //     assign {lo_hi_select,hi_write,lo_write,hi_select,lo_select} = controls_lo_hi; 
-    //     // assign write_back_sel = lo_hi_select[1]? {1'b1,lo_hi_select[0]}:{1'b0,write_back_sel};
-
-    //     always_comb begin 
-    //         case (instr_funct)
-    //             6'b010000: controls_lo_hi = 'b10_0_0_00_00; //MFHI  
-    //             6'b010001: controls_lo_hi = 'b00_1_0_01_00; //MTHI
-    //             6'b010010: controls_lo_hi = 'b11_0_0_00_00; //MFLO
-    //             6'b010011: controls_lo_hi = 'b00_0_1_00_01; //MTLO
-    //             6'b011000: controls_lo_hi = 'b00_1_1_11_11; //MULT
-    //             6'b011010: controls_lo_hi = 'b00_1_1_10_10; //DIV
-    //             default: controls_lo_hi = 'b0;
-    //         endcase
-    //     end
 endmodule

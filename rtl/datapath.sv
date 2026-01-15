@@ -8,9 +8,10 @@ module mips_datapath(
     output logic [DATA_MEM_WIDTH-1:0] aluout,
     output logic [DATA_MEM_WIDTH-1:0] writedata,
     input  logic [DATA_MEM_WIDTH-1:0] readdata,
-    output logic [31:0] s0,
+    //output logic [31:0] s0,
     // Status signals 
-    output logic zero,
+    output logic zero_flag,
+    output logic neg_flag,
     // Control Signals
     input logic pcsrc,
     input logic [ALU_SRC_WIDTH-1:0] alusrc,
@@ -57,6 +58,7 @@ module mips_datapath(
         reg_file u_mips_datapath_regfile(
             .clk(clk),
             .rst_n(rst_n),
+            //.s0(s0),
             // Read port 1
             .read_addr1(instr_rs),
             .read_data1(data_rs),
@@ -66,8 +68,7 @@ module mips_datapath(
             // Write port
             .write_addr(writereg),
             .write_data(data_regwrite),
-            .write_enable(regwrite),
-            .s0(s0)
+            .write_enable(regwrite)
         );
         
         mux4 #(5) u_mips_datapath_wrmux(
@@ -103,7 +104,8 @@ module mips_datapath(
             // output result
             .alu_result(aluout),
             // Flag 
-            .zero_flag(zero)
+            .zero_flag(zero_flag),
+            .neg_flag(neg_flag)
         );
     // Multipler and Divider
         multipler u_mips_datapath_mult(

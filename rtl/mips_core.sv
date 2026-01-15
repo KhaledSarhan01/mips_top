@@ -4,7 +4,7 @@ module mips_core (
     // To instruction Memory
     output [PC_WIDTH-1:0]     pc,
     input  [INSTR_WITDTH-1:0] instr,
-    output [31:0] s0,
+   // output [31:0] s0,
     // To Data Memory
     output memwrite,
     output [DATA_MEM_WIDTH-1:0] memaddr,writedata,
@@ -22,13 +22,14 @@ module mips_core (
         logic [HI_LO_SEL_WIDTH-1:0] hi_select,lo_select;
 
     // Status Signals
-        logic zero;
+        logic zero_flag,neg_flag;
     
     mips_controller u_mips_control (
         .clk(clk),
         .rst_n(rst_n),
         .instr(instr),
-        .zero(zero),
+        .zero_flag(zero_flag),
+        .neg_flag(neg_flag),
         .memwrite(memwrite),
         .pcsrc(pcsrc),
         .alusrc(alusrc),
@@ -51,8 +52,10 @@ module mips_core (
         .aluout(memaddr),
         .writedata(writedata),
         .readdata(readdata),
-        .zero(zero),
+        .zero_flag(zero_flag),
+        .neg_flag(neg_flag),
         .pcsrc(pcsrc),
+        //.s0(s0),
         .alusrc(alusrc),
         .regdst(regdst),
         .regwrite(regwrite),
@@ -62,7 +65,6 @@ module mips_core (
         .hi_write(hi_write),
         .lo_write(lo_write),
         .hi_select(hi_select),
-        .lo_select(lo_select),
-        .s0(s0)
+        .lo_select(lo_select)
     );
 endmodule

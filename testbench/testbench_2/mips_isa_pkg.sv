@@ -5,7 +5,7 @@ package mips_isa_pkg;
         // Dividing OpCode According to Their Instruction Type 
             const static opcode_t R_group[] = '{RType,MUL};
             const static opcode_t J_group[] = '{J,JAL};
-            const static opcode_t I_group[] = '{BLT,BEQ,BNQ,BLEZ,BGTZ,ADDI,ADDIU,SLTI,SLTIU,ANDI,ORI,XORI,LUI,MFC0,LB,LH,LW,LBU,LHU,SB,SH,Sw};
+            const static opcode_t I_group[] = '{BLT_BGEZ,BEQ,BNE,BLEZ,BGTZ,ADDI,ADDIU,SLTI,SLTIU,ANDI,ORI,XORI,LUI,MFC0,LB,LH,LW,LBU,LHU,SB,SH,Sw};
         // Opearands
             rand opcode_t    opcode;
             rand funct_t     funct;
