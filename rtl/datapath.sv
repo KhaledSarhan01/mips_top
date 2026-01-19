@@ -14,6 +14,7 @@ module mips_datapath(
     output logic neg_flag,
     // Control Signals
     input logic pcsrc,
+    input logic [1:0] se_select,
     input logic [ALU_SRC_WIDTH-1:0] alusrc,
     input logic [REG_WR_ADDR_WIDTH-1:0] regdst,
     input logic regwrite,
@@ -82,6 +83,7 @@ module mips_datapath(
 
         sign_extended u_mips_datapath_se (
             .in_data(instr_imm),
+            .se_select(se_select),
             .out_data(signimm)
         );
         
@@ -148,8 +150,8 @@ module mips_datapath(
             .in2(hi_reg),
             .in3(lo_reg),
             .in4(pc_plus4),
-            .in5('b0),
-            .in6('b0),
+            .in5(signimm),
+            .in6(mult_lo),
             .in7('b0),
             .sel(write_back_sel), 
             .out(data_regwrite)

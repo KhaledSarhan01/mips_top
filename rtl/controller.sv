@@ -5,6 +5,7 @@ module mips_controller (
         input  logic zero_flag,
         input  logic neg_flag,
         output logic memwrite,
+        output logic [1:0] se_select,
         output logic pcsrc,
         output logic [ALU_SRC_WIDTH-1:0] alusrc,
         output logic [REG_WR_ADDR_WIDTH-1:0] regdst,
@@ -30,6 +31,7 @@ module mips_controller (
         assign ge_zero = ~neg_flag;
     // Main Decoder
         // logic write_back_sel;
+        logic [3:0] aluop_itype;
         logic [1:0] aluop;
         opcode_t instr_opcode;
         funct_t instr_funct;
@@ -52,6 +54,8 @@ module mips_controller (
                 lo_write        = 'b0;
                 hi_select       = 'b00;
                 lo_select       = 'b00;
+                aluop_itype     = 'b000;
+                se_select       = 'b0;
             // Override by case statement
             case(instr_opcode)
                 RType:  
@@ -105,21 +109,17 @@ module mips_controller (
                             aluop    = 'b10;
                         end
                     endcase
+            // Jump Instructions
                 JAL: begin // JAL
                     regwrite = 'b1;
                     regdst   = 'b10;
                     write_back_sel = 'b100;
                     jump = 1'b1;
                 end
-                LW: begin //LW
-                    regwrite = 'b1; 
-                    alusrc   = 'b1;
-                    write_back_sel = 'b1;
+                J: begin //J
+                    jump     = 'b1;
                 end
-                Sw:begin //SW 
-                    alusrc   = 'b1; 
-                    memwrite = 'b1;
-                end
+            // Branch Instruction    
                 BEQ:begin //BEQ
                     pcsrc    = e_zero;
                     aluop    = 'b01;
@@ -149,28 +149,79 @@ module mips_controller (
                     aluop    = 'b01;
                     alusrc   = 'b10;
                 end
+            // Immediate Instructions    
                 ADDI:begin //ADDI
+                    regwrite    = 'b1; 
+                    alusrc      = 'b1;
+                    se_select   = 'b0;
+                    aluop       = 'b11;
+                    aluop_itype = 'b000;
+                end
+                SLTI:begin //ADDI
+                    regwrite    = 'b1; 
+                    alusrc      = 'b1;
+                    aluop       = 'b11;
+                    aluop_itype = 'b001;
+                    se_select   = 'b0;
+                end
+                ANDI:begin //ADDI
+                    regwrite    = 'b1; 
+                    alusrc      = 'b1;
+                    aluop       = 'b11;
+                    aluop_itype = 'b010;
+                    se_select   = 'b01;
+                end
+                ORI:begin //ADDI
+                    regwrite    = 'b1; 
+                    alusrc      = 'b1;
+                    aluop       = 'b11;
+                    aluop_itype = 'b011;
+                    se_select   = 'b01;
+                end
+                XORI:begin //ADDI
+                    regwrite    = 'b1; 
+                    alusrc      = 'b1;
+                    aluop       = 'b11;
+                    aluop_itype = 'b100;
+                    se_select   = 'b01;
+                end
+                LUI:begin // LUI
+                    regwrite        = 'b1;
+                    regdst          = 'b0;
+                    se_select       = 'b10;
+                    write_back_sel  = 'b101;
+                end
+            // Load/Store instruction
+                LW: begin //LW
                     regwrite = 'b1; 
                     alusrc   = 'b1;
+                    write_back_sel = 'b1;
                 end
-                J: begin //J
-                    jump     = 'b1;
+                Sw:begin //SW 
+                    alusrc   = 'b1; 
+                    memwrite = 'b1;
                 end
-                default: begin
-                    regwrite = 'bx;
-                    regdst   = 'bx; 
-                    alusrc   = 'bx; 
-                    pcsrc    = 'bx;
-                    memwrite = 'bx;
-                    write_back_sel = 'bx;
-                    jump     = 'bx;
-                    aluop    = 'bxx;
+            // Others
+                MUL: begin // MUL (doesn't care for funct)
+                    regwrite       = 'b1;
+                    regdst         = 'b1;
+                    write_back_sel = 'b110;
+                end        
+            default: begin
+                regwrite = 'bx;
+                regdst   = 'bx; 
+                alusrc   = 'bx; 
+                pcsrc    = 'bx;
+                memwrite = 'bx;
+                write_back_sel = 'bx;
+                jump     = 'bx;
+                aluop    = 'bxx;
 
-                    hi_write = 'bx;
-                    lo_write = 'bx;
-                    hi_select = 'bxx;
-                    lo_select = 'bxx;
-                end
+                hi_write = 'bx;
+                lo_write = 'bx;
+                hi_select = 'bxx;
+                lo_select = 'bxx;
+            end
             endcase
         end 
 
@@ -179,7 +230,7 @@ module mips_controller (
             case(aluop)
                 2'b00: alucontrl = 'b0010; // add
                 2'b01: alucontrl = 'b0110; // sub
-                2'b10,2'b11: begin 
+                2'b10: begin 
                     case(instr_funct)        // RTYPE
                         SLL:  alucontrl = 'b1000; // SLL 
                         SRL:  alucontrl = 'b1001; // SRL 
@@ -195,6 +246,16 @@ module mips_controller (
                         NOR:  alucontrl = 'b0100; // NOR
                         SLT:  alucontrl = 'b0111; // SLT
                         default:   alucontrl = 'bxxxx; // ???
+                    endcase
+                end
+                2'b11: begin
+                    case (aluop_itype)
+                        3'b000:  alucontrl = 'b0010; // ADD 
+                        3'b001:  alucontrl = 'b0111; // SLT
+                        3'b010:  alucontrl = 'b0000; // AND
+                        3'b011:  alucontrl = 'b0001; // OR
+                        3'b100:  alucontrl = 'b0011; // XOR
+                        default: alucontrl = 'bxxxx; // ???
                     endcase
                 end
             endcase

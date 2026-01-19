@@ -15,6 +15,7 @@ module mips_core (
         logic [ALU_SRC_WIDTH-1:0] alusrc;
         logic [REG_WR_ADDR_WIDTH-1:0] regdst;
         logic regwrite;
+        logic [1:0] se_select;
         logic jump; // To be removed in future    
         logic [ALU_CTRL_WIDTH-1:0] alucontrl;
         logic [REG_WR_SRC_WIDTH-1:0] write_back_sel;
@@ -34,6 +35,7 @@ module mips_core (
         .pcsrc(pcsrc),
         .alusrc(alusrc),
         .regdst(regdst),
+        .se_select(se_select),
         .regwrite(regwrite),
         .jump(jump),
         .alucontrl(alucontrl),
@@ -58,6 +60,7 @@ module mips_core (
         //.s0(s0),
         .alusrc(alusrc),
         .regdst(regdst),
+        .se_select(se_select),
         .regwrite(regwrite),
         .jump(jump),
         .alucontrl(alucontrl),
