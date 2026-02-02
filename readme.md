@@ -12,7 +12,7 @@
 
 ## Part 3
 * Implement Unsigned instructions.
-* Implement Load/Store Instruction Variations.
+* Implement Load Instruction Variations.
 * Verify the functionality of the implemented instructions by building MIPS ISA Assertion-based Scoreboard.
 * Verify the functionality of the implemented instructions by running the `[Test_1,..,Test_6]`Direct testing program.
 * Synthesis on DE1 SoC development board and test the program manually on the Evaluation kit.

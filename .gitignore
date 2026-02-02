@@ -15,6 +15,13 @@ sim/sim2/*.wlf
 sim/sim2/work/*
 sim/sim2/*.mpf_new 
 sim/sim2/transcript
+sim/sim2/*.vstf
+# Ignore all contents of the reports folder
+sim/sim2/_reports/*
+
+# Allow (un-ignore) the final summary files
+# !sim/sim2/_reports/coverage_report.txt
+# !sim/sim2/_reports/mips_coverage.ucdb
 
 # --- Synthesis Files ---
 # Database and temporary compilation files

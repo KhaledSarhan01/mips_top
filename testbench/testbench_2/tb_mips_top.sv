@@ -79,4 +79,21 @@ import mips_pkg::*;
         .pc(pc),
         .instr(instr)
     );
+//////////////////////////////////////
+///////////// Assertions ////////////
+////////////////////////////////////
+    `ifdef ASSERTIONS
+        bind mips_core mips_sva u_mips_sva(
+        .clk(clk),
+        .rst_n(rst_n),
+        // To instruction Memory
+        .pc(pc),
+        .instr(instr),
+        // To Data Memory
+        .memwrite(memwrite),
+        .memaddr(memaddr),
+        .writedata(writedata),
+        .readdata(readdata)
+        ); 
+    `endif    
 endmodule
