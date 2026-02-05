@@ -57,6 +57,7 @@ module mips_testbench (
                 AluImmediateInstructions();
                 BranchInstructions();
                 Phase1Part1();
+                LoadStoreInstructions();
         // Randomized Testing
             // RandomTesting(1000);                                         
     endtask
@@ -92,7 +93,7 @@ module mips_testbench (
             @(negedge clk);
             assert (mips_instr.randomize());
             instr = mips_instr.get_Instr(.i_opcode(MUL));     
-    endtask //automatic
+    endtask 
 
     task automatic BranchInstructions();
         /*
@@ -213,7 +214,23 @@ module mips_testbench (
         // `lw`
             @(negedge clk);
             assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(LW));
+            instr = mips_instr.get_Instr(.i_opcode(LW),.i_rs(0),.i_immediate('he));
+        // `lb`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(LB),.i_rs(0),.i_immediate('he));
+        // `lbu`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(LBU),.i_rs(0),.i_immediate('he));    
+        // `lh`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(LH),.i_rs(0),.i_immediate('he));
+        // `lhu`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(LHU),.i_rs(0),.i_immediate('he));    
         // `sw`
             @(negedge clk);
             assert (mips_instr.randomize());

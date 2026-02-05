@@ -18,7 +18,7 @@ module data_mem #(parameter DEPTH = 256,parameter WIDTH = 8)(
         always_ff @( posedge clk or negedge rst_n ) begin 
             if (!rst_n) begin
                 for (int i = 0; i <= DEPTH-1; i++) begin
-                    mem[i] <= '0;
+                    mem[i] <= $random();
                 end
             end else begin
                 if (write_en) begin

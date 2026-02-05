@@ -5,12 +5,11 @@ module mips_controller (
         input  logic zero_flag,
         input  logic neg_flag,
         output logic memwrite,
-        output logic [1:0] se_select,
-        output logic pcsrc,
+        output logic [2:0] se_select,wb_se_select,
+        output logic [1:0] pcsrc,
         output logic [ALU_SRC_WIDTH-1:0] alusrc,
         output logic [REG_WR_ADDR_WIDTH-1:0] regdst,
-        output logic regwrite,
-        output logic jump, // To be removed in future    
+        output logic regwrite,   
         output logic [ALU_CTRL_WIDTH-1:0] alucontrl,
         output logic [REG_WR_SRC_WIDTH-1:0] write_back_sel,
         output logic hi_write,lo_write,
@@ -48,14 +47,14 @@ module mips_controller (
                 pcsrc           = 'b0;
                 memwrite        = 'b0;
                 write_back_sel  = 'b000;
-                jump            = 'b0;
                 aluop           = 'b00;
                 hi_write        = 'b0;
                 lo_write        = 'b0;
                 hi_select       = 'b00;
                 lo_select       = 'b00;
                 aluop_itype     = 'b000;
-                se_select       = 'b0;
+                se_select       = 'b000;
+                wb_se_select    = 'b000;
             // Override by case statement
             case(instr_opcode)
                 RType:  
@@ -65,8 +64,7 @@ module mips_controller (
                             regdst   = 'b10;
                             alusrc   = 'b10;
                             write_back_sel = 'b100;
-                            jump = 'b1;
-                            pcsrc = 'b1; 
+                            pcsrc = 'b11; 
                         end
                         MFHI: begin //MFHI 
                             regwrite = 'b1;
@@ -100,8 +98,7 @@ module mips_controller (
                         end
                         JR:begin// Jump Register
                             alusrc   = 'b10;
-                            pcsrc    = 'b1;
-                            jump     = 'b1;
+                            pcsrc    = 'b11;
                         end 
                         default: begin //Rtype
                             regwrite = 'b1;
@@ -114,10 +111,10 @@ module mips_controller (
                     regwrite = 'b1;
                     regdst   = 'b10;
                     write_back_sel = 'b100;
-                    jump = 1'b1;
+                    pcsrc = 'b10;
                 end
                 J: begin //J
-                    jump     = 'b1;
+                    pcsrc = 'b10;
                 end
             // Branch Instruction    
                 BEQ:begin //BEQ
@@ -197,6 +194,42 @@ module mips_controller (
                     alusrc   = 'b1;
                     write_back_sel = 'b1;
                 end
+                LB:begin
+                    regwrite        = 'b1;
+                    regdst          = 'b0;
+                    alusrc          = 'b1;
+                    memwrite        = 'b0;
+                    write_back_sel  = 'b111;
+                    aluop           = 'b00;
+                    wb_se_select    = 'b011;
+                end
+                LH:begin
+                    regwrite        = 'b1;
+                    regdst          = 'b0;
+                    alusrc          = 'b1;
+                    memwrite        = 'b0;
+                    write_back_sel  = 'b111;
+                    aluop           = 'b00;
+                    wb_se_select    = 'b000;
+                end
+                LBU:begin
+                    regwrite        = 'b1;
+                    regdst          = 'b0;
+                    alusrc          = 'b1;
+                    memwrite        = 'b0;
+                    write_back_sel  = 'b111;
+                    aluop           = 'b00;
+                    wb_se_select    = 'b100;
+                end
+                LHU:begin
+                    regwrite        = 'b1;
+                    regdst          = 'b0;
+                    alusrc          = 'b1;
+                    memwrite        = 'b0;
+                    write_back_sel  = 'b111;
+                    aluop           = 'b00;
+                    wb_se_select    = 'b001;
+                end
                 Sw:begin //SW 
                     alusrc   = 'b1; 
                     memwrite = 'b1;
@@ -214,7 +247,6 @@ module mips_controller (
                 pcsrc    = 'bx;
                 memwrite = 'bx;
                 write_back_sel = 'bx;
-                jump     = 'bx;
                 aluop    = 'bxx;
 
                 hi_write = 'bx;

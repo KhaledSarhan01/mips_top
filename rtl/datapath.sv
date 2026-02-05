@@ -13,12 +13,11 @@ module mips_datapath(
     output logic zero_flag,
     output logic neg_flag,
     // Control Signals
-    input logic pcsrc,
-    input logic [1:0] se_select,
+    input logic [1:0] pcsrc,
+    input logic [2:0] se_select,wb_se_select,
     input logic [ALU_SRC_WIDTH-1:0] alusrc,
     input logic [REG_WR_ADDR_WIDTH-1:0] regdst,
-    input logic regwrite,
-    input logic jump, // To be removed in future    
+    input logic regwrite,  
     input logic [ALU_CTRL_WIDTH-1:0] alucontrl,
     input logic [REG_WR_SRC_WIDTH-1:0] write_back_sel,
     input logic hi_write,lo_write,
@@ -33,15 +32,18 @@ module mips_datapath(
     wire [31:0] data_regwrite;
     wire [31:0] mult_lo,mult_hi;
     wire [31:0] div_lo,div_hi;
+    wire [31:0] mem_se_data;
 
     wire [4:0] instr_rs,instr_rt,instr_rd;
     wire [4:0] instr_shmat;
     wire [15:0] instr_imm;
-    assign instr_rs  = instr[25:21];
-    assign instr_rt  = instr[20:16];
-    assign instr_rd  = instr[15:11];
-    assign instr_imm = instr[15:0];
-    assign instr_shmat = instr[10:6];
+    wire [25:0] instr_jaddress ;
+    assign instr_rs         = instr[25:21];
+    assign instr_rt         = instr[20:16];
+    assign instr_rd         = instr[15:11];
+    assign instr_imm        = instr[15:0];
+    assign instr_shmat      = instr[10:6];
+    assign instr_jaddress   = instr[25:0];
 
     // next PC logic
         pc_reg u_mips_datapath_pc(
@@ -49,8 +51,7 @@ module mips_datapath(
             .rst_n(rst_n),
             .pcsrc(pcsrc),
             .signimm(signimm),
-            .jump(jump),
-            .instr(instr),
+            .jaddress(instr_jaddress),
             .regfile(data_rs),
             .pc_plus4(pc_plus4),
             .pc_next(pc)
@@ -144,6 +145,7 @@ module mips_datapath(
                 .lo_reg(lo_reg),
                 .hi_reg(hi_reg)        
         );
+    // Write Back Logic     
         mux8 #(32) u_mips_datapath_wbmux(
             .in0(aluout), 
             .in1(readdata),
@@ -152,10 +154,15 @@ module mips_datapath(
             .in4(pc_plus4),
             .in5(signimm),
             .in6(mult_lo),
-            .in7('b0),
+            .in7(mem_se_data),
             .sel(write_back_sel), 
             .out(data_regwrite)
         ); 
+    sign_extended u_mips_datapath_write_back_signextent (
+            .in_data(readdata[15:0]),
+            .se_select(wb_se_select),
+            .out_data(mem_se_data)
+        );    
     // Data Memory Output    
         assign writedata = data_rt;
        

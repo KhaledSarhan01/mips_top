@@ -594,7 +594,7 @@ module mips_sva
 			@(negedge clk) disable iff(!rst_n) 
 			(instr_opcode == LB) 
 			|->
-			(`GET_REG(instr_rt) == {{24{readdata[8]}},readdata[7:0]})
+			(`GET_REG(instr_rt) == {{24{readdata[7]}},readdata[7:0]})
 		) 
 		else
 		$error("LB: Time %0t: Sampled rt= %h, Sampled readdata= %h",
@@ -606,7 +606,7 @@ module mips_sva
 			@(negedge clk) disable iff(!rst_n) 
 			(instr_opcode == LH) 
 			|->
-			(`GET_REG(instr_rt) == {{16{readdata[16]}},readdata[15:0]})
+			(`GET_REG(instr_rt) == {{16{readdata[15]}},readdata[15:0]})
 		) 
 		else
 		$error("LH: Time %0t: Sampled rt= %h, Sampled readdata= %h",
