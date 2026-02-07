@@ -18,6 +18,7 @@ import mips_pkg::*;
     logic memwrite;
     logic [DATA_MEM_WIDTH-1:0] memaddr,writedata;
     logic [DATA_MEM_WIDTH-1:0] readdata;
+    logic arth_overflow_exception;
     
     // For Wave Debuging
     opcode_t    instr_opcode;
@@ -65,6 +66,7 @@ import mips_pkg::*;
         // To instruction Memory
         .pc(pc),
         .instr(instr),
+        .arth_overflow_exception(arth_overflow_exception),
         // To Data Memory
         .memwrite(memwrite),
         .memaddr(memaddr),
@@ -89,6 +91,7 @@ import mips_pkg::*;
         // To instruction Memory
         .pc(pc),
         .instr(instr),
+        .arth_overflow_exception(arth_overflow_exception),
         // To Data Memory
         .memwrite(memwrite),
         .memaddr(memaddr),

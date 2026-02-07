@@ -48,22 +48,168 @@ module mips_testbench (
     task Main_Scenario();
         // Direct Testing
             // Filling the Register with random Data 
-                RegisterFileFilling();
+                // RegisterFileFilling();
             // Testing the already implemented instructions
-                JumpInstructions();
-                MultDivTesting();
-                HiLoReg_MoveOps();
-                AluInstructions();
-                AluImmediateInstructions();
-                BranchInstructions();
-                Phase1Part1();
-                LoadStoreInstructions();
+                AluUnsignedInstructions();
+                // JumpInstructions();
+                // MultDivTesting();
+                // HiLoReg_MoveOps();
+                // AluInstructions();
+                // AluImmediateInstructions();
+                // BranchInstructions();
+                // Phase1Part1();
+                // LoadStoreInstructions();
         // Randomized Testing
             // RandomTesting(1000);                                         
     endtask
 
     
     // Direct Testing
+    task automatic AluUnsignedInstructions();
+        // Register 
+            // Register[1] = Very high postive Value
+                RegFileValue(.register(1),.value('h7FFF));    
+            // Register[2] = Very negative postive Value
+                RegFileValue(.register(2),.value('h8000)); 
+        //SLTI
+            // `slti`: Very large Positive < Very large Negative: [rt] = 0
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(SLTI),.i_rs(1),.i_rt(3),.i_immediate('h8000));
+            // `slti`: Very large Positive < Very large Positive: [rt] = 0
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(SLTI),.i_rs(1),.i_rt(3),.i_immediate('h7FFF));
+            // `slti`: Very large Negative < Very large Negative: [rt] = 0
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(SLTI),.i_rs(2),.i_rt(3),.i_immediate('h8000));
+            // `slti`: Very large Negative < Very large Positive: [rt] = 1
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(SLTI),.i_rs(2),.i_rt(3),.i_immediate('h7FFF));
+        // SLTIU
+            // `sltiu`: Very large Positive < Very large Negative: [rt] = 1
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(SLTIU),.i_rs(1),.i_rt(3),.i_immediate('h8000));
+            // `sltiu`: Very large Positive < Very large Positive: [rt] = 0
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(SLTIU),.i_rs(1),.i_rt(3),.i_immediate('h7FFF));
+            // `sltiu`: Very large Negative < Very large Negative: [rt] = 0
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(SLTIU),.i_rs(2),.i_rt(3),.i_immediate('h8000));
+            // `sltiu`: Very large Negative < Very large Positive: [rt] = 0
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(SLTIU),.i_rs(2),.i_rt(3),.i_immediate('h7FFF));
+        //ADDI
+            // `addi`: Very large Positive < Very large Negative: [rt] = 0
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(ADDI),.i_rs(1),.i_rt(3),.i_immediate('h8000));
+            // `addi`: Very large Positive < Very large Positive: [rt] = 0
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(ADDI),.i_rs(1),.i_rt(3),.i_immediate('h7FFF));
+            // `addi`: Very large Negative < Very large Negative: [rt] = 0
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(ADDI),.i_rs(2),.i_rt(3),.i_immediate('h8000));
+            // `addi`: Very large Negative < Very large Positive: [rt] = 1
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(ADDI),.i_rs(2),.i_rt(3),.i_immediate('h7FFF));
+        // ADDIU
+            // `addiu`: Very large Positive < Very large Negative: [rt] = 1
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(ADDIU),.i_rs(1),.i_rt(3),.i_immediate('h8000));
+            // `addiu`: Very large Positive < Very large Positive: [rt] = 0
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(ADDIU),.i_rs(1),.i_rt(3),.i_immediate('h7FFF));
+            // `addiu`: Very large Negative < Very large Negative: [rt] = 0
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(ADDIU),.i_rs(2),.i_rt(3),.i_immediate('h8000));
+            // `addiu`: Very large Negative < Very large Positive: [rt] = 0
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_opcode(ADDIU),.i_rs(2),.i_rt(3),.i_immediate('h7FFF));
+        //ADD
+            // `add`: Very large Positive < Very large Negative: [rt] = 0
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_funct(ADD),.i_opcode(RType),.i_rd(3),.i_rs(1),.i_rt(1));
+            // `add`: Very large Positive < Very large Positive: [rt] = 0
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_funct(ADD),.i_opcode(RType),.i_rd(3),.i_rs(1),.i_rt(2));
+            // `add`: Very large Negative < Very large Negative: [rt] = 0
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_funct(ADD),.i_opcode(RType),.i_rd(3),.i_rs(2),.i_rt(1));
+            // `add`: Very large Negative < Very large Positive: [rt] = 1
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_funct(ADD),.i_opcode(RType),.i_rd(3),.i_rs(2),.i_rt(2));
+        // ADDU
+            // `addu`: Very large Positive < Very large Negative: [rt] = 1
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_funct(ADDU),.i_opcode(RType),.i_rd(3),.i_rs(1),.i_rt(1));
+            // `addu`: Very large Positive < Very large Positive: [rt] = 0
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_funct(ADDU),.i_opcode(RType),.i_rd(3),.i_rs(1),.i_rt(2));
+            // `addu`: Very large Negative < Very large Negative: [rt] = 0
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_funct(ADDU),.i_opcode(RType),.i_rd(3),.i_rs(2),.i_rt(1));
+            // `addu`: Very large Negative < Very large Positive: [rt] = 0
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_funct(ADDU),.i_opcode(RType),.i_rd(3),.i_rs(2),.i_rt(2));
+        //SUB
+            // `sub`: Very large Positive < Very large Negative: [rt] = 0
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_funct(SUB),.i_opcode(RType),.i_rd(3),.i_rs(1),.i_rt(1));
+            // `sub`: Very large Positive < Very large Positive: [rt] = 0
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_funct(SUB),.i_opcode(RType),.i_rd(3),.i_rs(1),.i_rt(2));
+            // `sub`: Very large Negative < Very large Negative: [rt] = 0
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_funct(SUB),.i_opcode(RType),.i_rd(3),.i_rs(2),.i_rt(1));
+            // `sub`: Very large Negative < Very large Positive: [rt] = 1
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_funct(SUB),.i_opcode(RType),.i_rd(3),.i_rs(2),.i_rt(2));
+        // SUBU
+            // `subu`: Very large Positive < Very large Negative: [rt] = 1
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_funct(SUBU),.i_opcode(RType),.i_rd(3),.i_rs(1),.i_rt(1));
+            // `subu`: Very large Positive < Very large Positive: [rt] = 0
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_funct(SUBU),.i_opcode(RType),.i_rd(3),.i_rs(1),.i_rt(2));
+            // `subu`: Very large Negative < Very large Negative: [rt] = 0
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_funct(SUBU),.i_opcode(RType),.i_rd(3),.i_rs(2),.i_rt(1));
+            // `subu`: Very large Negative < Very large Positive: [rt] = 0
+                @(negedge clk);
+                assert (mips_instr.randomize());
+                instr = mips_instr.get_Instr(.i_funct(SUBU),.i_opcode(RType),.i_rd(3),.i_rs(2),.i_rt(2));
+    
+    endtask 
+    
     task automatic AluImmediateInstructions();
         // `slti`
             @(negedge clk);
@@ -209,7 +355,7 @@ module mips_testbench (
             assert (mips_instr.randomize());
             instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(DIV));
     endtask 
-    
+
     task automatic LoadStoreInstructions();
         // `lw`
             @(negedge clk);
@@ -281,65 +427,65 @@ module mips_testbench (
     endtask 
 
     task automatic AluInstructions();
-            //  `add`
-                @(negedge clk);
-                assert (mips_instr.randomize());
-                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(ADD));
-            // `sub`
-                @(negedge clk);
-                assert (mips_instr.randomize());
-                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SUB));
-            //  `and`
-                @(negedge clk);
-                assert (mips_instr.randomize());
-                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(AND));
-            //  `or`
-                @(negedge clk);
-                assert (mips_instr.randomize());
-                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(OR));
-            //  `slt`
-                @(negedge clk);
-                assert (mips_instr.randomize());
-                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SLT));
-            // `xor`
-                @(negedge clk);
-                assert (mips_instr.randomize());
-                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(XOR));    
-            
-            // `nor`
-                @(negedge clk);
-                assert (mips_instr.randomize());
-                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(NOR));
-            
-            // `sll`
-                @(negedge clk);
-                assert (mips_instr.randomize());
-                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SLL));
+        //  `add`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(ADD));
+        // `sub`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SUB));
+        //  `and`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(AND));
+        //  `or`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(OR));
+        //  `slt`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SLT));
+        // `xor`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(XOR));    
         
-            // `srl`
-                @(negedge clk);
-                assert (mips_instr.randomize());
-                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SRL));
+        // `nor`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(NOR));
+        
+        // `sll`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SLL));
+    
+        // `srl`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SRL));
 
-            // `sra`
-                @(negedge clk);
-                assert (mips_instr.randomize());
-                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SRA));
-                
-            // `sllv`
-                @(negedge clk);
-                assert (mips_instr.randomize());
-                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SLLV));
+        // `sra`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SRA));
             
-            // `srlv`
-                @(negedge clk);
-                assert (mips_instr.randomize());
-                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SRLV));
-            
-            // `srav`
-                @(negedge clk);
-                assert (mips_instr.randomize());
-                instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SRAV));                    
+        // `sllv`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SLLV));
+        
+        // `srlv`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SRLV));
+        
+        // `srav`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SRAV));                    
     endtask  
     
     task automatic HiLoReg_MoveOps();

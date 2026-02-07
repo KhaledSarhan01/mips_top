@@ -16,6 +16,7 @@ module mips_sva
 	// To instruction Memory
 	output [PC_WIDTH-1:0]     pc,
 	input  [INSTR_WITDTH-1:0] instr,
+	input logic arth_overflow_exception,
 	// output [31:0] s0,
 	// To Data Memory
 	output memwrite,
@@ -49,11 +50,12 @@ module mips_sva
 			@(negedge clk) disable iff(!rst_n) 
 			(instr_opcode == RType && instr_funct == ADD) 
 			|->
-			(`GET_REG(instr_rd) == (`GET_REG(instr_rs) + `GET_REG(instr_rt)))
+			(`GET_REG(instr_rd) == ($signed(`GET_REG(instr_rs)) + $signed(`GET_REG(instr_rt))))
+			&& (arth_overflow_exception == ((`GET_REG(instr_rs)[31] == `GET_REG(instr_rt)[31]) && (`GET_REG(instr_rd)[31] != `GET_REG(instr_rs)[31])))
 		) 
 		else
-		$error("ADD: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
-			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_rd)));	
+		$error("ADD: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h,overflow = %b",
+			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_rd)),$sampled(arth_overflow_exception));
 		// cover property (ADD_PROPERTY); // TODO: for all assertions 
 
 	SUB_ASSERT: 
@@ -62,11 +64,12 @@ module mips_sva
 			@(negedge clk) disable iff(!rst_n) 
 			(instr_opcode == RType && instr_funct == SUB) 
 			|->
-			(`GET_REG(instr_rd) == (`GET_REG(instr_rs) - `GET_REG(instr_rt)))
+			(`GET_REG(instr_rd) == ($signed(`GET_REG(instr_rs)) - $signed(`GET_REG(instr_rt))))
+			&& (arth_overflow_exception == ((`GET_REG(instr_rs)[31] == `GET_REG(instr_rt)[31]) && (`GET_REG(instr_rd)[31] != `GET_REG(instr_rs)[31])))
 		) 
 		else
-		$error("SUB: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
-			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_rd)));
+		$error("SUB: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h,overflow = %b",
+			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_rd)),$sampled(arth_overflow_exception));
 
 	AND_ASSERT: 
 		assert property 
@@ -122,7 +125,7 @@ module mips_sva
 			@(negedge clk) disable iff(!rst_n) 
 			(instr_opcode == RType && instr_funct == SLT) 
 			|->
-			(`GET_REG(instr_rd) == (`GET_REG(instr_rs) < `GET_REG(instr_rt)))
+			(`GET_REG(instr_rd) == ($signed(`GET_REG(instr_rs)) < $signed(`GET_REG(instr_rt))))
 		) 
 		else
 		$error("SLT: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
@@ -299,65 +302,65 @@ module mips_sva
 			$time,$sampled(`GET_REG(instr_rt)),$sampled(instr_imm));
 
 // ALU Unsigned Instructions
-	// ADDIU_ASSERT: 
-	// 	assert property 
-	// 	(
-	// 		@(negedge clk) disable iff(!rst_n) 
-	// 		(instr_opcode == ADDIU && (instr_rt != 'd0))  // reg[0] always = zero 
-	// 		|->
-	// 		(`GET_REG(instr_rt) == (`GET_REG(instr_rs) + SignImm))
-	// 	) 
-	// 	else
-	// 	$error("ADDIU: Time %0t: Sampled rt= %h, Sampled rs= %h, Sampled SignImm= %h",
-	// 		$time,$sampled(`GET_REG(instr_rt)),$sampled(`GET_REG(instr_rs)), $sampled(SignImm));	
+	ADDIU_ASSERT: 
+		assert property 
+		(
+			@(negedge clk) disable iff(!rst_n) 
+			(instr_opcode == ADDIU && (instr_rt != 'd0))  // reg[0] always = zero 
+			|->
+			(`GET_REG(instr_rt) == ($unsigned(`GET_REG(instr_rs)) + $unsigned(SignImm)))
+		) 
+		else
+		$error("ADDIU: Time %0t: Sampled rt= %h, Sampled rs= %h, Sampled SignImm= %h",
+			$time,$sampled(`GET_REG(instr_rt)),$sampled(`GET_REG(instr_rs)), $sampled(SignImm));	
 
-	// SLTIU_ASSERT: 
-	// 	assert property 
-	// 	(
-	// 		@(negedge clk) disable iff(!rst_n) 
-	// 		(instr_opcode == SLTIU && (instr_rt != 'd0))  // reg[0] always = zero 
-	// 		|->
-	// 		(`GET_REG(instr_rt) == (`GET_REG(instr_rs) < SignImm))
-	// 	) 
-	// 	else
-	// 	$error("SLTIU: Time %0t: Sampled rt= %h, Sampled rs= %h, Sampled SignImm= %h",
-	// 		$time,$sampled(`GET_REG(instr_rt)),$sampled(`GET_REG(instr_rs)), $sampled(SignImm));	
+	SLTIU_ASSERT: 
+		assert property 
+		(
+			@(negedge clk) disable iff(!rst_n) 
+			(instr_opcode == SLTIU && (instr_rt != 'd0))  // reg[0] always = zero 
+			|->
+			(`GET_REG(instr_rt) == ($unsigned(`GET_REG(instr_rs)) < $unsigned(SignImm)))
+		) 
+		else
+		$error("SLTIU: Time %0t: Sampled rt= %h, Sampled rs= %h, Sampled SignImm= %h",
+			$time,$sampled(`GET_REG(instr_rt)),$sampled(`GET_REG(instr_rs)), $sampled(SignImm));	
 	
-	// ADDU_ASSERT: 
-	// 	assert property 
-	// 	(
-	// 		@(negedge clk) disable iff(!rst_n) 
-	// 		(instr_opcode == RType && instr_funct == ADDU) 
-	// 		|->
-	// 		(`GET_REG(instr_rd) == (`GET_REG(instr_rs) + `GET_REG(instr_rt)))
-	// 	) 
-	// 	else
-	// 	$error("ADDU: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
-	// 		$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_rd)));	
+	ADDU_ASSERT: 
+		assert property 
+		(
+			@(negedge clk) disable iff(!rst_n) 
+			(instr_opcode == RType && instr_funct == ADDU) 
+			|->
+			($unsigned(`GET_REG(instr_rd)) == ($unsigned(`GET_REG(instr_rs)) + $unsigned(`GET_REG(instr_rt))))
+		) 
+		else
+		$error("ADDU: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
+			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_rd)));	
 	
-	// SUBU_ASSERT: 
-	// 	assert property 
-	// 	(
-	// 		@(negedge clk) disable iff(!rst_n) 
-	// 		(instr_opcode == RType && instr_funct == SUBU) 
-	// 		|->
-	// 		(`GET_REG(instr_rd) == (`GET_REG(instr_rs) - `GET_REG(instr_rt)))
-	// 	) 
-	// 	else
-	// 	$error("SUBU: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
-	// 		$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_rd)));
+	SUBU_ASSERT: 
+		assert property 
+		(
+			@(negedge clk) disable iff(!rst_n) 
+			(instr_opcode == RType && instr_funct == SUBU) 
+			|->
+			($unsigned(`GET_REG(instr_rd)) == ($unsigned(`GET_REG(instr_rs)) - $unsigned(`GET_REG(instr_rt))))
+		) 
+		else
+		$error("SUBU: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
+			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_rd)));
 
-	// SLTU_ASSERT: 
-	// 	assert property 
-	// 	(
-	// 		@(negedge clk) disable iff(!rst_n) 
-	// 		(instr_opcode == RType && instr_funct == SLTU) 
-	// 		|->
-	// 		(`GET_REG(instr_rd) == (`GET_REG(instr_rs) < `GET_REG(instr_rt)))
-	// 	) 
-	// 	else
-	// 	$error("SLTU: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
-	// 		$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_rd)));
+	SLTU_ASSERT: 
+		assert property 
+		(
+			@(negedge clk) disable iff(!rst_n) 
+			(instr_opcode == RType && instr_funct == SLTU) 
+			|->
+			(`GET_REG(instr_rd) == ($unsigned(`GET_REG(instr_rs)) < $unsigned(`GET_REG(instr_rt))))
+		) 
+		else
+		$error("SLTU: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
+			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_rd)));
 
 	// MULTU_ASSERT: 
 	// 	assert property 
@@ -390,11 +393,12 @@ module mips_sva
 			@(negedge clk) disable iff(!rst_n) 
 			(instr_opcode == ADDI && (instr_rt != 'd0))  // reg[0] always = zero 
 			|->
-			(`GET_REG(instr_rt) == (`GET_REG(instr_rs) + SignImm))
+			(`GET_REG(instr_rt) == ($signed(`GET_REG(instr_rs)) + $signed(SignImm)))
+			&& (arth_overflow_exception == ((`GET_REG(instr_rs)[31] == SignImm[31]) && (`GET_REG(instr_rt)[31] != `GET_REG(instr_rs)[31])))
 		) 
 		else
-		$error("ADDI: Time %0t: Sampled rt= %h, Sampled rs= %h, Sampled SignImm= %h",
-			$time,$sampled(`GET_REG(instr_rt)),$sampled(`GET_REG(instr_rs)), $sampled(SignImm));	
+		$error("ADDI: Time %0t: Sampled rt= %h, Sampled rs= %h, Sampled SignImm= %h , overflow = %b , sum = %h",
+			$time,$sampled(`GET_REG(instr_rt)),$sampled(`GET_REG(instr_rs)), $sampled(SignImm),$sampled(arth_overflow_exception),$sampled(($signed(`GET_REG(instr_rs)) + $signed(SignImm))));	
 
 	SLTI_ASSERT: 
 		assert property 
@@ -402,7 +406,7 @@ module mips_sva
 			@(negedge clk) disable iff(!rst_n) 
 			(instr_opcode == SLTI && (instr_rt != 'd0))  // reg[0] always = zero 
 			|->
-			(`GET_REG(instr_rt) == (`GET_REG(instr_rs) < SignImm))
+			(`GET_REG(instr_rt) == ($signed(`GET_REG(instr_rs)) < $signed(SignImm)))
 		) 
 		else
 		$error("SLTI: Time %0t: Sampled rt= %h, Sampled rs= %h, Sampled SignImm= %h",

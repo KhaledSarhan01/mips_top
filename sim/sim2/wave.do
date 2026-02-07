@@ -59,8 +59,6 @@ add wave -noupdate -radix binary /tb_mips_top/u_mips_core/u_mips_control/regdst
 add wave -noupdate -radix binary /tb_mips_top/u_mips_core/u_mips_control/alusrc
 add wave -noupdate -radix binary /tb_mips_top/u_mips_core/u_mips_control/memwrite
 add wave -noupdate -radix binary /tb_mips_top/u_mips_core/u_mips_control/write_back_sel
-add wave -noupdate -radix binary /tb_mips_top/u_mips_core/u_mips_control/aluop
-add wave -noupdate -radix binary /tb_mips_top/u_mips_core/u_mips_control/jump
 add wave -noupdate -radix binary /tb_mips_top/u_mips_core/u_mips_control/pcsrc
 add wave -noupdate -radix binary /tb_mips_top/u_mips_core/u_mips_control/hi_write
 add wave -noupdate -radix binary /tb_mips_top/u_mips_core/u_mips_control/lo_write
@@ -86,4 +84,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ns} {192 ns}
+WaveRestoreZoom {1408 ns} {1600 ns}

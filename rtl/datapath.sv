@@ -12,6 +12,7 @@ module mips_datapath(
     // Status signals 
     output logic zero_flag,
     output logic neg_flag,
+    output logic overflow_flag,
     // Control Signals
     input logic [1:0] pcsrc,
     input logic [2:0] se_select,wb_se_select,
@@ -108,6 +109,7 @@ module mips_datapath(
             .alu_result(aluout),
             // Flag 
             .zero_flag(zero_flag),
+            .overflow_flag(overflow_flag),
             .neg_flag(neg_flag)
         );
     // Multipler and Divider

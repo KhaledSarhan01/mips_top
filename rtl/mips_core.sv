@@ -4,6 +4,7 @@ module mips_core (
     // To instruction Memory
     output [PC_WIDTH-1:0]     pc,
     input  [INSTR_WITDTH-1:0] instr,
+    output logic arth_overflow_exception,
    // output [31:0] s0,
     // To Data Memory
     output memwrite,
@@ -22,7 +23,7 @@ module mips_core (
         logic [HI_LO_SEL_WIDTH-1:0] hi_select,lo_select;
 
     // Status Signals
-        logic zero_flag,neg_flag;
+        logic zero_flag,neg_flag,overflow_flag;
     
     mips_controller u_mips_control (
         .clk(clk),
@@ -30,6 +31,8 @@ module mips_core (
         .instr(instr),
         .zero_flag(zero_flag),
         .neg_flag(neg_flag),
+        .overflow_flag(overflow_flag),
+        .arth_overflow_exception(arth_overflow_exception),
         .memwrite(memwrite),
         .pcsrc(pcsrc),
         .alusrc(alusrc),
@@ -40,7 +43,7 @@ module mips_core (
         .alucontrl(alucontrl),
         .write_back_sel(write_back_sel),
         .hi_write(hi_write),
-        .lo_write(lo_write),
+        .lo_write(lo_write),    
         .hi_select(hi_select),
         .lo_select(lo_select)
     );
@@ -55,6 +58,7 @@ module mips_core (
         .readdata(readdata),
         .zero_flag(zero_flag),
         .neg_flag(neg_flag),
+        .overflow_flag(overflow_flag),
         .pcsrc(pcsrc),
         //.s0(s0),
         .alusrc(alusrc),
