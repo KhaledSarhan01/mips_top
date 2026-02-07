@@ -12,7 +12,7 @@
 ../../rtl/datapath.sv  
 ../../rtl/controller.sv
 ../../rtl/mips_core.sv 
-../../testbench/testbench_2/assertions.sv
+../../testbench/assertions.sv
 ../../testbench/testbench_2/rtl/data_mem.sv
 ../../testbench/testbench_2/testbench.sv
 ../../testbench/testbench_2/mips_isa_pkg.sv 

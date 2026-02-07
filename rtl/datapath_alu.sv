@@ -26,10 +26,10 @@ module alu (
             4'b0111: alu_result = ($signed(operand_a) < $signed(operand_b));    // SLT
             4'b1000: alu_result = operand_b <<  shmat;                          // Shift Constant Left Logical
             4'b1001: alu_result = operand_b >>  shmat;                          // Shift Constant Right Logical 
-            4'b1010: alu_result = operand_b >>> shmat;                          // Shift Constant Right Arthmetic
+            4'b1010: alu_result = $signed(operand_b) >>> shmat;                 // Shift Constant Right Arthmetic
             4'b1011: alu_result = operand_b <<  operand_a[4:0];                 // Shift Variable Left Logical
             4'b1100: alu_result = operand_b >>  operand_a[4:0];                 // Shift Variable Right Logical 
-            4'b1101: alu_result = operand_b >>> operand_a[4:0];                 // Shift Variable Right Arthmetic
+            4'b1101: alu_result = $signed(operand_b) >>> operand_a[4:0];        // Shift Variable Right Arthmetic
             default: alu_result = operand_a;
         endcase
     end

@@ -3,6 +3,7 @@
 ///// Created on: 2025-11-20                   
 ////////////////////////////////////////////////
 
+`define GET_REG(idx) DUT.u_mips_core.u_mips_datapath.u_mips_datapath_regfile.registers[idx]
 module tb_mips_top ;
 //////////////////////////////////////
 ////////////// Signals //////////////
@@ -43,6 +44,7 @@ module tb_mips_top ;
     
     task Finish;
         repeat(100) @(negedge clk);
+        $display("$s0= %h",`GET_REG(16));
         $stop;
     endtask
 // Watch dog works after 10 ms in simulation time 

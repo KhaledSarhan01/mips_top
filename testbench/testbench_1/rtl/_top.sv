@@ -11,19 +11,20 @@ module mips_top (
     // To instruction Memory
     logic [PC_WIDTH-1:0]     pc;
     logic [INSTR_WITDTH-1:0] instr;
+    logic arth_overflow_exception;
     // To Data Memory
     logic memwrite;
     logic [DATA_MEM_WIDTH-1:0] memaddr,writedata;
     logic [DATA_MEM_WIDTH-1:0] readdata;
 
-    instr_mem #(.DEPTH(256),.WIDTH(8)) u_instr_mem(
+    instr_mem #(.DEPTH(4096),.WIDTH(8)) u_instr_mem(
     .clk(clk),
     .rst_n(rst_n),
     .address(pc),
     .data_out(instr)
     );
 
-    data_mem #(.DEPTH(256),.WIDTH(8)) u_data_mem (
+    data_mem #(.DEPTH(4096),.WIDTH(8)) u_data_mem (
     .clk(clk),
     .rst_n(rst_n),
     .address(memaddr),
@@ -46,4 +47,22 @@ module mips_top (
     .writedata(writedata),
     .readdata(readdata)
     );
+ //////////////////////////////////////
+///////////// Assertions ////////////
+////////////////////////////////////
+    `ifdef ASSERTIONS
+        bind mips_core mips_sva u_mips_sva(
+        .clk(clk),
+        .rst_n(rst_n),
+        // To instruction Memory
+        .pc(pc),
+        .instr(instr),
+        .arth_overflow_exception(arth_overflow_exception),
+        // To Data Memory
+        .memwrite(memwrite),
+        .memaddr(memaddr),
+        .writedata(writedata),
+        .readdata(readdata)
+        ); 
+    `endif   
 endmodule

@@ -362,30 +362,6 @@ module mips_sva
 		$error("SLTU: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
 			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_rd)));
 
-	// MULTU_ASSERT: 
-	// 	assert property 
-	// 	(
-	// 		@(negedge clk) disable iff(!rst_n) 
-	// 		(instr_opcode == RType && instr_funct == MULTU) 
-	// 		|->
-	// 		({`GET_HI,`GET_LO} == uint64_t'(`GET_REG(instr_rs) * `GET_REG(instr_rt)))
-	// 	) 
-	// 	else
-	// 	$error("MULTU: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled Hi= %h ,Sampled Lo= %h",
-	// 		$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_HI),$sampled(`GET_LO));
-
-	// DIVU_ASSERT: 
-	// 	assert property 
-	// 	(
-	// 		@(negedge clk) disable iff(!rst_n) 
-	// 		(instr_opcode == RType && instr_funct == DIVU) 
-	// 		|->
-	// 		((`GET_HI == (`GET_REG(instr_rs) / `GET_REG(instr_rt))) && (`GET_LO== (`GET_REG(instr_rs) % `GET_REG(instr_rt))))
-	// 	) 
-	// 	else
-	// 	$error("DIVU: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled Hi= %h ,Sampled Lo= %h",
-	// 		$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_HI),$sampled(`GET_LO));
-
 // ALU Immediate Instructions
 	ADDI_ASSERT: 
 		assert property 

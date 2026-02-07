@@ -8,7 +8,7 @@ module instr_mem #(parameter DEPTH = 256,parameter WIDTH = 8)(
 
     // Memory initialization
         initial begin
-            $readmemh("../testbench/Test1.mem", mem);
+            $readmemh("../../testbench/testbench_1/Test5.mem", mem);
         end
     // Address width fixing 
     logic [$clog2(DEPTH)-1:0] addr_reg;
