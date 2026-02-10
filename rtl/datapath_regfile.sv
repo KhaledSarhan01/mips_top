@@ -1,6 +1,6 @@
 module reg_file (
     input logic clk,rst_n,
-    //output logic [31:0] s0,
+    output logic [31:0] s0,
     // Read port 1
     input logic [4:0] read_addr1,
     output logic [31:0] read_data1,
@@ -28,5 +28,5 @@ module reg_file (
             registers[write_addr] <= write_data;
         end
     end
-    //assign s0 = registers[16];
+    assign s0 = registers[16];
 endmodule

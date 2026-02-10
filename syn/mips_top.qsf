@@ -184,19 +184,24 @@ set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
-set_global_assignment -name VERILOG_FILE rtl/bin2hex.v
-set_global_assignment -name VERILOG_FILE rtl/mips_top.v
-set_global_assignment -name SYSTEMVERILOG_FILE rtl/instr_mem.sv
-set_global_assignment -name SYSTEMVERILOG_FILE rtl/data_mem.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../rtl/mux8.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../rtl/mux4.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ../rtl/mux2.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ../rtl/mips_core.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ../rtl/datapath_signextend.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ../rtl/datapath_regfile.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ../rtl/datapath_pc.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../rtl/datapath_mult.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../rtl/datapath_lo_hi_reg.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../rtl/datapath_div.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ../rtl/datapath_alu.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ../rtl/datapath.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ../rtl/controller.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ../rtl/_package.sv
+set_global_assignment -name VERILOG_FILE rtl/bin2hex.v
+set_global_assignment -name VERILOG_FILE rtl/mips_top.v
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/instr_mem.sv
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/data_mem.sv
 set_global_assignment -name SDC_FILE mips_top.SDC
 set_global_assignment -name SOURCE_FILE db/mips_top.cmp.rdb
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

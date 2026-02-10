@@ -5,7 +5,7 @@ module mips_core (
     output [PC_WIDTH-1:0]     pc,
     input  [INSTR_WITDTH-1:0] instr,
     output logic arth_overflow_exception,
-   // output [31:0] s0,
+    output [31:0] s0,
     // To Data Memory
     output memwrite,
     output [DATA_MEM_WIDTH-1:0] memaddr,writedata,
@@ -60,7 +60,7 @@ module mips_core (
         .neg_flag(neg_flag),
         .overflow_flag(overflow_flag),
         .pcsrc(pcsrc),
-        //.s0(s0),
+        .s0(s0),
         .alusrc(alusrc),
         .regdst(regdst),
         .se_select(se_select),

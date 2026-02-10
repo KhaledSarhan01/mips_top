@@ -49,7 +49,7 @@ module mips_top(
 //  Structural coding
 //=======================================================
 instr_mem #(.DEPTH(128),.WIDTH(8)) u_instr_mem(
-    .clk(clock),
+    .clk(CLOCK_50),
     .rst_n(!KEY[1]),
     .address(pc),
     .data_out(instr)
@@ -68,7 +68,7 @@ instr_mem #(.DEPTH(128),.WIDTH(8)) u_instr_mem(
 
 data_mem #(.MEM_SIZE(64),.DATA_WIDTH(32)) u_data_mem 
 (
-    .clk(clock),
+    .clk(CLOCK_50),
     // output for read operation
 	.read_addr(memaddr),
 	.data_out(readdata),
@@ -79,7 +79,7 @@ data_mem #(.MEM_SIZE(64),.DATA_WIDTH(32)) u_data_mem
 	);
 
 mips_core u_mips_core (
-    .clk(clock),
+    .clk(CLOCK_50),
     .rst_n(KEY[1]),
     // To instruction Memory
     .pc(pc),

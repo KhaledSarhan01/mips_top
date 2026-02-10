@@ -8,7 +8,7 @@ module mips_datapath(
     output logic [DATA_MEM_WIDTH-1:0] aluout,
     output logic [DATA_MEM_WIDTH-1:0] writedata,
     input  logic [DATA_MEM_WIDTH-1:0] readdata,
-    //output logic [31:0] s0,
+    output logic [31:0] s0,
     // Status signals 
     output logic zero_flag,
     output logic neg_flag,
@@ -61,7 +61,7 @@ module mips_datapath(
         reg_file u_mips_datapath_regfile(
             .clk(clk),
             .rst_n(rst_n),
-            //.s0(s0),
+            .s0(s0),
             // Read port 1
             .read_addr1(instr_rs),
             .read_data1(data_rs),
@@ -120,13 +120,15 @@ module mips_datapath(
             .out_hi(mult_hi),
             .out_lo(mult_lo)
         ); 
-        divider u_mips_datapath_div(
-            // input clk,rst_n,
-            .operand_a(data_rs),
-            .operand_b(data_rt),
-            .out_hi(div_hi),
-            .out_lo(div_lo)
-        );  
+        // divider u_mips_datapath_div(
+        //     // input clk,rst_n,
+        //     .operand_a(data_rs),
+        //     .operand_b(data_rt),
+        //     .out_hi(div_hi),
+        //     .out_lo(div_lo)
+        // ); 
+        assign div_hi = 'b0;
+        assign div_lo = 'b0;
     // LO and HI Registers
         lo_hi_reg u_mips_datapath_lo_hi_reg(
             // Clock and Active Low Reset

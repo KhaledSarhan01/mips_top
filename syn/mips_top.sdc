@@ -10,6 +10,7 @@ create_clock -period 20.000ns [get_ports CLOCK2_50]
 create_clock -period 20.000ns [get_ports CLOCK3_50]
 create_clock -period 20.000ns [get_ports CLOCK4_50]
 create_clock -period 20.000ns [get_ports CLOCK_50]
+#create_clock -period 100.000ns [get_ports {clock}]
 
 # for enhancing USB BlasterII to be reliable, 25MHz
 create_clock -name {altera_reserved_tck} -period 40 {altera_reserved_tck}
@@ -47,8 +48,8 @@ derive_clock_uncertainty
 set_false_path -from [get_ports {SW[*]}] -to [get_clocks {CLOCK_50}]
 set_false_path -from [get_ports {KEY[*]}] -to [get_clocks {CLOCK_50}]
 
-# set_input_delay -clock CLOCK_50 -max 5.0 [get_ports {SW[*] KEY[*]}]
-# set_input_delay -clock CLOCK_50 -min 0.0 [get_ports {SW[*] KEY[*]}]
+ set_input_delay -clock CLOCK_50 -max 10.0 [get_ports {SW[*] KEY[*]}]
+ set_input_delay -clock CLOCK_50 -min 2.0 [get_ports {SW[*] KEY[*]}]
 
 #**************************************************************
 # Set Output Delay
@@ -58,8 +59,8 @@ set_false_path -from [get_ports {KEY[*]}] -to [get_clocks {CLOCK_50}]
 set_false_path -from [get_clocks {CLOCK_50}] -to [get_ports {LEDR[*]}]
 set_false_path -from [get_clocks {CLOCK_50}] -to [get_ports {HEX*[*]}]
 
-# set_output_delay -clock CLOCK_50 -max 5.0 [get_ports {LEDR[*] HEX*[*]}]
-# set_output_delay -clock CLOCK_50 -min 0.0 [get_ports {LEDR[*] HEX*[*]}]
+ set_output_delay -clock CLOCK_50 -max 10.0 [get_ports {LEDR[*] HEX*[*]}]
+ set_output_delay -clock CLOCK_50 -min 2.0 [get_ports {LEDR[*] HEX*[*]}]
 
 #**************************************************************
 # Set Clock Groups
