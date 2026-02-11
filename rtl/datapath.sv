@@ -48,12 +48,17 @@ module mips_datapath(
     assign instr_jaddress   = instr[25:0];
 
     // next PC logic
+        // next PC logic
+        logic [31:0] BTA,JTA;
+        assign BTA = pc_plus4 + (signimm << 2);                // Branch target
+        assign JTA = {pc[31:28], instr_jaddress, 2'b00};       // Jump target
+            
         pc_reg u_mips_datapath_pc(
             .clk(clk),
             .rst_n(rst_n),
             .pcsrc(pcsrc),
-            .signimm(signimm),
-            .jaddress(instr_jaddress),
+            .BTA(BTA),
+            .JTA(JTA),
             .regfile(data_rs),
             .pc_plus4(pc_plus4),
             .pc_next(pc)

@@ -34,3 +34,9 @@ A robust SystemVerilog environment was utilized to ensure architectural integrit
 * Synthesis on DE1 SoC development board and test the program manually on the Evaluation kit.
 
 # Phase 2: Pipelined MIPS Processor
+## Plan
+### Phase 2 Part 1
+* Implement the pipelined MIPS and solve all occurred hazards in pipeline.
+* Implement the early branch decision hardware for branching, predicting branch is not taken.
+* Do Necessary Modifications on MIPS ISA Assertion-based Scoreboard.
+* Verify the functionality of the implemented instructions by running the `[Test_1,..,Test_5]`Direct testing program.
