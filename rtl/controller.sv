@@ -17,6 +17,7 @@ module mips_controller (
         output logic [ALU_CTRL_WIDTH-1:0] alucontrl,
         output logic [REG_WR_SRC_WIDTH-1:0] write_back_sel,
         output logic hi_write,lo_write,
+        output logic unsigned_div,unsigned_mult,
         output logic [HI_LO_SEL_WIDTH-1:0] hi_select,lo_select
     );
     // Unsigned Overflow Mask
@@ -62,6 +63,8 @@ module mips_controller (
                 overflow_mask   = 'b0;
                 se_select       = 'b000;
                 wb_se_select    = 'b000;
+                unsigned_div    = 'b0;
+                unsigned_mult   = 'b0;
             // Override by case statement
             case(instr_opcode)
                 RType:  
@@ -102,6 +105,20 @@ module mips_controller (
                         lo_write = 'b1;
                         hi_select = 'b11;
                         lo_select = 'b11;
+                    end
+                    DIVU: begin //DIVU
+                        hi_write      = 'b1;
+                        lo_write      = 'b1;
+                        hi_select     = 'b10;
+                        lo_select     = 'b10;
+                        unsigned_mult = 'b1;
+                    end
+                    MULTU: begin //MULTU
+                        hi_write     = 'b1;
+                        lo_write     = 'b1;
+                        hi_select    = 'b11;
+                        lo_select    = 'b11;
+                        unsigned_div = 'b1;
                     end
                     JR:begin// Jump Register
                         alusrc   = 'b10;
@@ -330,6 +347,7 @@ module mips_controller (
                     regwrite       = 'b1;
                     regdst         = 'b1;
                     write_back_sel = 'b110;
+                    unsigned_mult  = 'b1;
                 end        
             default: begin
                 regwrite = 'bx;

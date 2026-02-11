@@ -28,7 +28,7 @@ save_panel "Fitter||Fitter Summary" "report/report_utilization.txt"
 # save_panel "Fitter||Resource Section||Resource Usage Summary" "report_utilization.txt"
 
 # Timing (Setup Summary) - Adjust path if using older Quartus versions
-save_panel "Timing Analyzer||Multicorner Timing Analysis Summary" "report/report_timing.txt"
+save_panel "Timing Analyzer||Slow 1100mV 85C Model||Fmax Summary" "report/report_timing.txt"
 
 # Power (Power Analyzer Summary)
 # Note: You must run Power Analysis first for this to exist!

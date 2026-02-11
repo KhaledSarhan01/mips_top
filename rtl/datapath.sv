@@ -22,6 +22,7 @@ module mips_datapath(
     input logic [ALU_CTRL_WIDTH-1:0] alucontrl,
     input logic [REG_WR_SRC_WIDTH-1:0] write_back_sel,
     input logic hi_write,lo_write,
+    input logic unsigned_mult,unsigned_div,
     input logic [HI_LO_SEL_WIDTH-1:0] hi_select,lo_select
 );
     wire [4:0]  writereg;
@@ -117,16 +118,18 @@ module mips_datapath(
             // input clk,rst_n
             .operand_a(data_rs),
             .operand_b(data_rt),
+            .unsigned_mult(unsigned_mult),
             .out_hi(mult_hi),
             .out_lo(mult_lo)
         ); 
-        // divider u_mips_datapath_div(
-        //     // input clk,rst_n,
-        //     .operand_a(data_rs),
-        //     .operand_b(data_rt),
-        //     .out_hi(div_hi),
-        //     .out_lo(div_lo)
-        // ); 
+//        divider u_mips_datapath_div(
+//            // input clk,rst_n,
+//            .operand_a(data_rs),
+//            .operand_b(data_rt),
+//            .unsigned_div(unsigned_div),
+//            .out_hi(div_hi),
+//            .out_lo(div_lo)
+//        ); 
         assign div_hi = 'b0;
         assign div_lo = 'b0;
     // LO and HI Registers

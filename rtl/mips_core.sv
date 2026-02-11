@@ -21,6 +21,7 @@ module mips_core (
         logic [REG_WR_SRC_WIDTH-1:0] write_back_sel;
         logic hi_write,lo_write;
         logic [HI_LO_SEL_WIDTH-1:0] hi_select,lo_select;
+        logic unsigned_div,unsigned_mult;
 
     // Status Signals
         logic zero_flag,neg_flag,overflow_flag;
@@ -42,6 +43,8 @@ module mips_core (
         .regwrite(regwrite),
         .alucontrl(alucontrl),
         .write_back_sel(write_back_sel),
+        .unsigned_div(unsigned_div),
+        .unsigned_mult(unsigned_mult),
         .hi_write(hi_write),
         .lo_write(lo_write),    
         .hi_select(hi_select),
@@ -68,6 +71,8 @@ module mips_core (
         .regwrite(regwrite),
         .alucontrl(alucontrl),
         .write_back_sel(write_back_sel),
+        .unsigned_div(unsigned_div),
+        .unsigned_mult(unsigned_mult),
         .hi_write(hi_write),
         .lo_write(lo_write),
         .hi_select(hi_select),
