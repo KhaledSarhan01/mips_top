@@ -48,12 +48,16 @@ module mips_datapath(
     assign instr_jaddress   = instr[25:0];
 
     // next PC logic
+        logic [31:0] BTA,JTA;
+        assign BTA = pc_plus4 + (signimm << 2);                     // Branch target
+        assign JTA = {pc[31:28], instr_jaddress, 2'b00};       // Jump target
+            
         pc_reg u_mips_datapath_pc(
             .clk(clk),
             .rst_n(rst_n),
             .pcsrc(pcsrc),
-            .signimm(signimm),
-            .jaddress(instr_jaddress),
+            .BTA(BTA),
+            .JTA(JTA),
             .regfile(data_rs),
             .pc_plus4(pc_plus4),
             .pc_next(pc)
@@ -122,14 +126,14 @@ module mips_datapath(
             .out_hi(mult_hi),
             .out_lo(mult_lo)
         ); 
-//        divider u_mips_datapath_div(
-//            // input clk,rst_n,
-//            .operand_a(data_rs),
-//            .operand_b(data_rt),
-//            .unsigned_div(unsigned_div),
-//            .out_hi(div_hi),
-//            .out_lo(div_lo)
-//        ); 
+    //    divider u_mips_datapath_div(
+    //        // input clk,rst_n,
+    //        .operand_a(data_rs),
+    //        .operand_b(data_rt),
+    //        .unsigned_div(unsigned_div),
+    //        .out_hi(div_hi),
+    //        .out_lo(div_lo)
+    //    ); 
         assign div_hi = 'b0;
         assign div_lo = 'b0;
     // LO and HI Registers

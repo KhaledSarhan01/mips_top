@@ -48,17 +48,17 @@ module mips_testbench (
     task Main_Scenario();
         // Direct Testing
             // Filling the Register with random Data 
-                // RegisterFileFilling();
+                RegisterFileFilling();
             // Testing the already implemented instructions
                 AluUnsignedInstructions();
-                // JumpInstructions();
-                // MultDivTesting();
-                // HiLoReg_MoveOps();
-                // AluInstructions();
-                // AluImmediateInstructions();
-                // BranchInstructions();
-                // Phase1Part1();
-                // LoadStoreInstructions();
+                JumpInstructions();
+                MultDivTesting();
+                HiLoReg_MoveOps();
+                AluInstructions();
+                AluImmediateInstructions();
+                BranchInstructions();
+                Phase1Part1();
+                LoadStoreInstructions();
         // Randomized Testing
             // RandomTesting(1000);                                         
     endtask
