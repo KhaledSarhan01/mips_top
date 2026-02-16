@@ -47,24 +47,144 @@ module mips_testbench (
     endtask
     task Main_Scenario();
         // Direct Testing
-            // Filling the Register with random Data 
-                // RegisterFileFilling();
-            // Testing the already implemented instructions
-                // AluUnsignedInstructions();
-                // JumpInstructions();
-                // MultDivTesting();
-                // HiLoReg_MoveOps();
-                // AluInstructions();
-                // AluImmediateInstructions();
-                // BranchInstructions();
-                Phase1Part1();
-                // LoadStoreInstructions();
-        // Randomized Testing
-            // RandomTesting(1000);                                         
+            Phase1Part1();                                        
     endtask
 
     
     // Direct Testing
+    task automatic Phase1Part1();
+        // `lw`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(LW));
+            // repeat(5) @(posedge clk);
+        // `sw`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(Sw));
+            // repeat(5) @(posedge clk);
+        // `beq`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(BEQ));
+            // repeat(5) @(posedge clk);
+        // `addi`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(ADDI));
+            // repeat(5) @(posedge clk);
+        // `j`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(J));
+            // repeat(5) @(posedge clk);
+        //  `add`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(ADD));
+            // repeat(5) @(posedge clk);
+        // `sub`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SUB));
+            // repeat(5) @(posedge clk);
+        //  `and`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(AND));
+            // repeat(5) @(posedge clk);
+        //  `or`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(OR));
+            // repeat(5) @(posedge clk);
+        //  `slt`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SLT));
+            // repeat(5) @(posedge clk);
+    endtask 
+
+    task automatic AluInstructions();
+        //  `add`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(ADD));
+        // `sub`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SUB));
+        //  `and`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(AND));
+        //  `or`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(OR));
+        //  `slt`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SLT));
+        // `xor`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(XOR));    
+        
+        // `nor`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(NOR));
+        
+        // `sll`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SLL));
+    
+        // `srl`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SRL));
+
+        // `sra`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SRA));
+            
+        // `sllv`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SLLV));
+        
+        // `srlv`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SRLV));
+        
+        // `srav`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SRAV));                    
+    endtask  
+    
+    task automatic HiLoReg_MoveOps();
+        // `mfhi`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(MFHI));
+        // `mthi`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(MTHI));
+        // `mflo`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(MFLO));
+        // `mtlo`
+            @(negedge clk);
+            assert (mips_instr.randomize());
+            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(MTLO));
+    endtask
     task automatic AluUnsignedInstructions();
         // Register 
             // Register[1] = Very high postive Value
@@ -383,140 +503,6 @@ module mips_testbench (
             instr = mips_instr.get_Instr(.i_opcode(Sw));
     endtask 
     
-    task automatic Phase1Part1();
-        // `lw`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(LW));
-            repeat(5) @(posedge clk);
-        // `sw`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(Sw));
-            repeat(5) @(posedge clk);
-        // `beq`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(BEQ));
-            repeat(5) @(posedge clk);
-        // `addi`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(ADDI));
-            repeat(5) @(posedge clk);
-        // `j`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(J));
-            repeat(5) @(posedge clk);
-        //  `add`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(ADD));
-            repeat(5) @(posedge clk);
-        // `sub`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SUB));
-            repeat(5) @(posedge clk);
-        //  `and`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(AND));
-            repeat(5) @(posedge clk);
-        //  `or`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(OR));
-            repeat(5) @(posedge clk);
-        //  `slt`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SLT));
-            repeat(5) @(posedge clk);
-    endtask 
-
-    task automatic AluInstructions();
-        //  `add`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(ADD));
-        // `sub`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SUB));
-        //  `and`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(AND));
-        //  `or`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(OR));
-        //  `slt`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SLT));
-        // `xor`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(XOR));    
-        
-        // `nor`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(NOR));
-        
-        // `sll`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SLL));
-    
-        // `srl`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SRL));
-
-        // `sra`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SRA));
-            
-        // `sllv`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SLLV));
-        
-        // `srlv`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SRLV));
-        
-        // `srav`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(SRAV));                    
-    endtask  
-    
-    task automatic HiLoReg_MoveOps();
-        // `mfhi`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(MFHI));
-        // `mthi`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(MTHI));
-        // `mflo`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(MFLO));
-        // `mtlo`
-            @(negedge clk);
-            assert (mips_instr.randomize());
-            instr = mips_instr.get_Instr(.i_opcode(RType),.i_funct(MTLO));
-    endtask
-
     // Helper Functions     
     task automatic RegFileValue
         (

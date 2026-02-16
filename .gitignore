@@ -16,6 +16,14 @@ sim/sim2/work/*
 sim/sim2/*.mpf_new 
 sim/sim2/transcript
 sim/sim2/*.vstf
+
+sim/sim3/*.mpf
+sim/sim3/*.mti
+sim/sim3/*.wlf
+sim/sim3/work/*
+sim/sim3/*.mpf_new 
+sim/sim3/transcript
+sim/sim3/*.vstf
 # Ignore all contents of the reports folder
 sim/sim2/_reports/*
 
