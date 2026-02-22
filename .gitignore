@@ -69,3 +69,31 @@ syn//synthesis/
 # !*.sv   (SystemVerilog Source)
 # !*.sdc  (Timing Constraints)
 # !*.mif  (Memory Initialization)
+/sim/sim3/tb_mips_pipelined_randomized.cr.mti
+/sim/sim3/tb_mips_pipelined_randomized.mpf
+/sim/sim3/vsim.wlf
+/sim/sim3/work/@_opt/_data/exempti1ec75
+/sim/sim3/work/@_opt/_data/exemptn4viyg
+/sim/sim3/work/@_opt/_data/exemptnh5ifd
+/sim/sim3/work/@_opt/_lib.qdb
+/sim/sim3/work/@_opt/_lib1_0.qdb
+/sim/sim3/work/@_opt/_lib1_0.qpg
+/sim/sim3/work/@_opt/_lib1_0.qtl
+/sim/sim3/work/@_opt/_lib2_0.qdb
+/sim/sim3/work/@_opt/_lib2_0.qpg
+/sim/sim3/work/@_opt/_lib2_0.qtl
+/sim/sim3/work/@_opt/_lib3_0.qdb
+/sim/sim3/work/@_opt/_lib3_0.qpg
+/sim/sim3/work/@_opt/_lib3_0.qtl
+/sim/sim3/work/@_opt/_lib4_0.qdb
+/sim/sim3/work/@_opt/_lib4_0.qpg
+/sim/sim3/work/@_opt/_lib4_0.qtl
+/sim/sim3/work/@_opt/_lib5_0.qdb
+/sim/sim3/work/@_opt/_lib5_0.qpg
+/sim/sim3/work/@_opt/_lib5_0.qtl
+/sim/sim3/work/_info
+/sim/sim3/work/_lib.qdb
+/sim/sim3/work/_lib1_2.qdb
+/sim/sim3/work/_lib1_2.qpg
+/sim/sim3/work/_lib1_2.qtl
+/sim/sim3/work/_vmake
