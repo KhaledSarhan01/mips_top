@@ -14,14 +14,14 @@ typedef bit[63:0] uint64_t;
 module mips_sva
 (	input clk,rst_n,
 	// To instruction Memory
-	output [PC_WIDTH-1:0]     pc,
+	input [PC_WIDTH-1:0]     pc,
 	input  [INSTR_WITDTH-1:0] instr,
 	input logic arth_overflow_exception,
 	// output [31:0] s0,
 	// To Data Memory
-	output memwrite,
-	output [DATA_MEM_WIDTH-1:0] memaddr,writedata,
-	input  [DATA_MEM_WIDTH-1:0] readdata
+	input memwrite,
+	input [DATA_MEM_WIDTH-1:0] memaddr,writedata,
+	input [DATA_MEM_WIDTH-1:0] readdata
 );
 //------------ Instruction Decoding ------------//
 	
@@ -45,588 +45,586 @@ module mips_sva
 	assign ZeroImm		= {{16{1'b0}},instr_imm};
 //------------ Sequential Assertions ------------// 
 // ALU Instructions
-	ADD_ASSERT: 
-		assert property (
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == RType && instr_funct == ADD) 
-			|->
-			(`GET_REG(instr_rd) == ($signed(`GET_REG(instr_rs)) + $signed(`GET_REG(instr_rt))))
-			&& (arth_overflow_exception == ((`GET_REG(instr_rs)[31] == `GET_REG(instr_rt)[31]) && (`GET_REG(instr_rd)[31] != `GET_REG(instr_rs)[31])))
-		) 
-		else
-		$error("ADD: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h,overflow = %b",
-			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_rd)),$sampled(arth_overflow_exception));
-		// cover property (ADD_PROPERTY); // TODO: for all assertions 
-
-	SUB_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
+	// ADD
+		property ADD_PROPERTY;
+			@(posedge clk) disable iff(!rst_n) 
+			(instr_opcode == RType && instr_funct == ADD)
+			|=> 
+			(({arth_overflow_exception,`GET_REG($past(instr_rd,1))} == ($signed(`GET_REG($past(instr_rs,1))) + $signed(`GET_REG($past(instr_rt,1))))));
+		endproperty
+		ADD_ASSERT: assert property (ADD_PROPERTY)
+			else $error("ADD: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h,overflow = %b",
+			$time,$sampled(`GET_REG($past(instr_rs,1))),$sampled(`GET_REG($past(instr_rt,1))), $sampled(`GET_REG($past(instr_rd,1))),$sampled(arth_overflow_exception));
+		ADD_COVER:	cover property (ADD_PROPERTY);
+		
+	// SUB
+		property SUB_PROPERTY;
+			@(posedge clk) disable iff(!rst_n) 
 			(instr_opcode == RType && instr_funct == SUB) 
-			|->
-			(`GET_REG(instr_rd) == ($signed(`GET_REG(instr_rs)) - $signed(`GET_REG(instr_rt))))
-			&& (arth_overflow_exception == ((`GET_REG(instr_rs)[31] == `GET_REG(instr_rt)[31]) && (`GET_REG(instr_rd)[31] != `GET_REG(instr_rs)[31])))
-		) 
-		else
-		$error("SUB: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h,overflow = %b",
-			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_rd)),$sampled(arth_overflow_exception));
+			|=>
+			(({arth_overflow_exception,`GET_REG($past(instr_rd,1))} == ($signed(`GET_REG($past(instr_rs,1))) - $signed(`GET_REG($past(instr_rt,1))))));
+		endproperty
+		SUB_ASSERT: assert property (SUB_PROPERTY) 
+			else $error("SUB: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h,overflow = %b",
+			$time,$sampled(`GET_REG($past(instr_rs,1))),$sampled(`GET_REG($past(instr_rt,1))), $sampled(`GET_REG($past(instr_rd,1))),$sampled(arth_overflow_exception));
+		SUB_COVER: cover property (SUB_PROPERTY);
 
-	AND_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
+	// AND
+		property AND_PROPERTY;
+			@(posedge clk) disable iff(!rst_n) 
 			(instr_opcode == RType && instr_funct == AND) 
-			|->
-			(`GET_REG(instr_rd) == (`GET_REG(instr_rs) & `GET_REG(instr_rt)))
-		) 
-		else
-		$error("AND: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
-			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_rd)));
+			|=>
+			(`GET_REG($past(instr_rd,1)) == (`GET_REG($past(instr_rs,1)) & `GET_REG($past(instr_rt,1))))
+		endproperty
+		AND_ASSERT: assert property (AND_PROPERTY) 
+			else $error("AND: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
+			$time,$sampled(`GET_REG($past(instr_rs,1))),$sampled(`GET_REG($past(instr_rt,1))), $sampled(`GET_REG($past(instr_rd,1))));
+		AND_COVER: cover property (AND_PROPERTY);
 
-	OR_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
+	// OR
+		property OR_PROPERTY;
+			@(posedge clk) disable iff(!rst_n) 
 			(instr_opcode == RType && instr_funct == OR) 
-			|->
-			(`GET_REG(instr_rd) == (`GET_REG(instr_rs) | `GET_REG(instr_rt)))
-		) 
-		else
-		$error("OR: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
-			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_rd)));
+			|=>
+			(`GET_REG($past(instr_rd,1)) == (`GET_REG($past(instr_rs,1)) | `GET_REG($past(instr_rt,1))))
+		endproperty
+		OR_ASSERT: assert property (OR_PROPERTY) 
+			else $error("OR: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
+			$time,$sampled(`GET_REG($past(instr_rs,1))),$sampled(`GET_REG($past(instr_rt,1))), $sampled(`GET_REG($past(instr_rd,1))));
+		OR_COVER: cover property(OR_PROPERTY);
 
-	XOR_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
+	// XOR
+		property XOR_PROPERTY;
+			@(posedge clk) disable iff(!rst_n) 
 			(instr_opcode == RType && instr_funct == XOR) 
-			|->
-			(`GET_REG(instr_rd) == (`GET_REG(instr_rs) ^ `GET_REG(instr_rt)))
-		) 
-		else
-		$error("XOR: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
-			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_rd)));
-
-	NOR_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
+			|=>
+			(`GET_REG($past(instr_rd,1)) == (`GET_REG($past(instr_rs,1)) ^ `GET_REG($past(instr_rt,1))))
+		endproperty
+		XOR_ASSERT: assert property (XOR_PROPERTY) 
+			else $error("XOR: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
+			$time,$sampled(`GET_REG($past(instr_rs,1))),$sampled(`GET_REG($past(instr_rt,1))), $sampled(`GET_REG($past(instr_rd,1))));
+		XOR_COVER: cover property (XOR_PROPERTY);
+	
+	// NOR
+		property NOR_PROPERTY;
+			@(posedge clk) disable iff(!rst_n) 
 			(instr_opcode == RType && instr_funct == NOR) 
-			|->
-			(`GET_REG(instr_rd) == ~(`GET_REG(instr_rs) | `GET_REG(instr_rt)))
-		) 
-		else
-		$error("NOR: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
-			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_rd)));
+			|=>
+			(`GET_REG($past(instr_rd,1)) == ~(`GET_REG($past(instr_rs,1)) | `GET_REG($past(instr_rt,1))))
+		endproperty
+		NOR_ASSERT: assert property (NOR_PROPERTY) 
+		else $error("NOR: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
+			 $time,$sampled(`GET_REG($past(instr_rs,1))),$sampled(`GET_REG($past(instr_rt,1))), $sampled(`GET_REG($past(instr_rd,1))));
+		NOR_COVER: cover property (NOR_PROPERTY);
 
-	SLT_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
+	// SLT 
+		property SLT_PROPERTY;
+			@(posedge clk) disable iff(!rst_n) 
 			(instr_opcode == RType && instr_funct == SLT) 
-			|->
-			(`GET_REG(instr_rd) == ($signed(`GET_REG(instr_rs)) < $signed(`GET_REG(instr_rt))))
-		) 
-		else
-		$error("SLT: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
-			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_rd)));
-
-	SLL_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == RType && instr_funct == SLL) 
-			|->
-			(`GET_REG(instr_rd) == (`GET_REG(instr_rt) << instr_shmat))
-		) 
-		else
-		$error("SLL: Time %0t: Sampled rd= %h, Sampled rt= %h, Sampled shmat= %h",
-			$time,$sampled(`GET_REG(instr_rd)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_shmat)));
+			|=>
+			(`GET_REG($past(instr_rd,1)) == ($signed(`GET_REG($past(instr_rs,1))) < $signed(`GET_REG($past(instr_rt,1)))))
+		endproperty
+		SLT_ASSERT: assert property (SLT_PROPERTY) 
+		else $error("SLT: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
+			$time,$sampled(`GET_REG($past(instr_rs,1))),$sampled(`GET_REG($past(instr_rt,1))), $sampled(`GET_REG($past(instr_rd,1))));
+		SLT_COVER: cover property (SLT_PROPERTY);
 	
-	SRL_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == RType && instr_funct == SRL) 
-			|->
-			(`GET_REG(instr_rd) == (`GET_REG(instr_rt) >> instr_shmat))
-		) 
-		else
-		$error("SRL: Time %0t: Sampled rd= %h, Sampled rt= %h, Sampled shmat= %h",
-			$time,$sampled(`GET_REG(instr_rd)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_shmat)));
+	// SLL_ASSERT: 
+	// 	assert property 
+	// 	(
+	// 		@(posedge clk) disable iff(!rst_n) 
+	// 		(instr_opcode == RType && instr_funct == SLL) 
+	// 		|=>
+	// 		(`GET_REG($past(instr_rd,1)) == (`GET_REG($past(instr_rt,1)) << instr_shmat))
+	// 	) 
+	// 	else
+	// 	$error("SLL: Time %0t: Sampled rd= %h, Sampled rt= %h, Sampled shmat= %h",
+	// 		$time,$sampled(`GET_REG($past(instr_rd,1))),$sampled(`GET_REG($past(instr_rt,1))), $sampled(`GET_REG(instr_shmat)));
 	
-	SRA_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == RType && instr_funct == SRA) 
-			|->
-			(`GET_REG(instr_rd) == (`GET_REG(instr_rt) >>> instr_shmat))
-		) 
-		else
-		$error("SRL: Time %0t: Sampled rd= %h, Sampled rt= %h, Sampled shmat= %h",
-			$time,$sampled(`GET_REG(instr_rd)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_shmat)));
+	// SRL_ASSERT: 
+	// 	assert property 
+	// 	(
+	// 		@(posedge clk) disable iff(!rst_n) 
+	// 		(instr_opcode == RType && instr_funct == SRL) 
+	// 		|=>
+	// 		(`GET_REG($past(instr_rd,1)) == (`GET_REG($past(instr_rt,1)) >> instr_shmat))
+	// 	) 
+	// 	else
+	// 	$error("SRL: Time %0t: Sampled rd= %h, Sampled rt= %h, Sampled shmat= %h",
+	// 		$time,$sampled(`GET_REG($past(instr_rd,1))),$sampled(`GET_REG($past(instr_rt,1))), $sampled(`GET_REG(instr_shmat)));
 	
-	SLLV_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == RType && instr_funct == SLLV) 
-			|->
-			(`GET_REG(instr_rd) == (`GET_REG(instr_rt) << `GET_REG(instr_rs)[4:0]))
-		) 
-		else
-		$error("SLLV: Time %0t: Sampled rd= %h, Sampled rt= %h, Sampled rs[4:0]= %h",
-			$time,$sampled(`GET_REG(instr_rd)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_rs)[4:0]));
+	// SRA_ASSERT: 
+	// 	assert property 
+	// 	(
+	// 		@(posedge clk) disable iff(!rst_n) 
+	// 		(instr_opcode == RType && instr_funct == SRA) 
+	// 		|=>
+	// 		(`GET_REG($past(instr_rd,1)) == (`GET_REG($past(instr_rt,1)) >>> instr_shmat))
+	// 	) 
+	// 	else
+	// 	$error("SRL: Time %0t: Sampled rd= %h, Sampled rt= %h, Sampled shmat= %h",
+	// 		$time,$sampled(`GET_REG($past(instr_rd,1))),$sampled(`GET_REG($past(instr_rt,1))), $sampled(`GET_REG(instr_shmat)));
 	
-	SRLV_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == RType && instr_funct == SRLV) 
-			|->
-			(`GET_REG(instr_rd) == (`GET_REG(instr_rt) >> `GET_REG(instr_rs)[4:0]))
-		) 
-		else
-		$error("SRLV: Time %0t: Sampled rd= %h, Sampled rt= %h, Sampled rs[4:0]= %h",
-			$time,$sampled(`GET_REG(instr_rd)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_rs)[4:0]));
+	// SLLV_ASSERT: 
+	// 	assert property 
+	// 	(
+	// 		@(posedge clk) disable iff(!rst_n) 
+	// 		(instr_opcode == RType && instr_funct == SLLV) 
+	// 		|=>
+	// 		(`GET_REG($past(instr_rd,1)) == (`GET_REG($past(instr_rt,1)) << `GET_REG($past(instr_rs,1))[4:0]))
+	// 	) 
+	// 	else
+	// 	$error("SLLV: Time %0t: Sampled rd= %h, Sampled rt= %h, Sampled rs[4:0]= %h",
+	// 		$time,$sampled(`GET_REG($past(instr_rd,1))),$sampled(`GET_REG($past(instr_rt,1))), $sampled(`GET_REG($past(instr_rs,1))[4:0]));
 	
-	SRAV_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == RType && instr_funct == SRAV) 
-			|->
-			(`GET_REG(instr_rd) == (`GET_REG(instr_rt) >>> `GET_REG(instr_rs)[4:0]))
-		) 
-		else
-		$error("SRAV: Time %0t: Sampled rd= %h, Sampled rt= %h, Sampled rs[4:0]= %h",
-			$time,$sampled(`GET_REG(instr_rd)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_rs)[4:0]));
-
-// Multiply and Divide Instructions
-	MUL_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == MUL) 
-			|->
-			(`GET_REG(instr_rd) == uint32_t'(`GET_REG(instr_rs) * `GET_REG(instr_rt)))
-		) 
-		else
-		$error("MUL: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h,",
-			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)),$sampled(`GET_REG(instr_rd)));
-
-	MULT_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == RType && instr_funct == MULT) 
-			|->
-			({`GET_HI,`GET_LO} == uint64_t'(`GET_REG(instr_rs) * `GET_REG(instr_rt)))
-		) 
-		else
-		$error("MULT: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled Hi= %h ,Sampled Lo= %h",
-			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_HI),$sampled(`GET_LO));
-
-	DIV_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == RType && instr_funct == DIV) 
-			|->
-			((`GET_HI == (`GET_REG(instr_rs) / `GET_REG(instr_rt))) && (`GET_LO== (`GET_REG(instr_rs) % `GET_REG(instr_rt))))
-		) 
-		else
-		$error("DIV: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled Hi= %h ,Sampled Lo= %h",
-			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_HI),$sampled(`GET_LO));
-
-// Move Hi and Lo instructions 
-	MFHI_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == RType && instr_funct == MFHI) 
-			|->
-			(`GET_REG(instr_rd) == `GET_HI)
-		) 
-		else
-		$error("MFHI: Time %0t: Sampled rd= %h, Sampled Hi= %h",
-			$time,$sampled(`GET_REG(instr_rd)),$sampled(`GET_HI));
+	// SRLV_ASSERT: 
+	// 	assert property 
+	// 	(
+	// 		@(posedge clk) disable iff(!rst_n) 
+	// 		(instr_opcode == RType && instr_funct == SRLV) 
+	// 		|=>
+	// 		(`GET_REG($past(instr_rd,1)) == (`GET_REG($past(instr_rt,1)) >> `GET_REG($past(instr_rs,1))[4:0]))
+	// 	) 
+	// 	else
+	// 	$error("SRLV: Time %0t: Sampled rd= %h, Sampled rt= %h, Sampled rs[4:0]= %h",
+	// 		$time,$sampled(`GET_REG($past(instr_rd,1))),$sampled(`GET_REG($past(instr_rt,1))), $sampled(`GET_REG($past(instr_rs,1))[4:0]));
 	
-	MFLO_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == RType && instr_funct == MFLO) 
-			|->
-			(`GET_REG(instr_rd) == `GET_LO)
-		) 
-		else
-		$error("MFLO: Time %0t: Sampled rd= %h, Sampled Lo= %h",
-			$time,$sampled(`GET_REG(instr_rd)),$sampled(`GET_LO));
+	// SRAV_ASSERT: 
+	// 	assert property 
+	// 	(
+	// 		@(posedge clk) disable iff(!rst_n) 
+	// 		(instr_opcode == RType && instr_funct == SRAV) 
+	// 		|=>
+	// 		(`GET_REG($past(instr_rd,1)) == (`GET_REG($past(instr_rt,1)) >>> `GET_REG($past(instr_rs,1))[4:0]))
+	// 	) 
+	// 	else
+	// 	$error("SRAV: Time %0t: Sampled rd= %h, Sampled rt= %h, Sampled rs[4:0]= %h",
+	// 		$time,$sampled(`GET_REG($past(instr_rd,1))),$sampled(`GET_REG($past(instr_rt,1))), $sampled(`GET_REG($past(instr_rs,1))[4:0]));
+
+// // Multiply and Divide Instructions
+// 	MUL_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == MUL) 
+// 			|=>
+// 			(`GET_REG($past(instr_rd,1)) == uint32_t'(`GET_REG($past(instr_rs,1)) * `GET_REG($past(instr_rt,1))))
+// 		) 
+// 		else
+// 		$error("MUL: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h,",
+// 			$time,$sampled(`GET_REG($past(instr_rs,1))),$sampled(`GET_REG($past(instr_rt,1))),$sampled(`GET_REG($past(instr_rd,1))));
+
+// 	MULT_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == RType && instr_funct == MULT) 
+// 			|=>
+// 			({`GET_HI,`GET_LO} == uint64_t'(`GET_REG($past(instr_rs,1)) * `GET_REG($past(instr_rt,1))))
+// 		) 
+// 		else
+// 		$error("MULT: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled Hi= %h ,Sampled Lo= %h",
+// 			$time,$sampled(`GET_REG($past(instr_rs,1))),$sampled(`GET_REG($past(instr_rt,1))), $sampled(`GET_HI),$sampled(`GET_LO));
+
+// 	DIV_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == RType && instr_funct == DIV) 
+// 			|=>
+// 			((`GET_HI == (`GET_REG($past(instr_rs,1)) / `GET_REG($past(instr_rt,1)))) && (`GET_LO== (`GET_REG($past(instr_rs,1)) % `GET_REG($past(instr_rt,1)))))
+// 		) 
+// 		else
+// 		$error("DIV: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled Hi= %h ,Sampled Lo= %h",
+// 			$time,$sampled(`GET_REG($past(instr_rs,1))),$sampled(`GET_REG($past(instr_rt,1))), $sampled(`GET_HI),$sampled(`GET_LO));
+
+// // Move Hi and Lo instructions 
+// 	MFHI_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == RType && instr_funct == MFHI) 
+// 			|=>
+// 			(`GET_REG($past(instr_rd,1)) == `GET_HI)
+// 		) 
+// 		else
+// 		$error("MFHI: Time %0t: Sampled rd= %h, Sampled Hi= %h",
+// 			$time,$sampled(`GET_REG($past(instr_rd,1))),$sampled(`GET_HI));
 	
-	MTHI_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == RType && instr_funct == MTHI) 
-			|->
-			(`GET_HI == `GET_REG(instr_rs))
-		) 
-		else
-		$error("MTHI: Time %0t: Sampled rs= %h, Sampled Hi= %h",
-			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_HI));
+// 	MFLO_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == RType && instr_funct == MFLO) 
+// 			|=>
+// 			(`GET_REG($past(instr_rd,1)) == `GET_LO)
+// 		) 
+// 		else
+// 		$error("MFLO: Time %0t: Sampled rd= %h, Sampled Lo= %h",
+// 			$time,$sampled(`GET_REG($past(instr_rd,1))),$sampled(`GET_LO));
 	
-	MTLO_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == RType && instr_funct == MTLO) 
-			|->
-			(`GET_LO == `GET_REG(instr_rs))
-		) 
-		else
-		$error("MTLO: Time %0t: Sampled rs= %h, Sampled Lo= %h",
-			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_LO));
+// 	MTHI_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == RType && instr_funct == MTHI) 
+// 			|=>
+// 			(`GET_HI == `GET_REG($past(instr_rs,1)))
+// 		) 
+// 		else
+// 		$error("MTHI: Time %0t: Sampled rs= %h, Sampled Hi= %h",
+// 			$time,$sampled(`GET_REG($past(instr_rs,1))),$sampled(`GET_HI));
 	
-	LUI_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == LUI) 
-			|->
-			(`GET_REG(instr_rt) == {instr_imm,16'b0})
-		) 
-		else
-		$error("LUI: Time %0t: Sampled rt= %h, Sampled Imm= %h",
-			$time,$sampled(`GET_REG(instr_rt)),$sampled(instr_imm));
-
-// ALU Unsigned Instructions
-	ADDIU_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == ADDIU && (instr_rt != 'd0))  // reg[0] always = zero 
-			|->
-			(`GET_REG(instr_rt) == ($unsigned(`GET_REG(instr_rs)) + $unsigned(SignImm)))
-		) 
-		else
-		$error("ADDIU: Time %0t: Sampled rt= %h, Sampled rs= %h, Sampled SignImm= %h",
-			$time,$sampled(`GET_REG(instr_rt)),$sampled(`GET_REG(instr_rs)), $sampled(SignImm));	
-
-	SLTIU_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == SLTIU && (instr_rt != 'd0))  // reg[0] always = zero 
-			|->
-			(`GET_REG(instr_rt) == ($unsigned(`GET_REG(instr_rs)) < $unsigned(SignImm)))
-		) 
-		else
-		$error("SLTIU: Time %0t: Sampled rt= %h, Sampled rs= %h, Sampled SignImm= %h",
-			$time,$sampled(`GET_REG(instr_rt)),$sampled(`GET_REG(instr_rs)), $sampled(SignImm));	
+// 	MTLO_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == RType && instr_funct == MTLO) 
+// 			|=>
+// 			(`GET_LO == `GET_REG($past(instr_rs,1)))
+// 		) 
+// 		else
+// 		$error("MTLO: Time %0t: Sampled rs= %h, Sampled Lo= %h",
+// 			$time,$sampled(`GET_REG($past(instr_rs,1))),$sampled(`GET_LO));
 	
-	ADDU_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == RType && instr_funct == ADDU) 
-			|->
-			($unsigned(`GET_REG(instr_rd)) == ($unsigned(`GET_REG(instr_rs)) + $unsigned(`GET_REG(instr_rt))))
-		) 
-		else
-		$error("ADDU: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
-			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_rd)));	
+// 	LUI_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == LUI) 
+// 			|=>
+// 			(`GET_REG($past(instr_rt,1)) == {instr_imm,16'b0})
+// 		) 
+// 		else
+// 		$error("LUI: Time %0t: Sampled rt= %h, Sampled Imm= %h",
+// 			$time,$sampled(`GET_REG($past(instr_rt,1))),$sampled(instr_imm));
+
+// // ALU Unsigned Instructions
+// 	ADDIU_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == ADDIU && (instr_rt != 'd0))  // reg[0] always = zero 
+// 			|=>
+// 			(`GET_REG($past(instr_rt,1)) == ($unsigned(`GET_REG($past(instr_rs,1))) + $unsigned(SignImm)))
+// 		) 
+// 		else
+// 		$error("ADDIU: Time %0t: Sampled rt= %h, Sampled rs= %h, Sampled SignImm= %h",
+// 			$time,$sampled(`GET_REG($past(instr_rt,1))),$sampled(`GET_REG($past(instr_rs,1))), $sampled(SignImm));	
+
+// 	SLTIU_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == SLTIU && (instr_rt != 'd0))  // reg[0] always = zero 
+// 			|=>
+// 			(`GET_REG($past(instr_rt,1)) == ($unsigned(`GET_REG($past(instr_rs,1))) < $unsigned(SignImm)))
+// 		) 
+// 		else
+// 		$error("SLTIU: Time %0t: Sampled rt= %h, Sampled rs= %h, Sampled SignImm= %h",
+// 			$time,$sampled(`GET_REG($past(instr_rt,1))),$sampled(`GET_REG($past(instr_rs,1))), $sampled(SignImm));	
 	
-	SUBU_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == RType && instr_funct == SUBU) 
-			|->
-			($unsigned(`GET_REG(instr_rd)) == ($unsigned(`GET_REG(instr_rs)) - $unsigned(`GET_REG(instr_rt))))
-		) 
-		else
-		$error("SUBU: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
-			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_rd)));
-
-	SLTU_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == RType && instr_funct == SLTU) 
-			|->
-			(`GET_REG(instr_rd) == ($unsigned(`GET_REG(instr_rs)) < $unsigned(`GET_REG(instr_rt))))
-		) 
-		else
-		$error("SLTU: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
-			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)), $sampled(`GET_REG(instr_rd)));
-
-// ALU Immediate Instructions
-	ADDI_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == ADDI && (instr_rt != 'd0))  // reg[0] always = zero 
-			|->
-			(`GET_REG(instr_rt) == ($signed(`GET_REG(instr_rs)) + $signed(SignImm)))
-			&& (arth_overflow_exception == ((`GET_REG(instr_rs)[31] == SignImm[31]) && (`GET_REG(instr_rt)[31] != `GET_REG(instr_rs)[31])))
-		) 
-		else
-		$error("ADDI: Time %0t: Sampled rt= %h, Sampled rs= %h, Sampled SignImm= %h , overflow = %b , sum = %h",
-			$time,$sampled(`GET_REG(instr_rt)),$sampled(`GET_REG(instr_rs)), $sampled(SignImm),$sampled(arth_overflow_exception),$sampled(($signed(`GET_REG(instr_rs)) + $signed(SignImm))));	
-
-	SLTI_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == SLTI && (instr_rt != 'd0))  // reg[0] always = zero 
-			|->
-			(`GET_REG(instr_rt) == ($signed(`GET_REG(instr_rs)) < $signed(SignImm)))
-		) 
-		else
-		$error("SLTI: Time %0t: Sampled rt= %h, Sampled rs= %h, Sampled SignImm= %h",
-			$time,$sampled(`GET_REG(instr_rt)),$sampled(`GET_REG(instr_rs)), $sampled(SignImm));	
-
-	ANDI_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == ANDI && (instr_rt != 'd0))  // reg[0] always = zero 
-			|->
-			(`GET_REG(instr_rt) == (`GET_REG(instr_rs) & ZeroImm))
-		) 
-		else
-		$error("ANDI: Time %0t: Sampled rt= %h, Sampled rs= %h, Sampled ZeroImm= %h",
-			$time,$sampled(`GET_REG(instr_rt)),$sampled(`GET_REG(instr_rs)), $sampled(ZeroImm));	
-
-	ORI_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == ORI && (instr_rt != 'd0))  // reg[0] always = zero 
-			|->
-			(`GET_REG(instr_rt) == (`GET_REG(instr_rs) | ZeroImm))
-		) 
-		else
-		$error("ORI: Time %0t: Sampled rt= %h, Sampled rs= %h, Sampled ZeroImm= %h",
-			$time,$sampled(`GET_REG(instr_rt)),$sampled(`GET_REG(instr_rs)), $sampled(ZeroImm));	
-
-	XORI_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == XORI && (instr_rt != 'd0))  // reg[0] always = zero 
-			|->
-			(`GET_REG(instr_rt) == (`GET_REG(instr_rs) ^ ZeroImm))
-		) 
-		else
-		$error("XORI: Time %0t: Sampled rt= %h, Sampled rs= %h, Sampled ZeroImm= %h",
-			$time,$sampled(`GET_REG(instr_rt)),$sampled(`GET_REG(instr_rs)), $sampled(ZeroImm));	
-
-// Jump Instructions 
-	J_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == J) 
-			|->
-			(pc == `JTA)
-		) 
-		else
-		$error("J: Time %0t: PC = %h, JTA = %h",
-			$time,$sampled(pc),$sampled(`JTA));
-
-	JR_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == RType && instr_funct == JR) 
-			|->
-			(pc == `GET_REG(instr_rs))
-		) 
-		else
-		$error("JR: Time %0t: PC = %h, rs = %h",
-			$time,$sampled(pc),$sampled(`GET_REG(instr_rs)));
+// 	ADDU_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == RType && instr_funct == ADDU) 
+// 			|=>
+// 			($unsigned(`GET_REG($past(instr_rd,1))) == ($unsigned(`GET_REG($past(instr_rs,1))) + $unsigned(`GET_REG($past(instr_rt,1)))))
+// 		) 
+// 		else
+// 		$error("ADDU: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
+// 			$time,$sampled(`GET_REG($past(instr_rs,1))),$sampled(`GET_REG($past(instr_rt,1))), $sampled(`GET_REG($past(instr_rd,1))));	
 	
-	JALR_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == RType && instr_funct == JALR) 
-			|->
-			((pc == `GET_REG(instr_rs)) && (`GET_RA == ($past(pc) + 4)))
-		) 
-		else
-		$error("JALR: Time %0t: PC = %h, [rs] = %h ,$ra = %h , Last PC = %h",
-			$time,$sampled(pc),$sampled(`GET_REG(instr_rs)),$sampled(`GET_RA),$sampled($past(pc)));
+// 	SUBU_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == RType && instr_funct == SUBU) 
+// 			|=>
+// 			($unsigned(`GET_REG($past(instr_rd,1))) == ($unsigned(`GET_REG($past(instr_rs,1))) - $unsigned(`GET_REG($past(instr_rt,1)))))
+// 		) 
+// 		else
+// 		$error("SUBU: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
+// 			$time,$sampled(`GET_REG($past(instr_rs,1))),$sampled(`GET_REG($past(instr_rt,1))), $sampled(`GET_REG($past(instr_rd,1))));
+
+// 	SLTU_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == RType && instr_funct == SLTU) 
+// 			|=>
+// 			(`GET_REG($past(instr_rd,1)) == ($unsigned(`GET_REG($past(instr_rs,1))) < $unsigned(`GET_REG($past(instr_rt,1)))))
+// 		) 
+// 		else
+// 		$error("SLTU: Time %0t: Sampled rs= %h, Sampled rt= %h, Sampled rd= %h",
+// 			$time,$sampled(`GET_REG($past(instr_rs,1))),$sampled(`GET_REG($past(instr_rt,1))), $sampled(`GET_REG($past(instr_rd,1))));
+
+// // ALU Immediate Instructions
+// 	ADDI_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == ADDI && (instr_rt != 'd0))  // reg[0] always = zero 
+// 			|=>
+// 			(`GET_REG($past(instr_rt,1)) == ($signed(`GET_REG($past(instr_rs,1))) + $signed(SignImm)))
+// 			&& (arth_overflow_exception == ((`GET_REG($past(instr_rs,1))[31] == SignImm[31]) && (`GET_REG($past(instr_rt,1))[31] != `GET_REG($past(instr_rs,1))[31])))
+// 		) 
+// 		else
+// 		$error("ADDI: Time %0t: Sampled rt= %h, Sampled rs= %h, Sampled SignImm= %h , overflow = %b , sum = %h",
+// 			$time,$sampled(`GET_REG($past(instr_rt,1))),$sampled(`GET_REG($past(instr_rs,1))), $sampled(SignImm),$sampled(arth_overflow_exception),$sampled(($signed(`GET_REG($past(instr_rs,1))) + $signed(SignImm))));	
+
+// 	SLTI_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == SLTI && (instr_rt != 'd0))  // reg[0] always = zero 
+// 			|=>
+// 			(`GET_REG($past(instr_rt,1)) == ($signed(`GET_REG($past(instr_rs,1))) < $signed(SignImm)))
+// 		) 
+// 		else
+// 		$error("SLTI: Time %0t: Sampled rt= %h, Sampled rs= %h, Sampled SignImm= %h",
+// 			$time,$sampled(`GET_REG($past(instr_rt,1))),$sampled(`GET_REG($past(instr_rs,1))), $sampled(SignImm));	
+
+// 	ANDI_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == ANDI && (instr_rt != 'd0))  // reg[0] always = zero 
+// 			|=>
+// 			(`GET_REG($past(instr_rt,1)) == (`GET_REG($past(instr_rs,1)) & ZeroImm))
+// 		) 
+// 		else
+// 		$error("ANDI: Time %0t: Sampled rt= %h, Sampled rs= %h, Sampled ZeroImm= %h",
+// 			$time,$sampled(`GET_REG($past(instr_rt,1))),$sampled(`GET_REG($past(instr_rs,1))), $sampled(ZeroImm));	
+
+// 	ORI_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == ORI && (instr_rt != 'd0))  // reg[0] always = zero 
+// 			|=>
+// 			(`GET_REG($past(instr_rt,1)) == (`GET_REG($past(instr_rs,1)) | ZeroImm))
+// 		) 
+// 		else
+// 		$error("ORI: Time %0t: Sampled rt= %h, Sampled rs= %h, Sampled ZeroImm= %h",
+// 			$time,$sampled(`GET_REG($past(instr_rt,1))),$sampled(`GET_REG($past(instr_rs,1))), $sampled(ZeroImm));	
+
+// 	XORI_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == XORI && (instr_rt != 'd0))  // reg[0] always = zero 
+// 			|=>
+// 			(`GET_REG($past(instr_rt,1)) == (`GET_REG($past(instr_rs,1)) ^ ZeroImm))
+// 		) 
+// 		else
+// 		$error("XORI: Time %0t: Sampled rt= %h, Sampled rs= %h, Sampled ZeroImm= %h",
+// 			$time,$sampled(`GET_REG($past(instr_rt,1))),$sampled(`GET_REG($past(instr_rs,1))), $sampled(ZeroImm));	
+
+// // Jump Instructions 
+// 	J_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == J) 
+// 			|=>
+// 			(pc == `JTA)
+// 		) 
+// 		else
+// 		$error("J: Time %0t: PC = %h, JTA = %h",
+// 			$time,$sampled(pc),$sampled(`JTA));
+
+// 	JR_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == RType && instr_funct == JR) 
+// 			|=>
+// 			(pc == `GET_REG($past(instr_rs,1)))
+// 		) 
+// 		else
+// 		$error("JR: Time %0t: PC = %h, rs = %h",
+// 			$time,$sampled(pc),$sampled(`GET_REG($past(instr_rs,1))));
 	
-// Branch Instructions 
-	BEQ_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == BEQ) 
-			|-> 
-			if(`GET_REG(instr_rs) == `GET_REG(instr_rt)) 
-				(pc == `BTA)
-			else
-				(pc == $past(pc) + 4)	
-		) 
-		else
-		$error("BEQ: Time %0t: [rs] = %h ,[rt] = %h, BTA = %h,PC = %h",
-			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)),$sampled(`BTA),$sampled(pc));
-		// $error("BEQ: Time %0t: [rs] = %h ,[rt] = %h, PC = %h, BTA = %h , PC+4= %h , SignImm << 2 = %h",
-		// 	$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)),$sampled(pc)
-		// 	,$sampled(`BTA),$sampled($past(pc)+4),$sampled(SignImm<<2));
+// 	JALR_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == RType && instr_funct == JALR) 
+// 			|=>
+// 			((pc == `GET_REG($past(instr_rs,1))) && (`GET_RA == ($past(pc) + 4)))
+// 		) 
+// 		else
+// 		$error("JALR: Time %0t: PC = %h, [rs] = %h ,$ra = %h , Last PC = %h",
+// 			$time,$sampled(pc),$sampled(`GET_REG($past(instr_rs,1))),$sampled(`GET_RA),$sampled($past(pc)));
+	
+// // Branch Instructions 
+// 	BEQ_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == BEQ) 
+// 			|=> 
+// 			if(`GET_REG($past(instr_rs,1)) == `GET_REG($past(instr_rt,1))) 
+// 				(pc == `BTA)
+// 			else
+// 				(pc == $past(pc) + 4)	
+// 		) 
+// 		else
+// 		$error("BEQ: Time %0t: [rs] = %h ,[rt] = %h, BTA = %h,PC = %h",
+// 			$time,$sampled(`GET_REG($past(instr_rs,1))),$sampled(`GET_REG($past(instr_rt,1))),$sampled(`BTA),$sampled(pc));
+// 		// $error("BEQ: Time %0t: [rs] = %h ,[rt] = %h, PC = %h, BTA = %h , PC+4= %h , SignImm << 2 = %h",
+// 		// 	$time,$sampled(`GET_REG($past(instr_rs,1))),$sampled(`GET_REG($past(instr_rt,1))),$sampled(pc)
+// 		// 	,$sampled(`BTA),$sampled($past(pc)+4),$sampled(SignImm<<2));
 
-	BNE_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == BNE) 
-			|->
-			if(`GET_REG(instr_rs) != `GET_REG(instr_rt)) 
-				(pc == `BTA)
-			else
-				(pc == $past(pc) + 4)
-		) 
-		else
-		$error("BNE: Time %0t: [rs] = %h ,[rt] = %h, BTA = %h,PC = %h",
-			$time,$sampled(`GET_REG(instr_rs)),$sampled(`GET_REG(instr_rt)),$sampled(`BTA),$sampled(pc));
+// 	BNE_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == BNE) 
+// 			|=>
+// 			if(`GET_REG($past(instr_rs,1)) != `GET_REG($past(instr_rt,1))) 
+// 				(pc == `BTA)
+// 			else
+// 				(pc == $past(pc) + 4)
+// 		) 
+// 		else
+// 		$error("BNE: Time %0t: [rs] = %h ,[rt] = %h, BTA = %h,PC = %h",
+// 			$time,$sampled(`GET_REG($past(instr_rs,1))),$sampled(`GET_REG($past(instr_rt,1))),$sampled(`BTA),$sampled(pc));
 
-	BLTZ_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == BLT_BGEZ && instr_rt == 0) 
-			|->
-			if($signed(`GET_REG(instr_rs)) < 0) 
-				(pc == `BTA)
-			else
-				(pc == $past(pc) + 4)
-		) 
-		else
-		$error("BLTZ: Time %0t: [rs] = %h , BTA = %h,PC = %h",
-			$time,$sampled(`GET_REG(instr_rs)),$sampled(`BTA),$sampled(pc));
+// 	BLTZ_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == BLT_BGEZ && instr_rt == 0) 
+// 			|=>
+// 			if($signed(`GET_REG($past(instr_rs,1))) < 0) 
+// 				(pc == `BTA)
+// 			else
+// 				(pc == $past(pc) + 4)
+// 		) 
+// 		else
+// 		$error("BLTZ: Time %0t: [rs] = %h , BTA = %h,PC = %h",
+// 			$time,$sampled(`GET_REG($past(instr_rs,1))),$sampled(`BTA),$sampled(pc));
 
-	BGEZ_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == BLT_BGEZ && instr_rt == 1) 
-			|->
-			if($signed(`GET_REG(instr_rs)) >= 0) 
-				(pc == `BTA)
-			else
-				(pc == $past(pc) + 4)
-		) 
-		else
-		$error("BGEZ: Time %0t: [rs] = %h , BTA = %h,PC = %h",
-			$time,$sampled(`GET_REG(instr_rs)),$sampled(`BTA),$sampled(pc));
+// 	BGEZ_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == BLT_BGEZ && instr_rt == 1) 
+// 			|=>
+// 			if($signed(`GET_REG($past(instr_rs,1))) >= 0) 
+// 				(pc == `BTA)
+// 			else
+// 				(pc == $past(pc) + 4)
+// 		) 
+// 		else
+// 		$error("BGEZ: Time %0t: [rs] = %h , BTA = %h,PC = %h",
+// 			$time,$sampled(`GET_REG($past(instr_rs,1))),$sampled(`BTA),$sampled(pc));
 
-	BLEZ_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == BLEZ) 
-			|->
-			if($signed(`GET_REG(instr_rs)) <= 0) 
-				(pc == `BTA)
-			else
-				(pc == $past(pc) + 4)
-		) 
-		else
-		$error("BLEZ: Time %0t: [rs] = %h , BTA = %h,PC = %h",
-			$time,$sampled(`GET_REG(instr_rs)),$sampled(`BTA),$sampled(pc));
+// 	BLEZ_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == BLEZ) 
+// 			|=>
+// 			if($signed(`GET_REG($past(instr_rs,1))) <= 0) 
+// 				(pc == `BTA)
+// 			else
+// 				(pc == $past(pc) + 4)
+// 		) 
+// 		else
+// 		$error("BLEZ: Time %0t: [rs] = %h , BTA = %h,PC = %h",
+// 			$time,$sampled(`GET_REG($past(instr_rs,1))),$sampled(`BTA),$sampled(pc));
 
-	BGTZ_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == BGTZ) 
-			|->
-			if($signed(`GET_REG(instr_rs)) > 0) 
-				(pc == `BTA)
-			else
-				(pc == $past(pc) + 4)
-		) 
-		else
-		$error("BGTZ: Time %0t: [rs] = %h , BTA = %h,PC = %h",
-			$time,$sampled(`GET_REG(instr_rs)),$sampled(`BTA),$sampled(pc));
+// 	BGTZ_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == BGTZ) 
+// 			|=>
+// 			if($signed(`GET_REG($past(instr_rs,1))) > 0) 
+// 				(pc == `BTA)
+// 			else
+// 				(pc == $past(pc) + 4)
+// 		) 
+// 		else
+// 		$error("BGTZ: Time %0t: [rs] = %h , BTA = %h,PC = %h",
+// 			$time,$sampled(`GET_REG($past(instr_rs,1))),$sampled(`BTA),$sampled(pc));
 
-// Load Instructions 
-	LW_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == LW) 
-			|->
-			(`GET_REG(instr_rt) == readdata)
-		) 
-		else
-		$error("LW: Time %0t: Sampled rt= %h, Sampled readdata= %h",
-			$time,$sampled(`GET_REG(instr_rt)),$sampled(readdata));	
+// // Load Instructions 
+// 	LW_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == LW) 
+// 			|=>
+// 			(`GET_REG($past(instr_rt,1)) == readdata)
+// 		) 
+// 		else
+// 		$error("LW: Time %0t: Sampled rt= %h, Sampled readdata= %h",
+// 			$time,$sampled(`GET_REG($past(instr_rt,1))),$sampled(readdata));	
 
-	LB_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == LB) 
-			|->
-			(`GET_REG(instr_rt) == {{24{readdata[7]}},readdata[7:0]})
-		) 
-		else
-		$error("LB: Time %0t: Sampled rt= %h, Sampled readdata= %h",
-			$time,$sampled(`GET_REG(instr_rt)),$sampled(readdata));	
+// 	LB_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == LB) 
+// 			|=>
+// 			(`GET_REG($past(instr_rt,1)) == {{24{readdata[7]}},readdata[7:0]})
+// 		) 
+// 		else
+// 		$error("LB: Time %0t: Sampled rt= %h, Sampled readdata= %h",
+// 			$time,$sampled(`GET_REG($past(instr_rt,1))),$sampled(readdata));	
 
-	LH_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == LH) 
-			|->
-			(`GET_REG(instr_rt) == {{16{readdata[15]}},readdata[15:0]})
-		) 
-		else
-		$error("LH: Time %0t: Sampled rt= %h, Sampled readdata= %h",
-			$time,$sampled(`GET_REG(instr_rt)),$sampled(readdata));	
+// 	LH_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == LH) 
+// 			|=>
+// 			(`GET_REG($past(instr_rt,1)) == {{16{readdata[15]}},readdata[15:0]})
+// 		) 
+// 		else
+// 		$error("LH: Time %0t: Sampled rt= %h, Sampled readdata= %h",
+// 			$time,$sampled(`GET_REG($past(instr_rt,1))),$sampled(readdata));	
 
-	LBU_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == LBU) 
-			|->
-			(`GET_REG(instr_rt) == {{24{1'b0}},readdata[7:0]})
-		) 
-		else
-		$error("LBU: Time %0t: Sampled rt= %h, Sampled readdata= %h",
-			$time,$sampled(`GET_REG(instr_rt)),$sampled(readdata));	
+// 	LBU_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == LBU) 
+// 			|=>
+// 			(`GET_REG($past(instr_rt,1)) == {{24{1'b0}},readdata[7:0]})
+// 		) 
+// 		else
+// 		$error("LBU: Time %0t: Sampled rt= %h, Sampled readdata= %h",
+// 			$time,$sampled(`GET_REG($past(instr_rt,1))),$sampled(readdata));	
 
-	LHU_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == LHU) 
-			|->
-			(`GET_REG(instr_rt) == {{16{1'b0}},readdata[15:0]})
-		) 
-		else
-		$error("LHU: Time %0t: Sampled rt= %h, Sampled readdata= %h",
-			$time,$sampled(`GET_REG(instr_rt)),$sampled(readdata));	
+// 	LHU_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == LHU) 
+// 			|=>
+// 			(`GET_REG($past(instr_rt,1)) == {{16{1'b0}},readdata[15:0]})
+// 		) 
+// 		else
+// 		$error("LHU: Time %0t: Sampled rt= %h, Sampled readdata= %h",
+// 			$time,$sampled(`GET_REG($past(instr_rt,1))),$sampled(readdata));	
 
-// Store Instructions
-	SW_ASSERT: 
-		assert property 
-		(
-			@(negedge clk) disable iff(!rst_n) 
-			(instr_opcode == Sw) 
-			|->
-			((`GET_REG(instr_rt) == writedata) && memwrite)
-		) 
-		else
-		$error("SW: Time %0t: Sampled rt= %h, Sampled writedata= %h",
-			$time,$sampled(`GET_REG(instr_rt)),$sampled(writedata));		
+// // Store Instructions
+// 	SW_ASSERT: 
+// 		assert property 
+// 		(
+// 			@(posedge clk) disable iff(!rst_n) 
+// 			(instr_opcode == Sw) 
+// 			|=>
+// 			((`GET_REG($past(instr_rt,1)) == writedata) && memwrite)
+// 		) 
+// 		else
+// 		$error("SW: Time %0t: Sampled rt= %h, Sampled writedata= %h",
+// 			$time,$sampled(`GET_REG($past(instr_rt,1))),$sampled(writedata));		
 
 endmodule

@@ -1,4 +1,5 @@
 ../../rtl/_package.sv
+../../testbench/testbench_2/mips_isa_pkg.sv 
 ../../rtl/mux2.sv 
 ../../rtl/mux4.sv
 ../../rtl/mux8.sv
@@ -15,5 +16,4 @@
 ../../testbench/assertions.sv
 ../../testbench/testbench_2/rtl/data_mem.sv
 ../../testbench/testbench_2/testbench.sv
-../../testbench/testbench_2/mips_isa_pkg.sv 
 ../../testbench/testbench_2/tb_mips_top.sv

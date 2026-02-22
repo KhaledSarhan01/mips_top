@@ -24,8 +24,13 @@ module mips_controller (
         // overflow_mask = 1 there is an overflow 
         // overflow_mask = 0 there is NO overflow 
         logic overflow_mask;
-        assign arth_overflow_exception = overflow_flag & overflow_mask;
-        // assign arth_overflow_exception = overflow_flag;
+        always_ff @( posedge clk or negedge rst_n ) begin 
+            if (!rst_n) begin
+                arth_overflow_exception <= 'b0;
+            end else begin
+                arth_overflow_exception <= overflow_mask & overflow_flag;
+            end
+        end
     // Derived Conditions
         logic e_zero;   // Equal     to  zero
         assign e_zero = zero_flag;
