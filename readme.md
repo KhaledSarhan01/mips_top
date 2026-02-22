@@ -33,6 +33,15 @@ A robust SystemVerilog environment was utilized to ensure architectural integrit
 * Verify the functionality of the implemented instructions by running the `[Test_1,..,Test_5]`Direct testing program.
 * Synthesis on DE1 SoC development board and test the program manually on the Evaluation kit.
 
+## Post Phase 1
+- Multiplier/Divsion
+    - [ ] Create unsigned/signed multiplication.
+    - [ ] Create unsigned/signed division.
+    - [ ] run `[Test_6]`
+    - [ ] try to see how to improve the division performance by pipelining.
+- Verification.
+    - [ ] Create UVM Environment for Verification.
+    - [ ] Create Coverage Groups. 
 # Phase 2: Pipelined MIPS Processor
 ## Plan
 ### Phase 2 Part 1
@@ -40,3 +49,9 @@ A robust SystemVerilog environment was utilized to ensure architectural integrit
 * Implement the early branch decision hardware for branching, predicting branch is not taken.
 * Do Necessary Modifications on MIPS ISA Assertion-based Scoreboard.
 * Verify the functionality of the implemented instructions by running the `[Test_1,..,Test_5]`Direct testing program.
+
+### Phase 2 Part 2
+* Implement the coprocessor0 to handle exceptions, considering its instructions in `Appendix B`.
+* Apply 2-bit dynamic branch prediction for branches, verifying using this shown code `[Test_7]`.
+* Integrate coprocessor0 and branch predictor to MIPS project.
+

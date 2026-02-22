@@ -12,6 +12,25 @@ module mips_core (
     output [DATA_MEM_WIDTH-1:0] memaddr,writedata,
     input  [DATA_MEM_WIDTH-1:0] readdata
 );
+/*
+    TODO: 
+    1. Hazard Unit
+        -[] List All instruction and see what can be hazardous in each type.
+             This is done by knowing 
+                what stages are used in each instruction 
+                how it affects the pipeline
+        -[] Create Stall Signal in PC 
+        -[] Create Stall/ Flush Signals in f2d,d2e,e2m,m2wb registers
+        -[] Create Bypass in Execute Stage for rs_data/rt_data
+        -[] Create Bypass in Decode Stage for rs_data/rt_data
+        -[] Create Hazard Unit to control Hazard Signals 
+    2. Early Branch Detection:
+        -[] Create Early Branch Detection for Branch Instructions 
+        -[] Decide what to do in each Jump instruction.
+        -[] Do Necessary Modifications on the pipeline "pcsrc/JTA/BTA"
+    - [] Make wb_addr be decided on Execute Stage.
+    - [] Test the Pipeline by running Tests 1..5    
+*/
     // Fetch Stage
         // PC
         logic [1:0]  f_pcsrc;
