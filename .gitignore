@@ -24,6 +24,14 @@ sim/sim3/work/*
 sim/sim3/*.mpf_new 
 sim/sim3/transcript
 sim/sim3/*.vstf
+
+sim/sim4/*
+sim/sim4/work/*
+!sim/sim4/wave.do 
+!sim/sim4/start.do 
+!sim/sim4/sourcefile.txt 
+!sim/sim4/reset.do 
+!sim/sim4/done.do
 # Ignore all contents of the reports folder
 sim/sim2/_reports/*
 
