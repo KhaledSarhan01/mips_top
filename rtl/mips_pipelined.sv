@@ -19,8 +19,8 @@ module mips_core (
              This is done by knowing 
                 what stages are used in each instruction 
                 how it affects the pipeline
-        -[] Create Stall Signal in PC 
-        -[] Create Stall/ Flush Signals in f2d,d2e,e2m,m2wb registers
+        -[x] Create Stall Signal in PC 
+        -[x] Create Stall/ Flush Signals in f2d,d2e,e2m,m2wb registers
         -[] Create Bypass in Execute Stage for rs_data/rt_data
         -[] Create Bypass in Decode Stage for rs_data/rt_data
         -[] Create Hazard Unit to control Hazard Signals 
@@ -28,50 +28,74 @@ module mips_core (
         -[x] Create Early Branch Detection for Branch Instructions 
         -[] Decide what to do in each Jump instruction.
         -[x] Do Necessary Modifications on the pipeline "pcsrc/JTA/BTA"
-    - [] Make wb_addr be decided on Execute Stage.
     - [x] remove overflow computation from decode stage into execute stage 
         - only output overflow_mask from controller
     - [] Test the Pipeline by running Tests 1..5    
 */
 // Hazard Unit
+    logic pc_stall;
+    assign pc_stall = 1'b0;
 
+    logic f2d_stall,f2d_flush;
+    assign f2d_stall = 1'b0;
+    assign f2d_flush = 1'b0;
+
+    logic d2e_stall,d2e_flush;
+    assign d2e_stall = 1'b0;
+    assign d2e_flush = 1'b0;
+
+    logic e2m_stall,e2m_flush;
+    assign e2m_stall = 1'b0;
+    assign e2m_flush = 1'b0;
+
+    logic m2wb_stall,m2wb_flush;
+    assign m2wb_stall = 1'b0;
+    assign m2wb_flush = 1'b0;
+    
 // Main Pipeline
     // Fetch Stage
         // PC
-        logic [1:0]  f_pcsrc;
-        logic [31:0] f_regfile;
-        logic [31:0] f_BTA,f_JTA;
-        logic [31:0] f_pc_plus4;
-        logic [31:0] f_pc;
-        pc_reg u_fetch_pc(
-            .clk(clk),
-            .rst_n(rst_n),
-            .pcsrc(f_pcsrc),
-            .regfile(f_regfile),
-            .BTA(f_BTA),
-            .JTA(f_JTA),
-            .pc_plus4(f_pc_plus4),
-            .pc_next(f_pc) 
-        ); 
+            logic [1:0]  f_pcsrc;
+            logic [31:0] f_regfile;
+            logic [31:0] f_BTA,f_JTA;
+            logic [31:0] f_pc_plus4;
+            logic [31:0] f_pc;
+            pc_reg u_fetch_pc(
+                .clk(clk),
+                .rst_n(rst_n),
+                .pcsrc(f_pcsrc),
+                .regfile(f_regfile),
+                .BTA(f_BTA),
+                .JTA(f_JTA),
+                .pc_stall(pc_stall),
+                .pc_plus4(f_pc_plus4),
+                .pc_next(f_pc) 
+            ); 
         // Instruction Memory 
-        logic [INSTR_WITDTH-1:0] f_instr;
-        assign pc      = f_pc;
-        assign f_instr = instr;
+            logic [INSTR_WITDTH-1:0] f_instr;
+            assign pc      = f_pc;
+            assign f_instr = instr;
         // Fetch Decode Register
-        logic [31:0] d_pc;
-        logic [31:0] d_instr;
-        logic [31:0] d_pc_plus4;
-        always_ff @( posedge clk or negedge rst_n ) begin 
-            if (!rst_n) begin
-                d_pc       <= 'b0;
-                d_instr    <= 'b0;
-                d_pc_plus4 <= 'b0;
-            end else begin
-                d_pc       <= f_pc;
-                d_instr    <= f_instr;
-                d_pc_plus4 <= f_pc_plus4;
+            logic [31:0] d_pc;
+            logic [31:0] d_instr;
+            logic [31:0] d_pc_plus4;
+            always_ff @( posedge clk or negedge rst_n ) begin 
+                if (!rst_n) begin
+                    d_pc       <= 'b0;
+                    d_instr    <= 'b0;
+                    d_pc_plus4 <= 'b0;
+                end else begin
+                    if(f2d_flush)begin
+                        d_pc       <= 'b0;
+                        d_instr    <= 'b0;
+                        d_pc_plus4 <= 'b0;
+                    end else if(~f2d_stall)begin
+                        d_pc       <= f_pc;
+                        d_instr    <= f_instr;
+                        d_pc_plus4 <= f_pc_plus4; 
+                    end
+                end
             end
-        end
     // Decode Stage
         // Register File
             // Read ports
@@ -178,226 +202,278 @@ module mips_core (
             );
             
         // JTA/BTA 
-        logic [31:0] d_JTA;
-        logic [31:0] d_BTA;
-        logic [25:0] d_instr_jaddress;
-        assign d_instr_jaddress = d_instr[25:0];
-        assign d_BTA = d_pc_plus4 + (d_se_imm << 2);            // Branch target
-        assign d_JTA = {d_pc[31:28], d_instr_jaddress, 2'b00};  // Jump target
+            logic [31:0] d_JTA;
+            logic [31:0] d_BTA;
+            logic [25:0] d_instr_jaddress;
+            assign d_instr_jaddress = d_instr[25:0];
+            assign d_BTA = d_pc_plus4 + (d_se_imm << 2);            // Branch target
+            assign d_JTA = {d_pc[31:28], d_instr_jaddress, 2'b00};  // Jump target
         
         // Decode Execute Register
-        // Previous Stage
-        logic [31:0]                  e_pc_plus4;
-        logic [31:0]                  e_instr   ;
-        // Controls
-        logic                         e_memwrite     ;
-        logic [2:0]                   e_mem_se_sel   ;
-        logic [ALU_SRC_WIDTH-1:0]     e_alusrc       ;
-        logic [REG_WR_ADDR_WIDTH-1:0] e_regdst       ;
-        logic                         e_regwrite     ;   
-        logic [ALU_CTRL_WIDTH-1:0]    e_alucontrl    ;
-        logic [REG_WR_SRC_WIDTH-1:0]  e_writeBack_sel;
-        logic                         e_hi_write     ;
-        logic                         e_lo_write     ;
-        logic                         e_unsigned_div ;
-        logic                         e_unsigned_mult;
-        logic [HI_LO_SEL_WIDTH-1:0]   e_hi_select    ;
-        logic [HI_LO_SEL_WIDTH-1:0]   e_lo_select    ;
-        logic                         e_overflow_mask;
-        // Register File
-        logic [31:0]                  e_rs_data;
-        logic [31:0]                  e_rt_data;
-        // Immediate Sign Extention
-        logic [31:0]                  e_se_imm;
-        always_ff @( posedge clk or negedge rst_n ) begin 
-            if (!rst_n) begin
-                // Previous Stage
-                e_pc_plus4 <= 'b0;
-                e_instr    <= 'b0;
-                // Controls
-                e_memwrite      <= 'b0;
-                e_mem_se_sel    <= 'b0;
-                e_alusrc        <= 'b0;
-                e_regdst        <= 'b0;
-                e_regwrite      <= 'b0;   
-                e_alucontrl     <= 'b0;
-                e_writeBack_sel <= 'b0;
-                e_hi_write      <= 'b0;
-                e_lo_write      <= 'b0;
-                e_unsigned_div  <= 'b0;
-                e_unsigned_mult <= 'b0;
-                e_hi_select     <= 'b0;
-                e_lo_select     <= 'b0;
-                e_overflow_mask <= 'b0;
-                // Register File
-                e_rs_data <= 'b0;
-                e_rt_data <= 'b0;
-                // Immediate Sign Extention
-                e_se_imm <= 'b0;
-            end else begin
-                // Previous Stage
-                e_pc_plus4 <= d_pc_plus4;
-                e_instr    <= d_instr   ;
-                // Controls
-                e_memwrite      <= d_memwrite     ;
-                e_mem_se_sel    <= d_mem_se_sel   ;
-                e_alusrc        <= d_alusrc       ;
-                e_regdst        <= d_regdst       ;
-                e_regwrite      <= d_regwrite     ;   
-                e_alucontrl     <= d_alucontrl    ;
-                e_writeBack_sel <= d_writeBack_sel;
-                e_hi_write      <= d_hi_write     ;
-                e_lo_write      <= d_lo_write     ;
-                e_unsigned_div  <= d_unsigned_div ;
-                e_unsigned_mult <= d_unsigned_mult;
-                e_hi_select     <= d_hi_select    ;
-                e_lo_select     <= d_lo_select    ; 
-                e_overflow_mask <= d_overflow_mask;
-                // Register File
-                e_rs_data <= d_rs_data;
-                e_rt_data <= d_rt_data;
-                // Immediate Sign Extention
-                e_se_imm <= d_se_imm;
+            // Previous Stage
+            logic [31:0]                  e_pc_plus4;
+            logic [31:0]                  e_instr   ;
+            // Controls
+            logic                         e_memwrite     ;
+            logic [2:0]                   e_mem_se_sel   ;
+            logic [ALU_SRC_WIDTH-1:0]     e_alusrc       ;
+            logic [REG_WR_ADDR_WIDTH-1:0] e_regdst       ;
+            logic                         e_regwrite     ;   
+            logic [ALU_CTRL_WIDTH-1:0]    e_alucontrl    ;
+            logic [REG_WR_SRC_WIDTH-1:0]  e_writeBack_sel;
+            logic                         e_hi_write     ;
+            logic                         e_lo_write     ;
+            logic                         e_unsigned_div ;
+            logic                         e_unsigned_mult;
+            logic [HI_LO_SEL_WIDTH-1:0]   e_hi_select    ;
+            logic [HI_LO_SEL_WIDTH-1:0]   e_lo_select    ;
+            logic                         e_overflow_mask;
+            // Register File
+            logic [31:0]                  e_rs_data;
+            logic [31:0]                  e_rt_data;
+            // Immediate Sign Extention
+            logic [31:0]                  e_se_imm;
+            always_ff @( posedge clk or negedge rst_n ) begin 
+                if (!rst_n) begin
+                    // Previous Stage
+                    e_pc_plus4 <= 'b0;
+                    e_instr    <= 'b0;
+                    // Controls
+                    e_memwrite      <= 'b0;
+                    e_mem_se_sel    <= 'b0;
+                    e_alusrc        <= 'b0;
+                    e_regdst        <= 'b0;
+                    e_regwrite      <= 'b0;   
+                    e_alucontrl     <= 'b0;
+                    e_writeBack_sel <= 'b0;
+                    e_hi_write      <= 'b0;
+                    e_lo_write      <= 'b0;
+                    e_unsigned_div  <= 'b0;
+                    e_unsigned_mult <= 'b0;
+                    e_hi_select     <= 'b0;
+                    e_lo_select     <= 'b0;
+                    e_overflow_mask <= 'b0;
+                    // Register File
+                    e_rs_data <= 'b0;
+                    e_rt_data <= 'b0;
+                    // Immediate Sign Extention
+                    e_se_imm <= 'b0;
+                end else begin
+                    if (d2e_flush) begin
+                        // Previous Stage
+                        e_pc_plus4 <= 'b0;
+                        e_instr    <= 'b0;
+                        // Controls
+                        e_memwrite      <= 'b0;
+                        e_mem_se_sel    <= 'b0;
+                        e_alusrc        <= 'b0;
+                        e_regdst        <= 'b0;
+                        e_regwrite      <= 'b0;   
+                        e_alucontrl     <= 'b0;
+                        e_writeBack_sel <= 'b0;
+                        e_hi_write      <= 'b0;
+                        e_lo_write      <= 'b0;
+                        e_unsigned_div  <= 'b0;
+                        e_unsigned_mult <= 'b0;
+                        e_hi_select     <= 'b0;
+                        e_lo_select     <= 'b0;
+                        e_overflow_mask <= 'b0;
+                        // Register File
+                        e_rs_data <= 'b0;
+                        e_rt_data <= 'b0;
+                        // Immediate Sign Extention
+                        e_se_imm <= 'b0;
+                    end else if(~d2e_stall)begin
+                        // Previous Stage
+                        e_pc_plus4 <= d_pc_plus4;
+                        e_instr    <= d_instr   ;
+                        // Controls
+                        e_memwrite      <= d_memwrite     ;
+                        e_mem_se_sel    <= d_mem_se_sel   ;
+                        e_alusrc        <= d_alusrc       ;
+                        e_regdst        <= d_regdst       ;
+                        e_regwrite      <= d_regwrite     ;   
+                        e_alucontrl     <= d_alucontrl    ;
+                        e_writeBack_sel <= d_writeBack_sel;
+                        e_hi_write      <= d_hi_write     ;
+                        e_lo_write      <= d_lo_write     ;
+                        e_unsigned_div  <= d_unsigned_div ;
+                        e_unsigned_mult <= d_unsigned_mult;
+                        e_hi_select     <= d_hi_select    ;
+                        e_lo_select     <= d_lo_select    ; 
+                        e_overflow_mask <= d_overflow_mask;
+                        // Register File
+                        e_rs_data <= d_rs_data;
+                        e_rt_data <= d_rt_data;
+                        // Immediate Sign Extention
+                        e_se_imm <= d_se_imm; 
+                    end
+                end
             end
-        end
     // Execute Stage
         // ALU
-        // output result
-        logic [31:0] e_alu_result;
-        // Flag // NOTE: NOT USED
-        logic e_zero_flag;
-        logic e_neg_flag;
-
-        logic [4:0]  e_instr_shmat;
-        assign e_instr_shmat = e_instr[10:6];
-
-        logic [31:0] e_srcb;
-        mux4 #(32) u_execute_srcbmux (   
-            .in0(e_rt_data),
-            .in1(e_se_imm),
-            .in2('b0),
-            .in3('b0), 
-            .sel(e_alusrc),
-            .out(e_srcb)
-        );
-        alu u_execute_alu(
-            .clk(clk),
-            .rst_n(rst_n),
-            // input operands 
-            .operand_a(e_rs_data),  // [rs]
-            .operand_b(e_srcb),     // [rt] or signimm
-            .shmat(e_instr_shmat),
-            // ALU control signal
-            .alu_control(e_alucontrl),
             // output result
-            .alu_result(e_alu_result),
-            // overflow
-            .overflow_mask(e_overflow_mask),
-            .arth_overflow_exception(arth_overflow_exception),
-            // Flag 
-            .zero_flag(e_zero_flag),
-            .neg_flag(e_neg_flag)
-        );
+            logic [31:0] e_alu_result;
+            // Flag // NOTE: NOT USED
+            logic e_zero_flag;
+            logic e_neg_flag;
+
+            logic [4:0]  e_instr_shmat;
+            assign e_instr_shmat = e_instr[10:6];
+
+            logic [31:0] e_srcb;
+            mux4 #(32) u_execute_srcbmux (   
+                .in0(e_rt_data),
+                .in1(e_se_imm),
+                .in2('b0),
+                .in3('b0), 
+                .sel(e_alusrc),
+                .out(e_srcb)
+            );
+            alu u_execute_alu(
+                .clk(clk),
+                .rst_n(rst_n),
+                // input operands 
+                .operand_a(e_rs_data),  // [rs]
+                .operand_b(e_srcb),     // [rt] or signimm
+                .shmat(e_instr_shmat),
+                // ALU control signal
+                .alu_control(e_alucontrl),
+                // output result
+                .alu_result(e_alu_result),
+                // overflow
+                .overflow_mask(e_overflow_mask),
+                .arth_overflow_exception(arth_overflow_exception),
+                // Flag 
+                .zero_flag(e_zero_flag),
+                .neg_flag(e_neg_flag)
+            );
         // Multipler/Divider
-        logic [31:0] e_div_hi;
-        logic [31:0] e_div_lo;
-        logic [31:0] e_mult_hi;
-        logic [31:0] e_mult_lo;
-        multipler u_execute_mult(
-            // input clk,rst_n
+            logic [31:0] e_div_hi;
+            logic [31:0] e_div_lo;
+            logic [31:0] e_mult_hi;
+            logic [31:0] e_mult_lo;
+            multipler u_execute_mult(
+                // input clk,rst_n
+                .operand_a(e_rs_data),
+                .operand_b(e_rt_data),
+                .unsigned_mult(e_unsigned_mult),
+                .out_hi(e_mult_hi),
+                .out_lo(e_mult_lo)
+            ); 
+            divider u_excute_div(
+            // input clk,rst_n,
             .operand_a(e_rs_data),
             .operand_b(e_rt_data),
-            .unsigned_mult(e_unsigned_mult),
-            .out_hi(e_mult_hi),
-            .out_lo(e_mult_lo)
-        ); 
-        divider u_excute_div(
-           // input clk,rst_n,
-           .operand_a(e_rs_data),
-           .operand_b(e_rt_data),
-           .unsigned_div(e_unsigned_div),
-           .out_hi(e_div_hi),
-           .out_lo(e_div_lo)
-        ); 
-        // assign div_hi = 'b0;
-        // assign div_lo = 'b0;
+            .unsigned_div(e_unsigned_div),
+            .out_hi(e_div_hi),
+            .out_lo(e_div_lo)
+            ); 
+            // assign div_hi = 'b0;
+            // assign div_lo = 'b0;
 
         // Execute Memory Register
-        // Previous Stage
-        logic [31:0]  m_pc_plus4;
-        logic [31:0]  m_instr   ;
-        logic [31:0]  m_rs_data ;
-        logic [31:0]  m_rt_data ;
-        logic [31:0]  m_se_imm  ;
-        // Controls
-        logic                         m_memwrite     ;
-        logic [2:0]                   m_mem_se_sel   ;
-        logic [REG_WR_ADDR_WIDTH-1:0] m_regdst       ;
-        logic                         m_regwrite     ;
-        logic [REG_WR_SRC_WIDTH-1:0]  m_writeBack_sel;
-        logic                         m_hi_write     ;
-        logic                         m_lo_write     ;
-        logic [HI_LO_SEL_WIDTH-1:0]   m_hi_select    ;
-        logic [HI_LO_SEL_WIDTH-1:0]   m_lo_select    ;
-        // ALU
-        logic [31:0] m_alu_result;
-        // Multipler/Divider
-        logic [31:0] m_div_hi ;
-        logic [31:0] m_div_lo ;
-        logic [31:0] m_mult_hi;
-        logic [31:0] m_mult_lo;
+            // Previous Stage
+            logic [31:0]  m_pc_plus4;
+            logic [31:0]  m_instr   ;
+            logic [31:0]  m_rs_data ;
+            logic [31:0]  m_rt_data ;
+            logic [31:0]  m_se_imm  ;
+            // Controls
+            logic                         m_memwrite     ;
+            logic [2:0]                   m_mem_se_sel   ;
+            logic [REG_WR_ADDR_WIDTH-1:0] m_regdst       ;
+            logic                         m_regwrite     ;
+            logic [REG_WR_SRC_WIDTH-1:0]  m_writeBack_sel;
+            logic                         m_hi_write     ;
+            logic                         m_lo_write     ;
+            logic [HI_LO_SEL_WIDTH-1:0]   m_hi_select    ;
+            logic [HI_LO_SEL_WIDTH-1:0]   m_lo_select    ;
+            // ALU
+            logic [31:0] m_alu_result;
+            // Multipler/Divider
+            logic [31:0] m_div_hi ;
+            logic [31:0] m_div_lo ;
+            logic [31:0] m_mult_hi;
+            logic [31:0] m_mult_lo;
 
-        always_ff @( posedge clk or negedge rst_n) begin 
-            if (!rst_n) begin
-                // Previous Stage
-                m_pc_plus4 <= 'b0;
-                m_instr    <= 'b0;
-                m_rs_data  <= 'b0;
-                m_rt_data  <= 'b0;
-                m_se_imm   <= 'b0;
-                // Controls
-                m_memwrite      <= 'b0;
-                m_mem_se_sel    <= 'b0;
-                m_regdst        <= 'b0;
-                m_regwrite      <= 'b0;
-                m_writeBack_sel <= 'b0;
-                m_hi_write      <= 'b0;
-                m_lo_write      <= 'b0;
-                m_hi_select     <= 'b0;
-                m_lo_select     <= 'b0;
-                // ALU
-                m_alu_result <= 'b0;
-                // Multipler/Divider
-                m_div_hi  <= 'b0;
-                m_div_lo  <= 'b0;
-                m_mult_hi <= 'b0;
-                m_mult_lo <= 'b0;
-            end else begin
-                // Previous Stage
-                m_pc_plus4 <= e_pc_plus4;
-                m_instr    <= e_instr   ;
-                m_rs_data  <= e_rs_data ;
-                m_rt_data  <= e_rt_data ;
-                m_se_imm   <= e_se_imm  ;
-                // Controls
-                m_memwrite      <= e_memwrite     ;
-                m_mem_se_sel    <= e_mem_se_sel   ;
-                m_regdst        <= e_regdst       ;
-                m_regwrite      <= e_regwrite     ;
-                m_writeBack_sel <= e_writeBack_sel;
-                m_hi_write      <= e_hi_write     ;
-                m_lo_write      <= e_lo_write     ;
-                m_hi_select     <= e_hi_select    ;
-                m_lo_select     <= e_lo_select    ;
-                // ALU
-                m_alu_result <= e_alu_result;
-                // Multipler/Divider
-                m_div_hi  <= e_div_hi ;
-                m_div_lo  <= e_div_lo ;
-                m_mult_hi <= e_mult_hi;
-                m_mult_lo <= e_mult_lo;
+            always_ff @( posedge clk or negedge rst_n) begin 
+                if (!rst_n) begin
+                    // Previous Stage
+                    m_pc_plus4 <= 'b0;
+                    m_instr    <= 'b0;
+                    m_rs_data  <= 'b0;
+                    m_rt_data  <= 'b0;
+                    m_se_imm   <= 'b0;
+                    // Controls
+                    m_memwrite      <= 'b0;
+                    m_mem_se_sel    <= 'b0;
+                    m_regdst        <= 'b0;
+                    m_regwrite      <= 'b0;
+                    m_writeBack_sel <= 'b0;
+                    m_hi_write      <= 'b0;
+                    m_lo_write      <= 'b0;
+                    m_hi_select     <= 'b0;
+                    m_lo_select     <= 'b0;
+                    // ALU
+                    m_alu_result <= 'b0;
+                    // Multipler/Divider
+                    m_div_hi  <= 'b0;
+                    m_div_lo  <= 'b0;
+                    m_mult_hi <= 'b0;
+                    m_mult_lo <= 'b0;
+                end else begin
+                    if (e2m_flush) begin
+                        // Previous Stage
+                        m_pc_plus4 <= 'b0;
+                        m_instr    <= 'b0;
+                        m_rs_data  <= 'b0;
+                        m_rt_data  <= 'b0;
+                        m_se_imm   <= 'b0;
+                        // Controls
+                        m_memwrite      <= 'b0;
+                        m_mem_se_sel    <= 'b0;
+                        m_regdst        <= 'b0;
+                        m_regwrite      <= 'b0;
+                        m_writeBack_sel <= 'b0;
+                        m_hi_write      <= 'b0;
+                        m_lo_write      <= 'b0;
+                        m_hi_select     <= 'b0;
+                        m_lo_select     <= 'b0;
+                        // ALU
+                        m_alu_result <= 'b0;
+                        // Multipler/Divider
+                        m_div_hi  <= 'b0;
+                        m_div_lo  <= 'b0;
+                        m_mult_hi <= 'b0;
+                        m_mult_lo <= 'b0;
+                    end else if(~e2m_stall)begin
+                        // Previous Stage
+                        m_pc_plus4 <= e_pc_plus4;
+                        m_instr    <= e_instr   ;
+                        m_rs_data  <= e_rs_data ;
+                        m_rt_data  <= e_rt_data ;
+                        m_se_imm   <= e_se_imm  ;
+                        // Controls
+                        m_memwrite      <= e_memwrite     ;
+                        m_mem_se_sel    <= e_mem_se_sel   ;
+                        m_regdst        <= e_regdst       ;
+                        m_regwrite      <= e_regwrite     ;
+                        m_writeBack_sel <= e_writeBack_sel;
+                        m_hi_write      <= e_hi_write     ;
+                        m_lo_write      <= e_lo_write     ;
+                        m_hi_select     <= e_hi_select    ;
+                        m_lo_select     <= e_lo_select    ;
+                        // ALU
+                        m_alu_result <= e_alu_result;
+                        // Multipler/Divider
+                        m_div_hi  <= e_div_hi ;
+                        m_div_lo  <= e_div_lo ;
+                        m_mult_hi <= e_mult_hi;
+                        m_mult_lo <= e_mult_lo; 
+                    end
+                end
             end
-        end
     // Memory Stage
         // Data Memory
         logic [31:0] m_mem_data;
@@ -407,80 +483,97 @@ module mips_core (
         assign readdata  = m_mem_data;
 
         // Lo/Hi Register
-        logic [31:0] wb_lo_reg,wb_hi_reg;
-        lo_hi_reg u_mem_lo_hi_reg(
-            // Clock and Active Low Reset
-            .clk(clk),
-            .rst_n(rst_n),
-            // Inputs 
-            .reg_file(m_rs_data),
-            .mult_lo(m_mult_lo),
-            .mult_hi(m_mult_hi),
-            .div_lo(m_div_lo),
-            .div_hi(m_div_hi),
-            // Controls
-            .hi_write(m_hi_write),
-            .lo_write(m_lo_write),
-            .hi_select(m_hi_select),
-            .lo_select(m_lo_select),
-            // Outputs
-            .lo_reg(wb_lo_reg),
-            .hi_reg(wb_hi_reg)        
-        );
+            logic [31:0] wb_lo_reg,wb_hi_reg;
+            lo_hi_reg u_mem_lo_hi_reg(
+                // Clock and Active Low Reset
+                .clk(clk),
+                .rst_n(rst_n),
+                // Inputs 
+                .reg_file(m_rs_data),
+                .mult_lo(m_mult_lo),
+                .mult_hi(m_mult_hi),
+                .div_lo(m_div_lo),
+                .div_hi(m_div_hi),
+                // Controls
+                .hi_write(m_hi_write),
+                .lo_write(m_lo_write),
+                .hi_select(m_hi_select),
+                .lo_select(m_lo_select),
+                // Outputs
+                .lo_reg(wb_lo_reg),
+                .hi_reg(wb_hi_reg)        
+            );
         // Memory Data Sign Extention
-        logic [31:0] m_mem_se_data;
-        sign_extended u_mem_write_back_signextent (
-            .in_data(m_mem_data[15:0]),
-            .se_select(m_mem_se_sel),
-            .out_data(m_mem_se_data)
-        );
+            logic [31:0] m_mem_se_data;
+            sign_extended u_mem_write_back_signextent (
+                .in_data(m_mem_data[15:0]),
+                .se_select(m_mem_se_sel),
+                .out_data(m_mem_se_data)
+            );
         // Memory to Write Back Register
-        // Previous Stage
-        logic [31:0]  wb_pc_plus4    ;
-        logic [31:0]  wb_instr       ;
-        logic [31:0]  wb_se_imm      ;
-        logic [31:0]  wb_alu_result  ;
-        logic [31:0]  wb_mult_lo     ;
-        // Controls
-        logic [REG_WR_ADDR_WIDTH-1:0] wb_regdst       ;
-        logic [REG_WR_SRC_WIDTH-1:0]  wb_writeBack_sel;
-        // Data Memory
-        logic [31:0] wb_mem_data;
-        // Memory Data Sign Extention
-        logic [31:0] wb_mem_se_data;
-        always_ff @( posedge clk or negedge rst_n ) begin 
-            if (!rst_n) begin
-                // Previous Stage
-                wb_pc_plus4   <= 'b0;
-                wb_instr      <= 'b0;
-                wb_se_imm     <= 'b0;
-                wb_alu_result <= 'b0;
-                wb_mult_lo    <= 'b0;
-                // Controls
-                wb_regdst        <= 'b0;
-                wb_regwrite      <= 'b0;
-                wb_writeBack_sel <= 'b0;
-                // Data Memory
-                wb_mem_data      <= 'b0;
-                // Memory Data Sign Extention
-                wb_mem_se_data  <= 'b0;
-            end else begin
-                // Previous Stage
-                wb_pc_plus4   <= m_pc_plus4  ;
-                wb_instr      <= m_instr     ;
-                wb_se_imm     <= m_se_imm    ;
-                wb_alu_result <= m_alu_result;
-                wb_mult_lo    <= m_mult_lo   ;
-                // Controls
-                wb_regdst        <= m_regdst       ;
-                wb_regwrite      <= m_regwrite     ;
-                wb_writeBack_sel <= m_writeBack_sel;
-                // Data Memory
-                wb_mem_data      <= m_mem_data;
-                // Memory Data Sign Extention
-                wb_mem_se_data   <= m_mem_se_data;
+            // Previous Stage
+            logic [31:0]  wb_pc_plus4    ;
+            logic [31:0]  wb_instr       ;
+            logic [31:0]  wb_se_imm      ;
+            logic [31:0]  wb_alu_result  ;
+            logic [31:0]  wb_mult_lo     ;
+            // Controls
+            logic [REG_WR_ADDR_WIDTH-1:0] wb_regdst       ;
+            logic [REG_WR_SRC_WIDTH-1:0]  wb_writeBack_sel;
+            // Data Memory
+            logic [31:0] wb_mem_data;
+            // Memory Data Sign Extention
+            logic [31:0] wb_mem_se_data;
+            always_ff @( posedge clk or negedge rst_n ) begin 
+                if (!rst_n) begin
+                    // Previous Stage
+                    wb_pc_plus4   <= 'b0;
+                    wb_instr      <= 'b0;
+                    wb_se_imm     <= 'b0;
+                    wb_alu_result <= 'b0;
+                    wb_mult_lo    <= 'b0;
+                    // Controls
+                    wb_regdst        <= 'b0;
+                    wb_regwrite      <= 'b0;
+                    wb_writeBack_sel <= 'b0;
+                    // Data Memory
+                    wb_mem_data      <= 'b0;
+                    // Memory Data Sign Extention
+                    wb_mem_se_data  <= 'b0;
+                end else begin
+                    if (m2wb_flush) begin
+                        // Previous Stage
+                        wb_pc_plus4   <= 'b0;
+                        wb_instr      <= 'b0;
+                        wb_se_imm     <= 'b0;
+                        wb_alu_result <= 'b0;
+                        wb_mult_lo    <= 'b0;
+                        // Controls
+                        wb_regdst        <= 'b0;
+                        wb_regwrite      <= 'b0;
+                        wb_writeBack_sel <= 'b0;
+                        // Data Memory
+                        wb_mem_data      <= 'b0;
+                        // Memory Data Sign Extention
+                        wb_mem_se_data  <= 'b0;
+                    end else if(~m2wb_stall)begin
+                       // Previous Stage
+                        wb_pc_plus4   <= m_pc_plus4  ;
+                        wb_instr      <= m_instr     ;
+                        wb_se_imm     <= m_se_imm    ;
+                        wb_alu_result <= m_alu_result;
+                        wb_mult_lo    <= m_mult_lo   ;
+                        // Controls
+                        wb_regdst        <= m_regdst       ;
+                        wb_regwrite      <= m_regwrite     ;
+                        wb_writeBack_sel <= m_writeBack_sel;
+                        // Data Memory
+                        wb_mem_data      <= m_mem_data;
+                        // Memory Data Sign Extention
+                        wb_mem_se_data   <= m_mem_se_data;    
+                    end
+                end
             end
-        end
     // Write Back Stage 
         // Write Back Data Source
         mux8 #(32) u_WriteBack_datamux(

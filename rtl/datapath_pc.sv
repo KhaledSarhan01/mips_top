@@ -1,6 +1,7 @@
 module pc_reg(
     input logic clk,
     input logic rst_n,
+    input logic pc_stall,
     input logic [1:0] pcsrc,
     input logic [31:0] regfile,
     input logic [31:0] BTA,JTA,
@@ -12,7 +13,7 @@ module pc_reg(
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             pc_next <= 32'b0;
-        end else begin
+        end else if(~pc_stall)begin
             pc_next <= pc_next_comb;
         end
     end
