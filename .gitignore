@@ -85,3 +85,4 @@ syn//synthesis/
 # !*.sv   (SystemVerilog Source)
 # !*.sdc  (Timing Constraints)
 # !*.mif  (Memory Initialization)
+docs/~$MIPS I ISA.xlsx

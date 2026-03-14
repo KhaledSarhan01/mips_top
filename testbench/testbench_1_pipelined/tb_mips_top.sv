@@ -62,6 +62,7 @@ mips_core u_mips_core(
     // To instruction Memory
     .pc(pc),
     .instr(instr),
+    .arth_overflow_exception(arth_overflow_exception),
     // To Data Memory
     .memwrite(memwrite),
     .memaddr(memaddr),

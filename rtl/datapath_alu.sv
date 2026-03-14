@@ -1,5 +1,6 @@
 import mips_pkg::*;
 module alu (
+    input logic clk,rst_n,
     // input operands 
     input logic [31:0] operand_a, // [rs]
     input logic [31:0] operand_b, // [rt] or signimm
@@ -8,9 +9,11 @@ module alu (
     input logic [ALU_CTRL_WIDTH-1:0] alu_control,
     // output result
     output logic [31:0] alu_result,
+    // overflow 
+    input  logic overflow_mask,
+    output logic arth_overflow_exception,
     // Flag 
     output logic zero_flag,
-    output logic overflow_flag,
     output logic neg_flag
 );
     // ALU operation
@@ -37,4 +40,14 @@ module alu (
     assign zero_flag     = (alu_result == 32'b0) ? 1'b1 : 1'b0;
     assign neg_flag      = alu_result[31]; // MSB is one to determine negitive sign
     assign overflow_flag = (alu_result[31] != operand_a[31]) && (operand_a[31] == operand_b[31]);
+    // Unsigned Overflow Mask
+        // overflow_mask = 1 there is an overflow 
+        // overflow_mask = 0 there is NO overflow 
+        always_ff @( posedge clk or negedge rst_n ) begin 
+            if (!rst_n) begin
+                arth_overflow_exception <= 'b0;
+            end else begin
+                arth_overflow_exception <= overflow_mask & overflow_flag;
+            end
+        end
 endmodule

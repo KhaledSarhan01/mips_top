@@ -25,12 +25,17 @@ module mips_core (
         -[] Create Bypass in Decode Stage for rs_data/rt_data
         -[] Create Hazard Unit to control Hazard Signals 
     2. Early Branch Detection:
-        -[] Create Early Branch Detection for Branch Instructions 
+        -[x] Create Early Branch Detection for Branch Instructions 
         -[] Decide what to do in each Jump instruction.
-        -[] Do Necessary Modifications on the pipeline "pcsrc/JTA/BTA"
+        -[x] Do Necessary Modifications on the pipeline "pcsrc/JTA/BTA"
     - [] Make wb_addr be decided on Execute Stage.
+    - [x] remove overflow computation from decode stage into execute stage 
+        - only output overflow_mask from controller
     - [] Test the Pipeline by running Tests 1..5    
 */
+// Hazard Unit
+
+// Main Pipeline
     // Fetch Stage
         // PC
         logic [1:0]  f_pcsrc;
@@ -68,91 +73,111 @@ module mips_core (
             end
         end
     // Decode Stage
-        // Controller
-        // Flags //TODO: Apply Early Flag Detection Here
-        logic d_zero_flag;
-        logic d_neg_flag;
-        logic d_overflow_flag;
-        // Controls
-        logic                         d_memwrite     ;
-        logic [2:0]                   d_imm_se_sel   ;
-        logic [2:0]                   d_mem_se_sel   ;
-        logic [1:0]                   d_pcsrc        ;
-        logic [ALU_SRC_WIDTH-1:0]     d_alusrc       ;
-        logic [REG_WR_ADDR_WIDTH-1:0] d_regdst       ;
-        logic                         d_regwrite     ;   
-        logic [ALU_CTRL_WIDTH-1:0]    d_alucontrl    ;
-        logic [REG_WR_SRC_WIDTH-1:0]  d_writeBack_sel;
-        logic                         d_hi_write     ;
-        logic                         d_lo_write     ;
-        logic                         d_unsigned_div ;
-        logic                         d_unsigned_mult;
-        logic [HI_LO_SEL_WIDTH-1:0]   d_hi_select    ;
-        logic [HI_LO_SEL_WIDTH-1:0]   d_lo_select    ;
-        mips_controller u_decode_controller(
-            .clk(clk),
-            .rst_n(rst_n),
-            .instr(d_instr),
-            // Flags
-            .zero_flag(d_zero_flag),
-            .neg_flag(d_neg_flag),
-            .overflow_flag(d_overflow_flag),
-            .arth_overflow_exception(arth_overflow_exception),
-            // Controls
-            .memwrite(d_memwrite),
-            .se_select(d_imm_se_sel),
-            .wb_se_select(d_mem_se_sel),
-            .pcsrc(d_pcsrc),
-            .alusrc(d_alusrc),
-            .regdst(d_regdst),
-            .regwrite(d_regwrite),   
-            .alucontrl(d_alucontrl),
-            .write_back_sel(d_writeBack_sel),
-            .hi_write(d_hi_write),
-            .lo_write(d_lo_write),
-            .unsigned_div(d_unsigned_div),
-            .unsigned_mult(d_unsigned_mult),
-            .hi_select(d_hi_select),
-            .lo_select(d_lo_select)
-        );
-
         // Register File
-        // Read ports
-        logic [31:0] d_rs_data;
-        logic [31:0] d_rt_data;
-        logic [4:0]  d_instr_rs,d_instr_rt;
-        assign d_instr_rs = d_instr[25:21];
-        assign d_instr_rt = d_instr[20:16];
-        // Write port
-        logic [4:0]  wb_addr;
-        logic [31:0] wb_data;
-        logic wb_regwrite;
-        reg_file u_decode_regfile (
-            .clk_n(clk),
-            .rst_n(rst_n),
-            .s0(s0),
-            // Read port 1
-            .read_addr1(d_instr_rs),
-            .read_data1(d_rs_data),
-            // Read port 2
-            .read_addr2(d_instr_rt),    
-            .read_data2(d_rt_data),
+            // Read ports
+            logic [31:0] d_rs_data;
+            logic [31:0] d_rt_data;
+            logic [4:0]  d_instr_rs,d_instr_rt;
+            assign d_instr_rs = d_instr[25:21];
+            assign d_instr_rt = d_instr[20:16];
             // Write port
-            .write_addr(wb_addr),
-            .write_data(wb_data),
-            .write_enable(wb_regwrite)
-        );
+            logic [4:0]  wb_addr;
+            logic [31:0] wb_data;
+            logic wb_regwrite;
+            reg_file u_decode_regfile (
+                .clk_n(clk),
+                .rst_n(rst_n),
+                .s0(s0),
+                // Read port 1
+                .read_addr1(d_instr_rs),
+                .read_data1(d_rs_data),
+                // Read port 2
+                .read_addr2(d_instr_rt),    
+                .read_data2(d_rt_data),
+                // Write port
+                .write_addr(wb_addr),
+                .write_data(wb_data),
+                .write_enable(wb_regwrite)
+            );
+        // Early Branch Detection
+            logic    d_zero_flag;
+            logic    d_neg_flag;
+            opcode_t d_instr_casted;
+            assign d_instr_casted = opcode_t'(d_instr);
+            
+            logic  rs_equal_rt, rs_equal_zero,rs_less_zero;
+            assign rs_equal_rt   = (d_rs_data == d_rt_data);
+            assign rs_equal_zero = ~|(d_rs_data);
+            assign rs_less_zero  = (d_rs_data[31]);
+            always_comb begin 
+                d_zero_flag     = 'b0;
+                d_neg_flag      = 'b0;
+                case (d_instr_casted)
+                    BEQ,BNE: d_zero_flag = rs_equal_rt;
+                    BLT_BGEZ,BLEZ,BGTZ:begin
+                        d_zero_flag     = rs_equal_zero;
+                        d_neg_flag      = rs_less_zero;
+                    end 
+                    default:begin
+                        d_zero_flag     = 'b0;
+                        d_neg_flag      = 'b0;
+                    end 
+                endcase
+            end
+        // Controls
+            logic                         d_memwrite     ;
+            logic [2:0]                   d_imm_se_sel   ;
+            logic [2:0]                   d_mem_se_sel   ;
+            logic [1:0]                   d_pcsrc        ;
+            logic [ALU_SRC_WIDTH-1:0]     d_alusrc       ;
+            logic [REG_WR_ADDR_WIDTH-1:0] d_regdst       ;
+            logic                         d_regwrite     ;   
+            logic [ALU_CTRL_WIDTH-1:0]    d_alucontrl    ;
+            logic [REG_WR_SRC_WIDTH-1:0]  d_writeBack_sel;
+            logic                         d_hi_write     ;
+            logic                         d_lo_write     ;
+            logic                         d_unsigned_div ;
+            logic                         d_unsigned_mult;
+            logic [HI_LO_SEL_WIDTH-1:0]   d_hi_select    ;
+            logic [HI_LO_SEL_WIDTH-1:0]   d_lo_select    ; 
+            logic                         d_overflow_mask;
+            mips_controller u_decode_controller(
+                .clk(clk),
+                .rst_n(rst_n),
+                .instr(d_instr),
+                // Flags
+                .zero_flag(d_zero_flag),
+                .neg_flag(d_neg_flag),
+                .overflow_mask(d_overflow_mask),
+                // Controls
+                .memwrite(d_memwrite),
+                .se_select(d_imm_se_sel),
+                .wb_se_select(d_mem_se_sel),
+                .pcsrc(d_pcsrc),
+                .alusrc(d_alusrc),
+                .regdst(d_regdst),
+                .regwrite(d_regwrite),   
+                .alucontrl(d_alucontrl),
+                .write_back_sel(d_writeBack_sel),
+                .hi_write(d_hi_write),
+                .lo_write(d_lo_write),
+                .unsigned_div(d_unsigned_div),
+                .unsigned_mult(d_unsigned_mult),
+                .hi_select(d_hi_select),
+                .lo_select(d_lo_select)
+            );
+    
         // Immediate Sign Extention
-        logic [15:0] d_instr_imm;
-        assign d_instr_imm = d_instr[15:0];
-        logic [31:0] d_se_imm;
-        sign_extended u_decsode_signExtent(
-            .se_select(d_imm_se_sel),
-            .in_data(d_instr_imm),
-            .out_data(d_se_imm)
-        );
-        
-        // JTA/BTA //TODO: Remove the pipeline from them for Early Flag Detection
+            logic [15:0] d_instr_imm;
+            assign d_instr_imm = d_instr[15:0];
+            logic [31:0] d_se_imm;
+            sign_extended u_decode_signExtent(
+                .se_select(d_imm_se_sel),
+                .in_data(d_instr_imm),
+                .out_data(d_se_imm)
+            );
+            
+        // JTA/BTA 
         logic [31:0] d_JTA;
         logic [31:0] d_BTA;
         logic [25:0] d_instr_jaddress;
@@ -167,7 +192,6 @@ module mips_core (
         // Controls
         logic                         e_memwrite     ;
         logic [2:0]                   e_mem_se_sel   ;
-        logic [1:0]                   e_pcsrc        ;
         logic [ALU_SRC_WIDTH-1:0]     e_alusrc       ;
         logic [REG_WR_ADDR_WIDTH-1:0] e_regdst       ;
         logic                         e_regwrite     ;   
@@ -179,9 +203,7 @@ module mips_core (
         logic                         e_unsigned_mult;
         logic [HI_LO_SEL_WIDTH-1:0]   e_hi_select    ;
         logic [HI_LO_SEL_WIDTH-1:0]   e_lo_select    ;
-        // JTA/BTA
-        logic [31:0]                  e_JTA;
-        logic [31:0]                  e_BTA;
+        logic                         e_overflow_mask;
         // Register File
         logic [31:0]                  e_rs_data;
         logic [31:0]                  e_rt_data;
@@ -195,7 +217,6 @@ module mips_core (
                 // Controls
                 e_memwrite      <= 'b0;
                 e_mem_se_sel    <= 'b0;
-                e_pcsrc         <= 'b0;
                 e_alusrc        <= 'b0;
                 e_regdst        <= 'b0;
                 e_regwrite      <= 'b0;   
@@ -207,9 +228,7 @@ module mips_core (
                 e_unsigned_mult <= 'b0;
                 e_hi_select     <= 'b0;
                 e_lo_select     <= 'b0;
-                // JTA/BTA
-                e_JTA <='b0;
-                e_BTA <='b0;
+                e_overflow_mask <= 'b0;
                 // Register File
                 e_rs_data <= 'b0;
                 e_rt_data <= 'b0;
@@ -222,7 +241,6 @@ module mips_core (
                 // Controls
                 e_memwrite      <= d_memwrite     ;
                 e_mem_se_sel    <= d_mem_se_sel   ;
-                e_pcsrc         <= d_pcsrc        ;
                 e_alusrc        <= d_alusrc       ;
                 e_regdst        <= d_regdst       ;
                 e_regwrite      <= d_regwrite     ;   
@@ -233,10 +251,8 @@ module mips_core (
                 e_unsigned_div  <= d_unsigned_div ;
                 e_unsigned_mult <= d_unsigned_mult;
                 e_hi_select     <= d_hi_select    ;
-                e_lo_select     <= d_lo_select    ;
-                // JTA/BTA // TODO: Remove
-                e_JTA <= d_JTA;
-                e_BTA <= d_BTA;
+                e_lo_select     <= d_lo_select    ; 
+                e_overflow_mask <= d_overflow_mask;
                 // Register File
                 e_rs_data <= d_rs_data;
                 e_rt_data <= d_rt_data;
@@ -250,7 +266,6 @@ module mips_core (
         logic [31:0] e_alu_result;
         // Flag // NOTE: NOT USED
         logic e_zero_flag;
-        logic e_overflow_flag;
         logic e_neg_flag;
 
         logic [4:0]  e_instr_shmat;
@@ -266,6 +281,8 @@ module mips_core (
             .out(e_srcb)
         );
         alu u_execute_alu(
+            .clk(clk),
+            .rst_n(rst_n),
             // input operands 
             .operand_a(e_rs_data),  // [rs]
             .operand_b(e_srcb),     // [rt] or signimm
@@ -274,9 +291,11 @@ module mips_core (
             .alu_control(e_alucontrl),
             // output result
             .alu_result(e_alu_result),
+            // overflow
+            .overflow_mask(e_overflow_mask),
+            .arth_overflow_exception(arth_overflow_exception),
             // Flag 
             .zero_flag(e_zero_flag),
-            .overflow_flag(e_overflow_flag),
             .neg_flag(e_neg_flag)
         );
         // Multipler/Divider
@@ -284,7 +303,7 @@ module mips_core (
         logic [31:0] e_div_lo;
         logic [31:0] e_mult_hi;
         logic [31:0] e_mult_lo;
-        multipler u_mips_datapath_mult(
+        multipler u_execute_mult(
             // input clk,rst_n
             .operand_a(e_rs_data),
             .operand_b(e_rt_data),
@@ -292,7 +311,7 @@ module mips_core (
             .out_hi(e_mult_hi),
             .out_lo(e_mult_lo)
         ); 
-        divider u_mips_datapath_div(
+        divider u_excute_div(
            // input clk,rst_n,
            .operand_a(e_rs_data),
            .operand_b(e_rt_data),
@@ -307,15 +326,12 @@ module mips_core (
         // Previous Stage
         logic [31:0]  m_pc_plus4;
         logic [31:0]  m_instr   ;
-        logic [31:0]  m_JTA     ;
-        logic [31:0]  m_BTA     ;
         logic [31:0]  m_rs_data ;
         logic [31:0]  m_rt_data ;
         logic [31:0]  m_se_imm  ;
         // Controls
         logic                         m_memwrite     ;
         logic [2:0]                   m_mem_se_sel   ;
-        logic [1:0]                   m_pcsrc        ;
         logic [REG_WR_ADDR_WIDTH-1:0] m_regdst       ;
         logic                         m_regwrite     ;
         logic [REG_WR_SRC_WIDTH-1:0]  m_writeBack_sel;
@@ -336,15 +352,12 @@ module mips_core (
                 // Previous Stage
                 m_pc_plus4 <= 'b0;
                 m_instr    <= 'b0;
-                m_JTA      <= 'b0;
-                m_BTA      <= 'b0;
                 m_rs_data  <= 'b0;
                 m_rt_data  <= 'b0;
                 m_se_imm   <= 'b0;
                 // Controls
                 m_memwrite      <= 'b0;
                 m_mem_se_sel    <= 'b0;
-                m_pcsrc         <= 'b0;
                 m_regdst        <= 'b0;
                 m_regwrite      <= 'b0;
                 m_writeBack_sel <= 'b0;
@@ -363,15 +376,12 @@ module mips_core (
                 // Previous Stage
                 m_pc_plus4 <= e_pc_plus4;
                 m_instr    <= e_instr   ;
-                m_JTA      <= e_JTA     ;
-                m_BTA      <= e_BTA     ;
                 m_rs_data  <= e_rs_data ;
                 m_rt_data  <= e_rt_data ;
                 m_se_imm   <= e_se_imm  ;
                 // Controls
                 m_memwrite      <= e_memwrite     ;
                 m_mem_se_sel    <= e_mem_se_sel   ;
-                m_pcsrc         <= e_pcsrc        ;
                 m_regdst        <= e_regdst       ;
                 m_regwrite      <= e_regwrite     ;
                 m_writeBack_sel <= e_writeBack_sel;
@@ -428,13 +438,10 @@ module mips_core (
         // Previous Stage
         logic [31:0]  wb_pc_plus4    ;
         logic [31:0]  wb_instr       ;
-        logic [31:0]  wb_JTA         ;
-        logic [31:0]  wb_BTA         ;
         logic [31:0]  wb_se_imm      ;
         logic [31:0]  wb_alu_result  ;
         logic [31:0]  wb_mult_lo     ;
         // Controls
-        logic [1:0]                   wb_pcsrc        ;
         logic [REG_WR_ADDR_WIDTH-1:0] wb_regdst       ;
         logic [REG_WR_SRC_WIDTH-1:0]  wb_writeBack_sel;
         // Data Memory
@@ -446,13 +453,10 @@ module mips_core (
                 // Previous Stage
                 wb_pc_plus4   <= 'b0;
                 wb_instr      <= 'b0;
-                wb_JTA        <= 'b0;
-                wb_BTA        <= 'b0;
                 wb_se_imm     <= 'b0;
                 wb_alu_result <= 'b0;
                 wb_mult_lo    <= 'b0;
                 // Controls
-                wb_pcsrc         <= 'b0;
                 wb_regdst        <= 'b0;
                 wb_regwrite      <= 'b0;
                 wb_writeBack_sel <= 'b0;
@@ -464,13 +468,10 @@ module mips_core (
                 // Previous Stage
                 wb_pc_plus4   <= m_pc_plus4  ;
                 wb_instr      <= m_instr     ;
-                wb_JTA        <= m_JTA       ;
-                wb_BTA        <= m_BTA       ;
                 wb_se_imm     <= m_se_imm    ;
                 wb_alu_result <= m_alu_result;
                 wb_mult_lo    <= m_mult_lo   ;
                 // Controls
-                wb_pcsrc         <= m_pcsrc        ;
                 wb_regdst        <= m_regdst       ;
                 wb_regwrite      <= m_regwrite     ;
                 wb_writeBack_sel <= m_writeBack_sel;
@@ -498,7 +499,7 @@ module mips_core (
         logic [4:0] wb_instr_rt,wb_instr_rd;
         assign wb_instr_rs = wb_instr[25:21];
         assign wb_instr_rt = wb_instr[20:16];
-        mux4 #(5) u_mips_datapath_wrmux(
+        mux4 #(5) u_WriteBack_addrmux(
             .in0(wb_instr_rt), 
             .in1(wb_instr_rd),
             .in2(5'd31),
@@ -507,8 +508,8 @@ module mips_core (
             .out(wb_addr)
         );
         // Write Back to Fetch passing 
-        assign f_JTA = wb_JTA;
-        assign f_BTA = wb_BTA;
-        assign f_pcsrc = wb_pcsrc;
+        assign f_JTA   = d_JTA;
+        assign f_BTA   = d_BTA;
+        assign f_pcsrc = d_pcsrc;
         
 endmodule

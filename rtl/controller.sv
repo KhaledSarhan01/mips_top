@@ -5,8 +5,7 @@ module mips_controller (
         // Flags
         input  logic zero_flag,
         input  logic neg_flag,
-        input  logic overflow_flag,
-        output logic arth_overflow_exception,
+        output logic overflow_mask,
         // Controls
         output logic memwrite,
         output logic [2:0] se_select,wb_se_select,
@@ -20,17 +19,6 @@ module mips_controller (
         output logic unsigned_div,unsigned_mult,
         output logic [HI_LO_SEL_WIDTH-1:0] hi_select,lo_select
     );
-    // Unsigned Overflow Mask
-        // overflow_mask = 1 there is an overflow 
-        // overflow_mask = 0 there is NO overflow 
-        logic overflow_mask;
-        always_ff @( posedge clk or negedge rst_n ) begin 
-            if (!rst_n) begin
-                arth_overflow_exception <= 'b0;
-            end else begin
-                arth_overflow_exception <= overflow_mask & overflow_flag;
-            end
-        end
     // Derived Conditions
         logic e_zero;   // Equal     to  zero
         assign e_zero = zero_flag;
