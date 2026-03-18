@@ -40,38 +40,19 @@ module mips_core (
     logic [31:0] wb_data;
 // Hazard Unit Signals
     logic pc_stall;
-    assign pc_stall = 1'b0;
-
     logic f2d_stall,f2d_flush;
-    assign f2d_stall = 1'b0;
-    assign f2d_flush = 1'b0;
-
     logic d2e_stall,d2e_flush;
-    assign d2e_stall = 1'b0;
-    assign d2e_flush = 1'b0;
-
     logic e2m_stall,e2m_flush;
-    assign e2m_stall = 1'b0;
-    assign e2m_flush = 1'b0;
-
     logic m2wb_stall,m2wb_flush;
-    assign m2wb_stall = 1'b0;
-    assign m2wb_flush = 1'b0;
+    logic ra_handle;
 
     logic [2:0] bypass_decode_rs_sel;
-    assign bypass_decode_rs_sel = 'b0; 
     logic [2:0] bypass_decode_rt_sel;
-    assign bypass_decode_rt_sel = 'b0; 
-
-    logic [2:0] bypass_execute_rs_sel;
-    assign bypass_execute_rs_sel = 'b0; 
+    logic [2:0] bypass_execute_rs_sel; 
     logic [2:0] bypass_execute_rt_sel;
-    assign bypass_execute_rt_sel = 'b0; 
 
-    logic [1:0] bypass_mem_rs_sel;
-    assign bypass_mem_rs_sel = 'b0; 
-    logic [1:0] bypass_mem_rt_sel;
-    assign bypass_mem_rt_sel = 'b0; 
+    logic [1:0] bypass_mem_rs_sel; 
+    logic [1:0] bypass_mem_rt_sel; 
 // Main Pipeline
     // Fetch Stage
         // PC
@@ -125,8 +106,9 @@ module mips_core (
             assign d_instr_rs = d_instr[25:21];
             assign d_instr_rt = d_instr[20:16];
             // Write port
-            logic [4:0]  wb_addr;
-            logic wb_regwrite;
+            logic [31:0] regfile_wrdata;
+            logic [4:0]  wb_addr,regfile_wraddr;
+            logic wb_regwrite,regfile_wren;
             reg_file u_decode_regfile (
                 .clk_n(clk),
                 .rst_n(rst_n),
@@ -138,16 +120,37 @@ module mips_core (
                 .read_addr2(d_instr_rt),    
                 .read_data2(d_rt_data_regfile),
                 // Write port
-                .write_addr(wb_addr),
-                .write_data(wb_data),
-                .write_enable(wb_regwrite)
+                .write_addr(regfile_wraddr),
+                .write_data(regfile_wrdata),
+                .write_enable(regfile_wren)
             );
+            // Jump $ra Bypass
+            mux2 #(.DATA_WIDTH(32)) u_decode_reg_data_bypass(
+                .in0(wb_data),
+                .in1(d_pc_plus4),
+                .out(regfile_wrdata),
+                .sel(ra_handle)
+            );
+            mux2 #(.DATA_WIDTH(5)) u_decode_reg_addr_bypass(
+                .in0(wb_addr),
+                .in1('d31),
+                .out(regfile_wraddr),
+                .sel(ra_handle)
+            );
+            mux2 #(.DATA_WIDTH(1)) u_decode_reg_wren_bypass(
+                .in0(wb_regwrite),
+                .in1(1'b1),
+                .out(regfile_wren),
+                .sel(ra_handle)
+            );
+            // Jump regfile bypass
+            assign f_regfile = d_rs_data_regfile;
         // Early Branch Detection
             logic    d_zero_flag;
             logic    d_neg_flag;
-            opcode_t d_instr_casted;
-            assign d_instr_casted = opcode_t'(d_instr);
-            
+            opcode_t d_instr_opcode;
+            assign d_instr_opcode = opcode_t'(d_instr[31:26]);
+           
             logic  rs_equal_rt, rs_equal_zero,rs_less_zero;
             assign rs_equal_rt   = (d_rs_data == d_rt_data);
             assign rs_equal_zero = ~|(d_rs_data);
@@ -155,15 +158,18 @@ module mips_core (
             always_comb begin 
                 d_zero_flag     = 'b0;
                 d_neg_flag      = 'b0;
-                case (d_instr_casted)
+                ra_handle       = 'b0;
+                case (d_instr_opcode)
                     BEQ,BNE: d_zero_flag = rs_equal_rt;
                     BLT_BGEZ,BLEZ,BGTZ:begin
                         d_zero_flag     = rs_equal_zero;
                         d_neg_flag      = rs_less_zero;
                     end 
+                    JAL,JALR: ra_handle = 'b1;
                     default:begin
                         d_zero_flag     = 'b0;
                         d_neg_flag      = 'b0;
+                        ra_handle       = 'b0;
                     end 
                 endcase
             end
@@ -620,72 +626,97 @@ module mips_core (
         assign f_BTA   = d_BTA;
         assign f_pcsrc = d_pcsrc;
 
-    // Bypass
-        // Execute/Memory/WB 2 Decode Bypass
-            mux8 #(.DATA_WIDTH(32)) u_decode_bypass_rs_data(
-                .in0(d_rs_data_regfile),
-                .in1(m_alu_result),
-                .in2(m_mult_lo),
-                .in3(m_se_imm),
-                .in4(wb_mem_data),
-                .in5(wb_data),
-                .in6('b0),
-                .in7('b0),
-                .out(d_rs_data),
-                .sel(bypass_decode_rs_sel)
-            );
-            mux8 #(.DATA_WIDTH(32)) u_decode_bypass_rt_data(
-                .in0(d_rt_data_regfile),
-                .in1(m_alu_result),
-                .in2(m_mult_lo),
-                .in3(m_se_imm),
-                .in4(wb_mem_data),
-                .in5(wb_data),
-                .in6('b0),
-                .in7('b0),
-                .out(d_rt_data),
-                .sel(bypass_decode_rt_sel)
-            );
-        // Memory/WB 2 Execute Bypass
-            mux8 #(.DATA_WIDTH(32)) u_execute_bypass_rs_data(
-                .in0(e_rs_data_d2e),
-                .in1(m_alu_result),
-                .in2(m_mult_lo),
-                .in3(m_se_imm),
-                .in4(wb_mem_data),
-                .in5(wb_data),
-                .in6('b0),
-                .in7('b0),
-                .out(e_rs_data),
-                .sel(bypass_execute_rs_sel)
-            );
-            mux8 #(.DATA_WIDTH(32)) u_execute_bypass_rt_data(
-                .in0(e_rt_data_d2e),
-                .in1(m_alu_result),
-                .in2(m_mult_lo),
-                .in3(m_se_imm),
-                .in4(wb_mem_data),
-                .in5(wb_data),
-                .in6('b0),
-                .in7('b0),
-                .out(e_rt_data),
-                .sel(bypass_execute_rt_sel)
-            );
-        // WB 2 Memory Bypass
-            mux4 #(.DATA_WIDTH(32)) u_mem_bypass_rs_data(
-                .in0(m_rs_data_e2m),
-                .in1(wb_mem_data),
-                .in2(wb_data),
-                .in3('b0),
-                .out(m_rs_data),
-                .sel(bypass_mem_rs_sel)
-            );
-            mux4 #(.DATA_WIDTH(32)) u_mem_bypass_rt_data(
-                .in0(m_rt_data_e2m),
-                .in1(wb_mem_data),
-                .in2(wb_data),
-                .in3('b0),
-                .out(m_rt_data),
-                .sel(bypass_mem_rt_sel)
-            );            
+// Bypass
+    // Execute/Memory/WB 2 Decode Bypass
+        mux8 #(.DATA_WIDTH(32)) u_decode_bypass_rs_data(
+            .in0(d_rs_data_regfile),
+            .in1(m_alu_result),
+            .in2(m_mult_lo),
+            .in3(m_se_imm),
+            .in4(wb_mem_data),
+            .in5(wb_data),
+            .in6('b0),
+            .in7('b0),
+            .out(d_rs_data),
+            .sel(bypass_decode_rs_sel)
+        );
+        mux8 #(.DATA_WIDTH(32)) u_decode_bypass_rt_data(
+            .in0(d_rt_data_regfile),
+            .in1(m_alu_result),
+            .in2(m_mult_lo),
+            .in3(m_se_imm),
+            .in4(wb_mem_data),
+            .in5(wb_data),
+            .in6('b0),
+            .in7('b0),
+            .out(d_rt_data),
+            .sel(bypass_decode_rt_sel)
+        );
+    // Memory/WB 2 Execute Bypass
+        mux8 #(.DATA_WIDTH(32)) u_execute_bypass_rs_data(
+            .in0(e_rs_data_d2e),
+            .in1(m_alu_result),
+            .in2(m_mult_lo),
+            .in3(m_se_imm),
+            .in4(wb_mem_data),
+            .in5(wb_data),
+            .in6('b0),
+            .in7('b0),
+            .out(e_rs_data),
+            .sel(bypass_execute_rs_sel)
+        );
+        mux8 #(.DATA_WIDTH(32)) u_execute_bypass_rt_data(
+            .in0(e_rt_data_d2e),
+            .in1(m_alu_result),
+            .in2(m_mult_lo),
+            .in3(m_se_imm),
+            .in4(wb_mem_data),
+            .in5(wb_data),
+            .in6('b0),
+            .in7('b0),
+            .out(e_rt_data),
+            .sel(bypass_execute_rt_sel)
+        );
+    // WB 2 Memory Bypass
+        mux4 #(.DATA_WIDTH(32)) u_mem_bypass_rs_data(
+            .in0(m_rs_data_e2m),
+            .in1(wb_mem_data),
+            .in2(wb_data),
+            .in3('b0),
+            .out(m_rs_data),
+            .sel(bypass_mem_rs_sel)
+        );
+        mux4 #(.DATA_WIDTH(32)) u_mem_bypass_rt_data(
+            .in0(m_rt_data_e2m),
+            .in1(wb_mem_data),
+            .in2(wb_data),
+            .in3('b0),
+            .out(m_rt_data),
+            .sel(bypass_mem_rt_sel)
+        );            
+
+// Hazard Unit Logic
+    assign pc_stall  = 1'b0;
+    assign f2d_stall = 1'b0;
+    assign f2d_flush = 1'b0;
+    
+    assign d2e_stall = 1'b0;
+    assign d2e_flush = 1'b0;
+    
+    assign e2m_stall = 1'b0;
+    assign e2m_flush = 1'b0;
+
+    assign m2wb_stall = 1'b0;
+    assign m2wb_flush = 1'b0;
+    // Bypass 
+    // d_instr_rt,d_instr_rs;
+    // e_instr_rt,e_instr_rs;
+    // m_instr_rt,m_instr_rs;
+    // wb_instr_rt,wb_instr_rs;
+    assign bypass_decode_rs_sel = 'b0;
+    assign bypass_decode_rt_sel = 'b0;
+    assign bypass_execute_rs_sel = 'b0;
+    assign bypass_execute_rt_sel = 'b0;
+    assign bypass_mem_rs_sel = 'b0;
+    assign bypass_mem_rt_sel = 'b0;  
 endmodule
