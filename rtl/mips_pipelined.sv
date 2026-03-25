@@ -30,7 +30,7 @@ module mips_core (
     logic d2e_stall,d2e_flush;
     logic e2m_stall,e2m_flush;
     logic m2wb_stall,m2wb_flush;
-    logic jump_taken;
+    logic branch_used;
     logic [2:0] bypass_decode_rs_sel;
     logic [2:0] bypass_decode_rt_sel;
     logic [2:0] bypass_execute_rs_sel; 
@@ -81,7 +81,7 @@ module mips_core (
         logic                         e_memwrite     ;
         logic [2:0]                   e_mem_se_sel   ;
         logic [ALU_SRC_WIDTH-1:0]     e_alusrc       ;
-        logic [REG_WR_ADDR_WIDTH-1:0] e_regdst       ;
+        logic [4:0]                   e_wbaddr       ;
         logic                         e_regwrite     ;   
         logic [ALU_CTRL_WIDTH-1:0]    e_alucontrl    ;
         logic [REG_WR_SRC_WIDTH-1:0]  e_writeBack_sel;
@@ -121,7 +121,7 @@ module mips_core (
             .e_memwrite(e_memwrite),
             .e_mem_se_sel(e_mem_se_sel),
             .e_alusrc(e_alusrc),
-            .e_regdst(e_regdst),
+            .e_wbaddr(e_wbaddr),
             .e_regwrite(e_regwrite),   
             .e_alucontrl(e_alucontrl),
             .e_writeBack_sel(e_writeBack_sel),
@@ -138,7 +138,7 @@ module mips_core (
             // Hazards
             .bypass_decode_rs_sel(bypass_decode_rs_sel),
             .bypass_decode_rt_sel(bypass_decode_rt_sel),
-            .jump_taken(jump_taken),
+            .branch_used(branch_used),
             .d2e_flush(d2e_flush),
             .d2e_stall(d2e_stall)
         ); 
@@ -151,7 +151,7 @@ module mips_core (
         logic [31:0]  m_rt_data;
         logic                         m_memwrite     ;
         logic [2:0]                   m_mem_se_sel   ;
-        logic [REG_WR_ADDR_WIDTH-1:0] m_regdst       ;
+        logic [4:0]                   m_wbaddr       ;
         logic                         m_regwrite     ;
         logic [REG_WR_SRC_WIDTH-1:0]  m_writeBack_sel;
         logic                         m_hi_write     ;
@@ -164,13 +164,14 @@ module mips_core (
         execute_stage u_mips_execute_stage (
             .clk(clk),
             .rst_n(rst_n),
+            .arth_overflow_exception(arth_overflow_exception),
             // Pipeline inputs
             .e_pc_plus4(e_pc_plus4),
             .e_instr(e_instr),
             .e_memwrite(e_memwrite),
             .e_mem_se_sel(e_mem_se_sel),
             .e_alusrc(e_alusrc),
-            .e_regdst(e_regdst),
+            .e_wbaddr(e_wbaddr),
             .e_regwrite(e_regwrite),   
             .e_alucontrl(e_alucontrl),
             .e_writeBack_sel(e_writeBack_sel),
@@ -193,7 +194,7 @@ module mips_core (
             .m_se_imm(m_se_imm),
             .m_memwrite(m_memwrite),
             .m_mem_se_sel(m_mem_se_sel),
-            .m_regdst(m_regdst),
+            .m_wbaddr(m_wbaddr),
             .m_regwrite(m_regwrite),
             .m_writeBack_sel(m_writeBack_sel),
             .m_hi_write(m_hi_write),
@@ -244,7 +245,7 @@ module mips_core (
             .m_se_imm(m_se_imm),
             .m_memwrite(m_memwrite),
             .m_mem_se_sel(m_mem_se_sel),
-            .m_regdst(m_regdst),
+            .m_wbaddr(m_wbaddr),
             .m_regwrite(m_regwrite),
             .m_writeBack_sel(m_writeBack_sel),
             .m_hi_write(m_hi_write),
@@ -264,7 +265,7 @@ module mips_core (
             .wb_alu_result(wb_alu_result),
             .wb_mult_lo(wb_mult_lo),
             .wb_regwrite(wb_regwrite),
-            .wb_regdst(wb_regdst),
+            .wb_addr(wb_addr),
             .wb_writeBack_sel(wb_writeBack_sel),
             .wb_mem_data(wb_mem_data),
             .wb_mem_se_data(wb_mem_se_data),
@@ -288,18 +289,27 @@ module mips_core (
             .wb_se_imm(wb_se_imm),
             .wb_alu_result(wb_alu_result),
             .wb_mult_lo(wb_mult_lo),
-            .wb_regdst(wb_regdst),
             .wb_writeBack_sel(wb_writeBack_sel),
             .wb_mem_data(wb_mem_data),
             .wb_mem_se_data(wb_mem_se_data),
             // Pipeline outputs
-            .wb_data(wb_data),
-            .wb_addr(wb_addr)
+            .wb_data(wb_data)
         );    
 // Hazard Unit
     hazard_unit u_mips_hazard_unit(
         // inputs 
-        .jump_taken(jump_taken),
+        .d_instr(d_instr),
+        .e_instr(e_instr),
+        .m_instr(m_instr),
+        .wb_instr(wb_instr),
+        .e_regwrite(e_regwrite),
+        .m_regwrite(m_regwrite),
+        .wb_regwrite(wb_regwrite),
+        .e_wbaddr(e_wbaddr),
+        .m_wbaddr(m_wbaddr),
+        .wb_addr(wb_addr),
+        .branch_used(branch_used),
+        .f_pcsrc(f_pcsrc),
         // ouptuts
         .pc_stall(pc_stall),
         .f2d_stall(f2d_stall),

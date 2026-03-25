@@ -12,7 +12,7 @@ module decode_stage (
     output logic                         e_memwrite     ,
     output logic [2:0]                   e_mem_se_sel   ,
     output logic [ALU_SRC_WIDTH-1:0]     e_alusrc       ,
-    output logic [REG_WR_ADDR_WIDTH-1:0] e_regdst       ,
+    output logic [4:0]                   e_wbaddr       ,
     output logic                         e_regwrite     ,   
     output logic [ALU_CTRL_WIDTH-1:0]    e_alucontrl    ,
     output logic [REG_WR_SRC_WIDTH-1:0]  e_writeBack_sel,
@@ -42,7 +42,7 @@ module decode_stage (
     // Hazards
     input  logic [2:0] bypass_decode_rs_sel,
     input  logic [2:0] bypass_decode_rt_sel,
-    output logic jump_taken,
+    output logic branch_used,
     input  logic d2e_flush,
     input  logic d2e_stall
 );
@@ -138,7 +138,7 @@ module decode_stage (
         .d_zero_flag(d_zero_flag),
         .d_neg_flag(d_neg_flag),
         .ra_handle(ra_handle),
-        .jump_taken(jump_taken)
+        .branch_used(branch_used)
     );
 // Controls
     logic                         d_memwrite     ;
@@ -181,6 +181,18 @@ module decode_stage (
         .hi_select(d_hi_select),
         .lo_select(d_lo_select)
     );
+// Write Back Address Source
+    logic [4:0] d_wbaddr;
+    logic [4:0] d_instr_rd;
+    assign d_instr_rd = d_instr[15:11];
+    mux4 #(5) u_execute_wb_addrmux(
+        .in0(d_instr_rt), 
+        .in1(d_instr_rd),
+        .in2(5'd31),
+        .in3(5'd0),
+        .sel(d_regdst), 
+        .out(d_wbaddr)
+    );    
 // Immediate Sign Extention
     logic [15:0] d_instr_imm;
     assign d_instr_imm = d_instr[15:0];
@@ -205,7 +217,7 @@ module decode_stage (
             e_memwrite      <= 'b0;
             e_mem_se_sel    <= 'b0;
             e_alusrc        <= 'b0;
-            e_regdst        <= 'b0;
+            e_wbaddr        <= 'b0;
             e_regwrite      <= 'b0;   
             e_alucontrl     <= 'b0;
             e_writeBack_sel <= 'b0;
@@ -230,7 +242,7 @@ module decode_stage (
                 e_memwrite      <= 'b0;
                 e_mem_se_sel    <= 'b0;
                 e_alusrc        <= 'b0;
-                e_regdst        <= 'b0;
+                e_wbaddr        <= 'b0;
                 e_regwrite      <= 'b0;   
                 e_alucontrl     <= 'b0;
                 e_writeBack_sel <= 'b0;
@@ -254,7 +266,7 @@ module decode_stage (
                 e_memwrite      <= d_memwrite     ;
                 e_mem_se_sel    <= d_mem_se_sel   ;
                 e_alusrc        <= d_alusrc       ;
-                e_regdst        <= d_regdst       ;
+                e_wbaddr        <= d_wbaddr       ;
                 e_regwrite      <= d_regwrite     ;   
                 e_alucontrl     <= d_alucontrl    ;
                 e_writeBack_sel <= d_writeBack_sel;

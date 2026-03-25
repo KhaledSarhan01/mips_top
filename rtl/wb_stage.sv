@@ -9,13 +9,11 @@ module wb_stage (
     input logic [31:0]  wb_se_imm      ,
     input logic [31:0]  wb_alu_result  ,
     input logic [31:0]  wb_mult_lo     ,
-    input logic [REG_WR_ADDR_WIDTH-1:0] wb_regdst,
     input logic [REG_WR_SRC_WIDTH-1:0]  wb_writeBack_sel,
     input logic [31:0] wb_mem_data,
     input logic [31:0] wb_mem_se_data,
     // Pipeline outputs
-    output logic [31:0] wb_data,
-    output logic [4:0]  wb_addr
+    output logic [31:0] wb_data
 );
 // Write Back Data Source
     mux8 #(32) u_WriteBack_datamux(
@@ -30,17 +28,6 @@ module wb_stage (
         .sel(wb_writeBack_sel), 
         .out(wb_data)
     ); 
-// Write Back Address Source
-    logic [4:0] wb_instr_rt,wb_instr_rd;
-    assign wb_instr_rs = wb_instr[25:21];
-    assign wb_instr_rt = wb_instr[20:16];
-    mux4 #(5) u_WriteBack_addrmux(
-        .in0(wb_instr_rt), 
-        .in1(wb_instr_rd),
-        .in2(5'd31),
-        .in3(5'd0),
-        .sel(wb_regdst), 
-        .out(wb_addr)
-    );
+
 
 endmodule

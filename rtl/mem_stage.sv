@@ -15,7 +15,7 @@ module mem_stage (
     input logic [31:0]  m_se_imm,
     input logic                         m_memwrite     ,
     input logic [2:0]                   m_mem_se_sel   ,
-    input logic [REG_WR_ADDR_WIDTH-1:0] m_regdst       ,
+    input logic [4:0]                   m_wbaddr       ,
     input logic                         m_regwrite     ,
     input logic [REG_WR_SRC_WIDTH-1:0]  m_writeBack_sel,
     input logic                         m_hi_write     ,
@@ -35,7 +35,7 @@ module mem_stage (
     output logic [31:0]  wb_alu_result  ,
     output logic [31:0]  wb_mult_lo     ,
     output logic         wb_regwrite    ,
-    output logic [REG_WR_ADDR_WIDTH-1:0] wb_regdst,
+    output logic [4:0]   wb_addr,
     output logic [REG_WR_SRC_WIDTH-1:0]  wb_writeBack_sel,
     output logic [31:0] wb_mem_data,
     output logic [31:0] wb_mem_se_data,
@@ -69,9 +69,9 @@ module mem_stage (
 // Data Memory
     logic [31:0] m_mem_data;
     assign memwrite  = m_memwrite;
-    assign memaddr   = m_rt_data_bypass;
-    assign writedata = m_alu_result;
-    assign readdata  = m_mem_data;
+    assign memaddr   = m_alu_result;
+    assign writedata = m_rt_data_bypass;
+    assign m_mem_data = readdata;
 
 // Lo/Hi Register
     lo_hi_reg u_mem_lo_hi_reg(
@@ -110,7 +110,7 @@ module mem_stage (
             wb_alu_result <= 'b0;
             wb_mult_lo    <= 'b0;
             // Controls
-            wb_regdst        <= 'b0;
+            wb_addr          <= 'b0;
             wb_regwrite      <= 'b0;
             wb_writeBack_sel <= 'b0;
             // Data Memory
@@ -126,7 +126,7 @@ module mem_stage (
                 wb_alu_result <= 'b0;
                 wb_mult_lo    <= 'b0;
                 // Controls
-                wb_regdst        <= 'b0;
+                wb_addr          <= 'b0;
                 wb_regwrite      <= 'b0;
                 wb_writeBack_sel <= 'b0;
                 // Data Memory
@@ -141,7 +141,7 @@ module mem_stage (
                 wb_alu_result <= m_alu_result;
                 wb_mult_lo    <= m_mult_lo   ;
                 // Controls
-                wb_regdst        <= m_regdst       ;
+                wb_addr          <= m_wbaddr       ;
                 wb_regwrite      <= m_regwrite     ;
                 wb_writeBack_sel <= m_writeBack_sel;
                 // Data Memory

@@ -1,13 +1,15 @@
 import mips_pkg::*;
 module execute_stage (
     input logic clk,rst_n,
+    // exeception
+    output logic arth_overflow_exception,
     // Pipeline inputs
     input logic [31:0]                  e_pc_plus4,
     input logic [31:0]                  e_instr   ,
     input logic                         e_memwrite     ,
     input logic [2:0]                   e_mem_se_sel   ,
     input logic [ALU_SRC_WIDTH-1:0]     e_alusrc       ,
-    input logic [REG_WR_ADDR_WIDTH-1:0] e_regdst       ,
+    input logic [4:0]                   e_wbaddr       ,
     input logic                         e_regwrite     ,   
     input logic [ALU_CTRL_WIDTH-1:0]    e_alucontrl    ,
     input logic [REG_WR_SRC_WIDTH-1:0]  e_writeBack_sel,
@@ -30,7 +32,7 @@ module execute_stage (
     output logic [31:0]  m_se_imm,
     output logic                         m_memwrite     ,
     output logic [2:0]                   m_mem_se_sel   ,
-    output logic [REG_WR_ADDR_WIDTH-1:0] m_regdst       ,
+    output logic [4:0]                   m_wbaddr       ,
     output logic                         m_regwrite     ,
     output logic [REG_WR_SRC_WIDTH-1:0]  m_writeBack_sel,
     output logic                         m_hi_write     ,
@@ -126,16 +128,16 @@ module execute_stage (
         .out_hi(e_mult_hi),
         .out_lo(e_mult_lo)
     ); 
-    divider u_excute_div(
-    // input clk,rst_n,
-    .operand_a(e_rs_data_bypass),
-    .operand_b(e_rt_data_bypass),
-    .unsigned_div(e_unsigned_div),
-    .out_hi(e_div_hi),
-    .out_lo(e_div_lo)
-    ); 
-    // assign div_hi = 'b0;
-    // assign div_lo = 'b0;
+    // divider u_excute_div(
+    // // input clk,rst_n,
+    // .operand_a(e_rs_data_bypass),
+    // .operand_b(e_rt_data_bypass),
+    // .unsigned_div(e_unsigned_div),
+    // .out_hi(e_div_hi),
+    // .out_lo(e_div_lo)
+    // ); 
+    assign e_div_hi = 'b0;
+    assign e_div_lo = 'b0;   
 // Execute Memory Register
     always_ff @( posedge clk or negedge rst_n) begin 
         if (!rst_n) begin
@@ -148,7 +150,7 @@ module execute_stage (
             // Controls
             m_memwrite      <= 'b0;
             m_mem_se_sel    <= 'b0;
-            m_regdst        <= 'b0;
+            m_wbaddr        <= 'b0;
             m_regwrite      <= 'b0;
             m_writeBack_sel <= 'b0;
             m_hi_write      <= 'b0;
@@ -173,7 +175,7 @@ module execute_stage (
                 // Controls
                 m_memwrite      <= 'b0;
                 m_mem_se_sel    <= 'b0;
-                m_regdst        <= 'b0;
+                m_wbaddr        <= 'b0;
                 m_regwrite      <= 'b0;
                 m_writeBack_sel <= 'b0;
                 m_hi_write      <= 'b0;
@@ -197,7 +199,7 @@ module execute_stage (
                 // Controls
                 m_memwrite      <= e_memwrite     ;
                 m_mem_se_sel    <= e_mem_se_sel   ;
-                m_regdst        <= e_regdst       ;
+                m_wbaddr        <= e_wbaddr       ;
                 m_regwrite      <= e_regwrite     ;
                 m_writeBack_sel <= e_writeBack_sel;
                 m_hi_write      <= e_hi_write     ;
