@@ -36,13 +36,17 @@ module hazard_unit (
     // Decode 
         rfaddr_t d_rs,d_rt;
         opcode_t d_opcode;
+        funct_t d_funct;
         assign d_opcode = opcode_t'(d_instr[31:26]);
         assign d_rs  = rfaddr_t'(d_instr[25:21]);
         assign d_rt  = rfaddr_t'(d_instr[20:16]);
         assign d_imm = immediate_t'(d_instr[15:0]);
+        assign d_funct  = funct_t'(d_instr[5:0]);
 
         logic d_is_load;
         assign d_is_load  = (d_opcode == LW) |(d_opcode == LH) | (d_opcode == LB);
+        logic d_is_jump_reg;
+        assign d_is_jump_reg = (d_opcode == RType)&((d_funct == JR)|(d_funct == JALR));
     // Execute
         opcode_t e_opcode;
         rfaddr_t e_rs,e_rt,e_rd;
@@ -180,6 +184,12 @@ module hazard_unit (
 /* --------------------------------------------------------------------------
     3. STALLS
     -------------------------------------------------------------------------- */
+    // --- Jump Register Hazard --- 
+    // Since Jump Register is resolved in Decode Stage
+    // So The register shouldn't be resolved in the pipeline
+    logic jump_reg_stall;
+    assign jump_reg_stall = d_is_jump_reg & ((d_rs == e_wbaddr) | (d_rs == m_wbaddr) | (d_rs == wb_addr));
+    
     // --- Execute Branch Hazard ---
     // Occurs when Branch instruction is in D and its targets 
     // is Computed in E so the data must be stalled to let be bypassed in M
@@ -213,8 +223,8 @@ module hazard_unit (
     assign branch_stall = branch_stall_target_at_execute 
                         | branch_stall_target_at_memory;
 
-    assign pc_stall  = lw_stall | branch_stall;
-    assign f2d_stall = lw_stall | branch_stall;
+    assign pc_stall  = lw_stall | branch_stall | jump_reg_stall;
+    assign f2d_stall = lw_stall | branch_stall | jump_reg_stall;
 
 // -------------------------------------------------------------------------
 // 4. FLUSHES

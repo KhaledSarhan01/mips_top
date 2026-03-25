@@ -12,12 +12,7 @@ module mips_core (
     output [DATA_MEM_WIDTH-1:0] memaddr,writedata,
     input  [DATA_MEM_WIDTH-1:0] readdata
 );
-/*
-    TODO:
-    - [x] put the outside logic in the repective module.
-    - [] Create Hazard Unit to control Hazard Signals. 
-    - [] Test the Pipeline by running Tests 1..5.    
-*/
+
 // Bypass inputs
     logic [31:0] m_alu_result;
     logic [31:0] m_mult_lo;
