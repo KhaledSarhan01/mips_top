@@ -41,42 +41,26 @@ sim/sim2/_reports/*
 
 # --- Synthesis Files ---
 # Database and temporary compilation files
-syn/db/
-syn/incremental_db/
-syn/output_files/
-syn/simulation/
-syn/greybox_tmp/
-syn/hps_isw_handoff/
-syn/output_files/
-syn/synthesis/
 
-# Generated files that don't need tracking
-syn/*.qws
-syn/*.ppf
-syn/*.ddb
-syn/*.cmp
-syn/*.sip
-syn/*.spd
-syn/*.bsf
-syn/*.f
-syn/*.hdl
-syn/*.dpf
-syn/*.eqn
-syn/*.jdi
-syn/*.pin
-syn/*.pof
-syn/*.slx
-syn/*.sof
-syn/*.smsg
-syn/*.summary
-syn/*.done
-syn/*.rpt
-syn/*.bak
-syn/*.srec
+syn/Pipelined/*
+!syn/Pipelined/report.tcl  
+!syn/Pipelined/*.sdc 
+!syn/Pipelined/*.qsf 
+!syn/Pipelined/*.qpf 
+!syn/Pipelined/*.htm 
+!syn/Pipelined/*.mif
+!syn/Pipelined/rtl/
+!syn/Pipelined/report/
 
-# Qsys / Platform Designer generation (keep .qsys, ignore generated)
-syn//.qsys_edit/
-syn//synthesis/
+syn/Single_Cycle/*
+!syn/Single_Cycle/report.tcl  
+!syn/Single_Cycle/*.sdc 
+!syn/Single_Cycle/*.qsf 
+!syn/Single_Cycle/*.qpf 
+!syn/Single_Cycle/*.htm 
+!syn/Single_Cycle/*.mif 
+!syn/Single_Cycle/rtl/
+!syn/Single_Cycle/report/
 
 # Keep these important files!
 # !*.qpf  (Quartus Project File)
