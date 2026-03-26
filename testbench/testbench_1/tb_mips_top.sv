@@ -26,11 +26,11 @@ module tb_mips_top ;
     /*
         - [x] Test 1
         - [x] Test 2
-        - [] Test 3
+        - [x] Test 3
         - [] Test 4
         - [] Test 5
     */
-    parameter test_name = "Test3";
+    parameter test_name = "Test4";
 
 //////////////////////////////////////
 ///////// Clock Generation //////////
