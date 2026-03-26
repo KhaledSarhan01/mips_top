@@ -24,25 +24,37 @@ add wave -noupdate -expand -group Fetch /tb_mips_top/f_shmat
 add wave -noupdate -expand -group Fetch /tb_mips_top/f_imm
 add wave -noupdate -expand -group Fetch /tb_mips_top/f_jaddr
 add wave -noupdate -expand -group Fetch -divider Signals
-add wave -noupdate -expand -group Fetch -expand -group .9 /tb_mips_top/u_mips_core/u_mips_fetch_stage/instr
-add wave -noupdate -expand -group Fetch -expand -group .9 /tb_mips_top/u_mips_core/u_mips_fetch_stage/f_pcsrc
-add wave -noupdate -expand -group Fetch -expand -group .9 /tb_mips_top/u_mips_core/u_mips_fetch_stage/f_regfile
-add wave -noupdate -expand -group Fetch -expand -group .9 /tb_mips_top/u_mips_core/u_mips_fetch_stage/f_BTA
-add wave -noupdate -expand -group Fetch -expand -group .9 /tb_mips_top/u_mips_core/u_mips_fetch_stage/f_JTA
-add wave -noupdate -expand -group Fetch -expand -group .9 /tb_mips_top/u_mips_core/u_mips_fetch_stage/d_pc
-add wave -noupdate -expand -group Fetch -expand -group .9 /tb_mips_top/u_mips_core/u_mips_fetch_stage/d_instr
-add wave -noupdate -expand -group Fetch -expand -group .9 /tb_mips_top/u_mips_core/u_mips_fetch_stage/d_pc_plus4
+add wave -noupdate -expand -group Fetch -group .9 /tb_mips_top/u_mips_core/u_mips_fetch_stage/instr
+add wave -noupdate -expand -group Fetch -group .9 /tb_mips_top/u_mips_core/u_mips_fetch_stage/f_pcsrc
+add wave -noupdate -expand -group Fetch -group .9 /tb_mips_top/u_mips_core/u_mips_fetch_stage/f_regfile
+add wave -noupdate -expand -group Fetch -group .9 /tb_mips_top/u_mips_core/u_mips_fetch_stage/f_BTA
+add wave -noupdate -expand -group Fetch -group .9 /tb_mips_top/u_mips_core/u_mips_fetch_stage/f_JTA
+add wave -noupdate -expand -group Fetch -group .9 /tb_mips_top/u_mips_core/u_mips_fetch_stage/d_pc
+add wave -noupdate -expand -group Fetch -group .9 /tb_mips_top/u_mips_core/u_mips_fetch_stage/d_instr
+add wave -noupdate -expand -group Fetch -group .9 /tb_mips_top/u_mips_core/u_mips_fetch_stage/d_pc_plus4
 add wave -noupdate -expand -group Decode -divider Instruction
 add wave -noupdate -expand -group Decode /tb_mips_top/u_mips_core/u_mips_decode_stage/d2e_flush
-add wave -noupdate -expand -group Decode /tb_mips_top/u_mips_core/u_mips_decode_stage/d2e_stall
+add wave -noupdate -expand -group Decode /tb_mips_top/u_mips_core/u_mips_fetch_stage/f2d_stall
 add wave -noupdate -expand -group Decode /tb_mips_top/d_opcode
 add wave -noupdate -expand -group Decode /tb_mips_top/d_funct
 add wave -noupdate -expand -group Decode -radix unsigned /tb_mips_top/d_rs
 add wave -noupdate -expand -group Decode -radix unsigned /tb_mips_top/d_rt
 add wave -noupdate -expand -group Decode -radix unsigned /tb_mips_top/d_rd
 add wave -noupdate -expand -group Decode -radix unsigned /tb_mips_top/d_shmat
-add wave -noupdate -expand -group Decode /tb_mips_top/d_imm
 add wave -noupdate -expand -group Decode /tb_mips_top/d_jaddr
+add wave -noupdate -expand -group Decode /tb_mips_top/d_imm
+add wave -noupdate -expand -group Decode -divider Bypass
+add wave -noupdate -expand -group Decode -expand -group .0 /tb_mips_top/u_mips_core/u_mips_decode_stage/d_rs_data
+add wave -noupdate -expand -group Decode -expand -group .0 /tb_mips_top/u_mips_core/u_mips_decode_stage/d_rt_data
+add wave -noupdate -expand -group Decode -expand -group .0 /tb_mips_top/u_mips_core/u_mips_decode_stage/bypass_decode_rs_sel
+add wave -noupdate -expand -group Decode -expand -group .0 /tb_mips_top/u_mips_core/u_mips_decode_stage/bypass_decode_rt_sel
+add wave -noupdate -expand -group Decode -expand -group .0 /tb_mips_top/u_mips_core/u_mips_decode_stage/d_rs_data_regfile
+add wave -noupdate -expand -group Decode -expand -group .0 /tb_mips_top/u_mips_core/u_mips_decode_stage/d_rt_data_regfile
+add wave -noupdate -expand -group Decode -expand -group .0 /tb_mips_top/u_mips_core/u_mips_decode_stage/m_alu_result
+add wave -noupdate -expand -group Decode -expand -group .0 /tb_mips_top/u_mips_core/u_mips_decode_stage/m_mult_lo
+add wave -noupdate -expand -group Decode -expand -group .0 /tb_mips_top/u_mips_core/u_mips_decode_stage/m_se_imm
+add wave -noupdate -expand -group Decode -expand -group .0 /tb_mips_top/u_mips_core/u_mips_decode_stage/wb_mem_data
+add wave -noupdate -expand -group Decode -expand -group .0 /tb_mips_top/u_mips_core/u_mips_decode_stage/wb_data
 add wave -noupdate -expand -group Decode -divider Controls
 add wave -noupdate -expand -group Decode -group . /tb_mips_top/u_mips_core/u_mips_decode_stage/d_zero_flag
 add wave -noupdate -expand -group Decode -group . /tb_mips_top/u_mips_core/u_mips_decode_stage/d_neg_flag
@@ -62,18 +74,6 @@ add wave -noupdate -expand -group Decode -group . /tb_mips_top/u_mips_core/u_mip
 add wave -noupdate -expand -group Decode -group . /tb_mips_top/u_mips_core/u_mips_decode_stage/d_hi_select
 add wave -noupdate -expand -group Decode -group . /tb_mips_top/u_mips_core/u_mips_decode_stage/d_lo_select
 add wave -noupdate -expand -group Decode -group . /tb_mips_top/u_mips_core/u_mips_decode_stage/d_overflow_mask
-add wave -noupdate -expand -group Decode -divider Bypass
-add wave -noupdate -expand -group Decode -group .0 /tb_mips_top/u_mips_core/u_mips_decode_stage/d_rs_data
-add wave -noupdate -expand -group Decode -group .0 /tb_mips_top/u_mips_core/u_mips_decode_stage/d_rt_data
-add wave -noupdate -expand -group Decode -group .0 /tb_mips_top/u_mips_core/u_mips_decode_stage/bypass_decode_rs_sel
-add wave -noupdate -expand -group Decode -group .0 /tb_mips_top/u_mips_core/u_mips_decode_stage/bypass_decode_rt_sel
-add wave -noupdate -expand -group Decode -group .0 /tb_mips_top/u_mips_core/u_mips_decode_stage/d_rs_data_regfile
-add wave -noupdate -expand -group Decode -group .0 /tb_mips_top/u_mips_core/u_mips_decode_stage/d_rt_data_regfile
-add wave -noupdate -expand -group Decode -group .0 /tb_mips_top/u_mips_core/u_mips_decode_stage/m_alu_result
-add wave -noupdate -expand -group Decode -group .0 /tb_mips_top/u_mips_core/u_mips_decode_stage/m_mult_lo
-add wave -noupdate -expand -group Decode -group .0 /tb_mips_top/u_mips_core/u_mips_decode_stage/m_se_imm
-add wave -noupdate -expand -group Decode -group .0 /tb_mips_top/u_mips_core/u_mips_decode_stage/wb_mem_data
-add wave -noupdate -expand -group Decode -group .0 /tb_mips_top/u_mips_core/u_mips_decode_stage/wb_data
 add wave -noupdate -expand -group Decode -divider signals
 add wave -noupdate -expand -group Decode -group .1 /tb_mips_top/u_mips_core/u_mips_decode_stage/e_pc_plus4
 add wave -noupdate -expand -group Decode -group .1 /tb_mips_top/u_mips_core/u_mips_decode_stage/e_instr
@@ -86,58 +86,55 @@ add wave -noupdate -expand -group Decode -group .1 /tb_mips_top/u_mips_core/u_mi
 add wave -noupdate -expand -group Decode -group .1 /tb_mips_top/u_mips_core/u_mips_decode_stage/d_regfile
 add wave -noupdate -expand -group Decode -group .1 /tb_mips_top/u_mips_core/u_mips_decode_stage/d_instr_rs
 add wave -noupdate -expand -group Decode -group .1 /tb_mips_top/u_mips_core/u_mips_decode_stage/d_instr_rt
-add wave -noupdate -expand -group Decode -group .1 /tb_mips_top/u_mips_core/u_mips_decode_stage/regfile_wrdata
-add wave -noupdate -expand -group Decode -group .1 /tb_mips_top/u_mips_core/u_mips_decode_stage/regfile_wraddr
-add wave -noupdate -expand -group Decode -group .1 /tb_mips_top/u_mips_core/u_mips_decode_stage/regfile_wren
 add wave -noupdate -expand -group Decode -group .1 /tb_mips_top/u_mips_core/u_mips_decode_stage/ra_handle
 add wave -noupdate -expand -group Decode -group .1 /tb_mips_top/u_mips_core/u_mips_decode_stage/d_instr_imm
 add wave -noupdate -expand -group Decode -group .1 /tb_mips_top/u_mips_core/u_mips_decode_stage/d_se_imm
 add wave -noupdate -expand -group Decode -group .1 /tb_mips_top/u_mips_core/u_mips_decode_stage/d_instr_jaddress
 add wave -noupdate -expand -group Decode -group .1 /tb_mips_top/u_mips_core/u_mips_decode_stage/d_pc
-add wave -noupdate -expand -group Execute -divider Instruction
-add wave -noupdate -expand -group Execute /tb_mips_top/e_opcode
-add wave -noupdate -expand -group Execute /tb_mips_top/e_funct
-add wave -noupdate -expand -group Execute /tb_mips_top/e_rs
-add wave -noupdate -expand -group Execute -radix unsigned /tb_mips_top/e_rt
-add wave -noupdate -expand -group Execute -radix unsigned /tb_mips_top/e_rd
-add wave -noupdate -expand -group Execute -radix unsigned /tb_mips_top/e_shmat
-add wave -noupdate -expand -group Execute /tb_mips_top/e_imm
-add wave -noupdate -expand -group Execute /tb_mips_top/e_jaddr
-add wave -noupdate -expand -group Execute -divider Signal
-add wave -noupdate -expand -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/arth_overflow_exception
-add wave -noupdate -expand -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_alu_result
-add wave -noupdate -expand -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_memwrite
-add wave -noupdate -expand -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_mem_se_sel
-add wave -noupdate -expand -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_alusrc
-add wave -noupdate -expand -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_regwrite
-add wave -noupdate -expand -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_alucontrl
-add wave -noupdate -expand -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_writeBack_sel
-add wave -noupdate -expand -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_hi_write
-add wave -noupdate -expand -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_lo_write
-add wave -noupdate -expand -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_unsigned_div
-add wave -noupdate -expand -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_unsigned_mult
-add wave -noupdate -expand -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_hi_select
-add wave -noupdate -expand -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_lo_select
-add wave -noupdate -expand -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_overflow_mask
-add wave -noupdate -expand -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_se_imm
-add wave -noupdate -expand -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_instr_shmat
-add wave -noupdate -expand -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_srcb
-add wave -noupdate -expand -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_div_hi
-add wave -noupdate -expand -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_div_lo
-add wave -noupdate -expand -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_mult_hi
-add wave -noupdate -expand -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_mult_lo
-add wave -noupdate -expand -group Execute -divider Bypass
-add wave -noupdate -expand -group Execute -group .3 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_rs_data_bypass
-add wave -noupdate -expand -group Execute -group .3 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_rt_data_bypass
-add wave -noupdate -expand -group Execute -group .3 /tb_mips_top/u_mips_core/u_mips_execute_stage/bypass_execute_rs_sel
-add wave -noupdate -expand -group Execute -group .3 /tb_mips_top/u_mips_core/u_mips_execute_stage/bypass_execute_rt_sel
-add wave -noupdate -expand -group Execute -group .3 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_rs_data
-add wave -noupdate -expand -group Execute -group .3 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_rt_data
-add wave -noupdate -expand -group Execute -group .3 /tb_mips_top/u_mips_core/u_mips_decode_stage/wb_mem_data
-add wave -noupdate -expand -group Execute -group .3 /tb_mips_top/u_mips_core/u_mips_decode_stage/m_se_imm
-add wave -noupdate -expand -group Execute -group .3 /tb_mips_top/u_mips_core/u_mips_decode_stage/m_mult_lo
-add wave -noupdate -expand -group Execute -group .3 /tb_mips_top/u_mips_core/u_mips_decode_stage/m_alu_result
-add wave -noupdate -expand -group Execute -group .3 /tb_mips_top/u_mips_core/u_mips_decode_stage/wb_data
+add wave -noupdate -group Execute -divider Instruction
+add wave -noupdate -group Execute /tb_mips_top/e_opcode
+add wave -noupdate -group Execute /tb_mips_top/e_funct
+add wave -noupdate -group Execute /tb_mips_top/e_rs
+add wave -noupdate -group Execute -radix unsigned /tb_mips_top/e_rt
+add wave -noupdate -group Execute -radix unsigned /tb_mips_top/e_rd
+add wave -noupdate -group Execute -radix unsigned /tb_mips_top/e_shmat
+add wave -noupdate -group Execute /tb_mips_top/e_imm
+add wave -noupdate -group Execute /tb_mips_top/e_jaddr
+add wave -noupdate -group Execute -divider Signal
+add wave -noupdate -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/arth_overflow_exception
+add wave -noupdate -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_alu_result
+add wave -noupdate -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_memwrite
+add wave -noupdate -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_mem_se_sel
+add wave -noupdate -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_alusrc
+add wave -noupdate -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_regwrite
+add wave -noupdate -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_alucontrl
+add wave -noupdate -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_writeBack_sel
+add wave -noupdate -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_hi_write
+add wave -noupdate -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_lo_write
+add wave -noupdate -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_unsigned_div
+add wave -noupdate -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_unsigned_mult
+add wave -noupdate -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_hi_select
+add wave -noupdate -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_lo_select
+add wave -noupdate -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_overflow_mask
+add wave -noupdate -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_se_imm
+add wave -noupdate -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_instr_shmat
+add wave -noupdate -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_srcb
+add wave -noupdate -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_div_hi
+add wave -noupdate -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_div_lo
+add wave -noupdate -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_mult_hi
+add wave -noupdate -group Execute -expand -group .2 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_mult_lo
+add wave -noupdate -group Execute -divider Bypass
+add wave -noupdate -group Execute -group .3 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_rs_data_bypass
+add wave -noupdate -group Execute -group .3 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_rt_data_bypass
+add wave -noupdate -group Execute -group .3 /tb_mips_top/u_mips_core/u_mips_execute_stage/bypass_execute_rs_sel
+add wave -noupdate -group Execute -group .3 /tb_mips_top/u_mips_core/u_mips_execute_stage/bypass_execute_rt_sel
+add wave -noupdate -group Execute -group .3 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_rs_data
+add wave -noupdate -group Execute -group .3 /tb_mips_top/u_mips_core/u_mips_execute_stage/e_rt_data
+add wave -noupdate -group Execute -group .3 /tb_mips_top/u_mips_core/u_mips_decode_stage/wb_mem_data
+add wave -noupdate -group Execute -group .3 /tb_mips_top/u_mips_core/u_mips_decode_stage/m_se_imm
+add wave -noupdate -group Execute -group .3 /tb_mips_top/u_mips_core/u_mips_decode_stage/m_mult_lo
+add wave -noupdate -group Execute -group .3 /tb_mips_top/u_mips_core/u_mips_decode_stage/m_alu_result
+add wave -noupdate -group Execute -group .3 /tb_mips_top/u_mips_core/u_mips_decode_stage/wb_data
 add wave -noupdate -group Memory -divider Instruction
 add wave -noupdate -group Memory /tb_mips_top/m_opcode
 add wave -noupdate -group Memory /tb_mips_top/m_funct
@@ -191,26 +188,27 @@ add wave -noupdate -group Memory -group 5 /tb_mips_top/u_mips_core/u_mips_memory
 add wave -noupdate -group Memory -group 5 /tb_mips_top/u_mips_core/u_mips_memory_stage/wb_data
 add wave -noupdate -group {Write Back} -divider Instruction
 add wave -noupdate -group {Write Back} /tb_mips_top/wb_opcode
+add wave -noupdate -group {Write Back} /tb_mips_top/wb_funct
 add wave -noupdate -group {Write Back} -radix unsigned /tb_mips_top/wb_rs
 add wave -noupdate -group {Write Back} -radix unsigned /tb_mips_top/wb_rt
 add wave -noupdate -group {Write Back} -radix unsigned /tb_mips_top/wb_rd
 add wave -noupdate -group {Write Back} /tb_mips_top/wb_shmat
 add wave -noupdate -group {Write Back} /tb_mips_top/wb_imm
 add wave -noupdate -group {Write Back} /tb_mips_top/wb_jaddr
-add wave -noupdate -group {Write Back} /tb_mips_top/wb_funct
 add wave -noupdate -group {Write Back} -divider Signal
-add wave -noupdate -group {Write Back} -expand -group .6 /tb_mips_top/u_mips_core/u_mips_memory_stage/wb_regwrite
-add wave -noupdate -group {Write Back} -expand -group .6 /tb_mips_top/u_mips_core/u_mips_writeBack_stage/wb_alu_result
-add wave -noupdate -group {Write Back} -expand -group .6 /tb_mips_top/u_mips_core/u_mips_writeBack_stage/wb_mem_data
-add wave -noupdate -group {Write Back} -expand -group .6 /tb_mips_top/u_mips_core/u_mips_writeBack_stage/wb_hi_reg
-add wave -noupdate -group {Write Back} -expand -group .6 /tb_mips_top/u_mips_core/u_mips_writeBack_stage/wb_lo_reg
-add wave -noupdate -group {Write Back} -expand -group .6 /tb_mips_top/u_mips_core/u_mips_writeBack_stage/wb_pc_plus4
-add wave -noupdate -group {Write Back} -expand -group .6 /tb_mips_top/u_mips_core/u_mips_writeBack_stage/wb_instr
-add wave -noupdate -group {Write Back} -expand -group .6 /tb_mips_top/u_mips_core/u_mips_writeBack_stage/wb_se_imm
-add wave -noupdate -group {Write Back} -expand -group .6 /tb_mips_top/u_mips_core/u_mips_writeBack_stage/wb_mult_lo
-add wave -noupdate -group {Write Back} -expand -group .6 /tb_mips_top/u_mips_core/u_mips_writeBack_stage/wb_writeBack_sel
-add wave -noupdate -group {Write Back} -expand -group .6 /tb_mips_top/u_mips_core/u_mips_writeBack_stage/wb_mem_se_data
-add wave -noupdate -group {Write Back} -expand -group .6 /tb_mips_top/u_mips_core/u_mips_writeBack_stage/wb_data
+add wave -noupdate -group {Write Back} -group .6 /tb_mips_top/u_mips_core/u_mips_memory_stage/wb_regwrite
+add wave -noupdate -group {Write Back} -group .6 /tb_mips_top/u_mips_core/u_mips_hazard_unit/wb_addr
+add wave -noupdate -group {Write Back} -group .6 /tb_mips_top/u_mips_core/u_mips_writeBack_stage/wb_alu_result
+add wave -noupdate -group {Write Back} -group .6 /tb_mips_top/u_mips_core/u_mips_writeBack_stage/wb_mem_data
+add wave -noupdate -group {Write Back} -group .6 /tb_mips_top/u_mips_core/u_mips_writeBack_stage/wb_hi_reg
+add wave -noupdate -group {Write Back} -group .6 /tb_mips_top/u_mips_core/u_mips_writeBack_stage/wb_lo_reg
+add wave -noupdate -group {Write Back} -group .6 /tb_mips_top/u_mips_core/u_mips_writeBack_stage/wb_pc_plus4
+add wave -noupdate -group {Write Back} -group .6 /tb_mips_top/u_mips_core/u_mips_writeBack_stage/wb_instr
+add wave -noupdate -group {Write Back} -group .6 /tb_mips_top/u_mips_core/u_mips_writeBack_stage/wb_se_imm
+add wave -noupdate -group {Write Back} -group .6 /tb_mips_top/u_mips_core/u_mips_writeBack_stage/wb_mult_lo
+add wave -noupdate -group {Write Back} -group .6 /tb_mips_top/u_mips_core/u_mips_writeBack_stage/wb_writeBack_sel
+add wave -noupdate -group {Write Back} -group .6 /tb_mips_top/u_mips_core/u_mips_writeBack_stage/wb_mem_se_data
+add wave -noupdate -group {Write Back} -group .6 -radix hexadecimal /tb_mips_top/u_mips_core/u_mips_writeBack_stage/wb_data
 add wave -noupdate -divider {Hazard Unit}
 add wave -noupdate -expand -group {Hazard Unit} /tb_mips_top/u_mips_core/u_mips_hazard_unit/d_opcode
 add wave -noupdate -expand -group {Hazard Unit} /tb_mips_top/u_mips_core/u_mips_hazard_unit/d_funct
@@ -231,19 +229,19 @@ add wave -noupdate -expand -group {Hazard Unit} /tb_mips_top/u_mips_core/u_mips_
 add wave -noupdate -expand -group {Hazard Unit} /tb_mips_top/u_mips_core/u_mips_hazard_unit/m_is_mult
 add wave -noupdate -expand -group {Hazard Unit} /tb_mips_top/u_mips_core/u_mips_hazard_unit/m_is_lui
 add wave -noupdate -expand -group {Hazard Unit} /tb_mips_top/u_mips_core/u_mips_hazard_unit/m_is_load
-add wave -noupdate -expand -group {Hazard Unit} -divider Address
-add wave -noupdate -expand -group {Hazard Unit} /tb_mips_top/u_mips_core/u_mips_hazard_unit/d_rs
-add wave -noupdate -expand -group {Hazard Unit} /tb_mips_top/u_mips_core/u_mips_hazard_unit/d_rt
-add wave -noupdate -expand -group {Hazard Unit} /tb_mips_top/u_mips_core/u_mips_hazard_unit/d_imm
-add wave -noupdate -expand -group {Hazard Unit} /tb_mips_top/u_mips_core/u_mips_hazard_unit/e_rs
-add wave -noupdate -expand -group {Hazard Unit} /tb_mips_top/u_mips_core/u_mips_hazard_unit/e_rt
-add wave -noupdate -expand -group {Hazard Unit} /tb_mips_top/u_mips_core/u_mips_hazard_unit/e_rd
-add wave -noupdate -expand -group {Hazard Unit} /tb_mips_top/u_mips_core/u_mips_hazard_unit/m_rt
-add wave -noupdate -expand -group {Hazard Unit} /tb_mips_top/u_mips_core/u_mips_hazard_unit/e_imm
-add wave -noupdate -expand -group {Hazard Unit} /tb_mips_top/u_mips_core/u_mips_hazard_unit/e_wbaddr
-add wave -noupdate -expand -group {Hazard Unit} /tb_mips_top/u_mips_core/u_mips_hazard_unit/m_wbaddr
-add wave -noupdate -expand -group {Hazard Unit} /tb_mips_top/u_mips_core/u_mips_hazard_unit/wb_addr
 add wave -noupdate -expand -group {Hazard Unit} /tb_mips_top/u_mips_core/u_mips_hazard_unit/wb_is_load
+add wave -noupdate -expand -group {Hazard Unit} -divider Address
+add wave -noupdate -expand -group {Hazard Unit} -radix unsigned /tb_mips_top/u_mips_core/u_mips_hazard_unit/d_rs
+add wave -noupdate -expand -group {Hazard Unit} -radix unsigned /tb_mips_top/u_mips_core/u_mips_hazard_unit/d_rt
+add wave -noupdate -expand -group {Hazard Unit} -radix unsigned /tb_mips_top/u_mips_core/u_mips_hazard_unit/d_imm
+add wave -noupdate -expand -group {Hazard Unit} -radix unsigned /tb_mips_top/u_mips_core/u_mips_hazard_unit/e_rs
+add wave -noupdate -expand -group {Hazard Unit} -radix unsigned /tb_mips_top/u_mips_core/u_mips_hazard_unit/e_rt
+add wave -noupdate -expand -group {Hazard Unit} -radix unsigned /tb_mips_top/u_mips_core/u_mips_hazard_unit/e_rd
+add wave -noupdate -expand -group {Hazard Unit} -radix unsigned /tb_mips_top/u_mips_core/u_mips_hazard_unit/m_rt
+add wave -noupdate -expand -group {Hazard Unit} -radix unsigned /tb_mips_top/u_mips_core/u_mips_hazard_unit/e_imm
+add wave -noupdate -expand -group {Hazard Unit} -radix unsigned /tb_mips_top/u_mips_core/u_mips_hazard_unit/e_wbaddr
+add wave -noupdate -expand -group {Hazard Unit} -radix unsigned /tb_mips_top/u_mips_core/u_mips_hazard_unit/m_wbaddr
+add wave -noupdate -expand -group {Hazard Unit} -radix unsigned /tb_mips_top/u_mips_core/u_mips_hazard_unit/wb_addr
 add wave -noupdate -expand -group {Hazard Unit} -divider Output
 add wave -noupdate -expand -group {Hazard Unit} /tb_mips_top/u_mips_core/u_mips_hazard_unit/pc_stall
 add wave -noupdate -expand -group {Hazard Unit} /tb_mips_top/u_mips_core/u_mips_hazard_unit/f2d_stall
@@ -306,10 +304,10 @@ add wave -noupdate -group {Hi/Lo Registers} /tb_mips_top/u_mips_core/u_mips_memo
 add wave -noupdate -group {Hi/Lo Registers} -divider Internals
 add wave -noupdate -divider Internals
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {245 ns} 0}
+WaveRestoreCursors {{Cursor 1} {445 ns} 0}
 quietly wave cursor active 1
-configure wave -namecolwidth 200
-configure wave -valuecolwidth 69
+configure wave -namecolwidth 191
+configure wave -valuecolwidth 101
 configure wave -justifyvalue left
 configure wave -signalnamewidth 1
 configure wave -snapdistance 10
@@ -322,4 +320,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {167 ns} {335 ns}
+WaveRestoreZoom {409 ns} {464 ns}

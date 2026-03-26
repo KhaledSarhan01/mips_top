@@ -97,7 +97,7 @@ mips_core u_mips_core(
     endtask
     
     task Finish;
-        repeat(100) @(negedge clk);
+        repeat(200) @(negedge clk);
         $display("$s0= %h",`GET_REG(16));
         $stop;
     endtask

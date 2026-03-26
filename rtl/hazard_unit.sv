@@ -37,6 +37,7 @@ module hazard_unit (
         rfaddr_t d_rs,d_rt;
         opcode_t d_opcode;
         funct_t d_funct;
+        immediate_t d_imm;
         assign d_opcode = opcode_t'(d_instr[31:26]);
         assign d_rs  = rfaddr_t'(d_instr[25:21]);
         assign d_rt  = rfaddr_t'(d_instr[20:16]);
@@ -50,6 +51,7 @@ module hazard_unit (
     // Execute
         opcode_t e_opcode;
         rfaddr_t e_rs,e_rt,e_rd;
+        immediate_t e_imm;
         
         assign e_opcode = opcode_t'(e_instr[31:26]);
         assign e_rs  = rfaddr_t'(e_instr[25:21]);
@@ -188,24 +190,25 @@ module hazard_unit (
     // Since Jump Register is resolved in Decode Stage
     // So The register shouldn't be resolved in the pipeline
     logic jump_reg_stall;
-    assign jump_reg_stall = d_is_jump_reg & ((d_rs == e_wbaddr) | (d_rs == m_wbaddr) | (d_rs == wb_addr));
+    assign jump_reg_stall = d_is_jump_reg & ((d_rs == e_wbaddr) | (d_rs == m_wbaddr) | (d_rs == wb_addr)) &(d_rs != 0)&(d_rt != 0);
     
     // --- Execute Branch Hazard ---
     // Occurs when Branch instruction is in D and its targets 
     // is Computed in E so the data must be stalled to let be bypassed in M
     logic branch_stall_target_at_execute;
-    assign branch_stall_target_at_execute = branch_used & (e_wbaddr == d_rs | e_wbaddr == d_rt);
+    assign branch_stall_target_at_execute = branch_used & (e_wbaddr == d_rs | e_wbaddr == d_rt) &(e_wbaddr != 0);
     
     // --- Memory Branch Hazard ---
     // Occurs when Branch instruction is in D and its targets 
     // is Computed in M so the data must be stalled to let be bypassed in wb
     logic branch_stall_target_at_memory;
-    assign branch_stall_target_at_memory = branch_used & m_is_load & (m_rt == d_rs | m_rt == d_rt);
+    assign branch_stall_target_at_memory = branch_used & m_is_load & (m_rt == d_rs | m_rt == d_rt) &(m_rt != 0);
+    
     // --- Load-Use Hazard ---
     // Occurs when a Load is in E and its target is used in D. 
     // Data is only available at the end of M, so D must stall.
     logic lw_stall_used_execute;
-    assign lw_stall_used_execute = e_is_load & ((e_rd == d_rs) | (e_rd == d_rt));
+    assign lw_stall_used_execute = e_is_load & ((e_rd == d_rs) | (e_rd == d_rt)) &(e_rd != 0);
     
     // --- Store-Load Hazard ---
     // Corner Case Solution: Storing then loading from the same address
@@ -233,10 +236,10 @@ module hazard_unit (
     // If we stall D, we must flush E to insert a bubble.
     // If we take a jump in D, we must flush F2D to clear the next instruction.
     logic jump_taken;
-    assign jump_taken = (f_pcsrc != 0); // then there is change in Control
+    assign jump_taken = (f_pcsrc != 0) & ~jump_reg_stall & ~branch_stall; // then there is change in Control
 
-    assign d2e_flush = lw_stall | branch_stall | jump_taken; 
-    assign f2d_flush = jump_taken;
+    assign d2e_flush = lw_stall | branch_stall | jump_taken; // Create a bubble of NOPs until the Control instruction is complete 
+    assign f2d_flush = jump_taken;                           // Flush the old instruction  
 
 // -------------------------------------------------------------------------
 // 5. UNUSED STALLS/FLUSHES

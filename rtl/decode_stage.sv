@@ -54,10 +54,8 @@ module decode_stage (
     logic [4:0]  d_instr_rs,d_instr_rt;
     assign d_instr_rs = d_instr[25:21];
     assign d_instr_rt = d_instr[20:16];
-    // Write port
-    logic [31:0] regfile_wrdata;
-    logic [4:0]  regfile_wraddr;
-    logic        regfile_wren;
+    // Return Address
+    logic ra_handle;
     reg_file u_decode_regfile (
         .clk_n(clk),
         .rst_n(rst_n),
@@ -69,31 +67,12 @@ module decode_stage (
         .read_addr2(d_instr_rt),    
         .read_data2(d_rt_data_regfile),
         // Write port
-        .write_addr(regfile_wraddr),
-        .write_data(regfile_wrdata),
-        .write_enable(regfile_wren)
-    );
-
-// Jump Bypass    
-    // Jump $ra Bypass
-    logic ra_handle;
-    mux2 #(.DATA_WIDTH(32)) u_decode_reg_data_bypass(
-        .in0(wb_data),
-        .in1(d_pc_plus4),
-        .out(regfile_wrdata),
-        .sel(ra_handle)
-    );
-    mux2 #(.DATA_WIDTH(5)) u_decode_reg_addr_bypass(
-        .in0(wb_addr),
-        .in1(5'd31),
-        .out(regfile_wraddr),
-        .sel(ra_handle)
-    );
-    mux2 #(.DATA_WIDTH(1)) u_decode_reg_wren_bypass(
-        .in0(wb_regwrite),
-        .in1(1'b1),
-        .out(regfile_wren),
-        .sel(ra_handle)
+        .write_addr(wb_addr),
+        .write_data(wb_data),
+        .write_enable(wb_regwrite),
+        // return address port
+        .pc_plus4(d_pc_plus4),
+        .ra_handle(ra_handle)
     );
     // Jump regfile bypass
     assign d_regfile = d_rs_data_regfile;
