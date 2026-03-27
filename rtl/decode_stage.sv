@@ -42,7 +42,6 @@ module decode_stage (
     // Hazards
     input  logic [2:0] bypass_decode_rs_sel,
     input  logic [2:0] bypass_decode_rt_sel,
-    output logic branch_used,
     input  logic d2e_flush,
     input  logic d2e_stall
 );
@@ -116,8 +115,7 @@ module decode_stage (
         // outputs
         .d_zero_flag(d_zero_flag),
         .d_neg_flag(d_neg_flag),
-        .ra_handle(ra_handle),
-        .branch_used(branch_used)
+        .ra_handle(ra_handle)
     );
 // Controls
     logic                         d_memwrite     ;
@@ -187,10 +185,13 @@ module decode_stage (
     assign d_BTA = d_pc_plus4 + (d_se_imm << 2);            // Branch target
     assign d_JTA = {d_pc[31:28], d_instr_jaddress, 2'b00};  // Jump target
 // Decode Execute Register
+    // duplicate the signal to reduce the fanout
+    (*preserve*) logic d2e_flush_a,d2e_flush_b;
+    assign d2e_flush_a = d2e_flush;
+    assign d2e_flush_b = d2e_flush;
     always_ff @( posedge clk or negedge rst_n ) begin 
         if (!rst_n) begin
             // Previous Stage
-            e_pc_plus4 <= 'b0;
             e_instr    <= 'b0;
             // Controls
             e_memwrite      <= 'b0;
@@ -213,10 +214,25 @@ module decode_stage (
             // Immediate Sign Extention
             e_se_imm <= 'b0;
         end else begin
-            if (d2e_flush) begin
+            if (d2e_flush_a) begin
                 // Previous Stage
-                e_pc_plus4 <= 'b0;
                 e_instr    <= 'b0;
+                // Register File
+                e_rs_data<= 'b0;
+                e_rt_data<= 'b0;
+                // Immediate Sign Extention
+                e_se_imm <= 'b0;
+            end else if(~d2e_stall)begin
+                // Previous Stage
+                e_instr    <= d_instr   ;
+                // Register File
+                e_rs_data <= d_rs_data;
+                e_rt_data <= d_rt_data;
+                // Immediate Sign Extention
+                e_se_imm <= d_se_imm; 
+            end
+            // Duplication
+            if (d2e_flush_b) begin
                 // Controls
                 e_memwrite      <= 'b0;
                 e_mem_se_sel    <= 'b0;
@@ -232,15 +248,7 @@ module decode_stage (
                 e_hi_select     <= 'b0;
                 e_lo_select     <= 'b0;
                 e_overflow_mask <= 'b0;
-                // Register File
-                e_rs_data<= 'b0;
-                e_rt_data<= 'b0;
-                // Immediate Sign Extention
-                e_se_imm <= 'b0;
             end else if(~d2e_stall)begin
-                // Previous Stage
-                e_pc_plus4 <= d_pc_plus4;
-                e_instr    <= d_instr   ;
                 // Controls
                 e_memwrite      <= d_memwrite     ;
                 e_mem_se_sel    <= d_mem_se_sel   ;
@@ -256,12 +264,8 @@ module decode_stage (
                 e_hi_select     <= d_hi_select    ;
                 e_lo_select     <= d_lo_select    ; 
                 e_overflow_mask <= d_overflow_mask;
-                // Register File
-                e_rs_data <= d_rs_data;
-                e_rt_data <= d_rt_data;
-                // Immediate Sign Extention
-                e_se_imm <= d_se_imm; 
             end
         end
-    end    
+    end   
+    assign e_pc_plus4 = 'b0; //TODO: Remove  
 endmodule

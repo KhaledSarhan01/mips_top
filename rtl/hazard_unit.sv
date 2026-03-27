@@ -12,7 +12,6 @@ module hazard_unit (
     input logic [4:0] m_wbaddr,
     input logic [4:0] wb_addr,
     input logic [1:0] f_pcsrc,
-    input logic branch_used,
     // ouptuts
     output logic pc_stall,
     output logic f2d_stall,
@@ -48,6 +47,12 @@ module hazard_unit (
         assign d_is_load  = (d_opcode == LW) |(d_opcode == LH) | (d_opcode == LB);
         logic d_is_jump_reg;
         assign d_is_jump_reg = (d_opcode == RType)&((d_funct == JR)|(d_funct == JALR));
+        logic d_is_branch;
+        assign d_is_branch = (d_opcode == BEQ  
+                            | d_opcode == BNE 
+                            | d_opcode == BLT_BGEZ
+                            | d_opcode == BLEZ 
+                            | d_opcode == BGTZ );
     // Execute
         opcode_t e_opcode;
         rfaddr_t e_rs,e_rt,e_rd;
@@ -196,13 +201,13 @@ module hazard_unit (
     // Occurs when Branch instruction is in D and its targets 
     // is Computed in E so the data must be stalled to let be bypassed in M
     logic branch_stall_target_at_execute;
-    assign branch_stall_target_at_execute = branch_used & (e_wbaddr == d_rs | e_wbaddr == d_rt) &(e_wbaddr != 0);
+    assign branch_stall_target_at_execute = d_is_branch & (e_wbaddr == d_rs | e_wbaddr == d_rt) &(e_wbaddr != 0);
     
     // --- Memory Branch Hazard ---
     // Occurs when Branch instruction is in D and its targets 
     // is Computed in M so the data must be stalled to let be bypassed in wb
     logic branch_stall_target_at_memory;
-    assign branch_stall_target_at_memory = branch_used & m_is_load & (m_rt == d_rs | m_rt == d_rt) &(m_rt != 0);
+    assign branch_stall_target_at_memory = d_is_branch & m_is_load & (m_rt == d_rs | m_rt == d_rt) &(m_rt != 0);
     
     // --- Load-Use Hazard ---
     // Occurs when a Load is in E and its target is used in D. 

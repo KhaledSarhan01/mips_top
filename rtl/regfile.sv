@@ -1,5 +1,5 @@
 module reg_file (
-    input logic clk_n,rst_n,
+    input logic clk_n, rst_n,
     output logic [31:0] s0,
     // Read port 1
     input logic [4:0] read_addr1,
@@ -15,33 +15,37 @@ module reg_file (
     input logic [31:0] pc_plus4,
     input logic ra_handle
 );
-    reg [31:0] registers [31:0];
-    // Read logic
+    logic [31:0] registers [31:0];
+
+    // Read logic (Asynchronous)
     assign read_data1 = registers[read_addr1];
     assign read_data2 = registers[read_addr2];
-    // Write logic
+    assign s0 = registers[16];
+
+    // Consolidated Write Logic
     always_ff @(negedge clk_n or negedge rst_n) begin
         if (!rst_n) begin
             // Reset all registers to zero
-            for (int i = 0; i < 31; i++) begin
+            for (int i = 0; i < 32; i++) begin
                 registers[i] <= 32'b0;
             end
-        end else if (write_enable && write_addr != 5'b0 && write_addr != 5'd31) begin
-            // Write data to the specified register (except register 0)
-            registers[write_addr] <= write_data;
-        end
-    end
-    assign s0 = registers[16];
-    // Return Address Logic 
-    always_ff @( negedge clk_n or negedge rst_n ) begin 
-        if (!rst_n) begin
-            registers[31] <= 'b0;
         end else begin
-            if(ra_handle)begin
+            // 1. Handle standard writes for registers 1-30
+            if (write_enable && (write_addr != 5'd0) && (write_addr != 5'd31)) begin
+                registers[write_addr] <= write_data;
+            end
+
+            // 2. Specialized logic for Register 31 ($ra)
+            // Priority: ra_handle (JAL/BGEZAL) usually takes precedence over standard writes
+            if (ra_handle) begin
                 registers[31] <= pc_plus4;
-            end else if(write_enable && write_addr == 5'd31)begin
+            end else if (write_enable && (write_addr == 5'd31)) begin
                 registers[31] <= write_data;
             end
+            
+            // Register 0 is usually hardwired to 0. 
+            // In synthesis, if you never drive it, it stays 0 from reset.
+            registers[0] <= 32'b0; 
         end
     end
 endmodule

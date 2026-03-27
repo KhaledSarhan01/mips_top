@@ -7,8 +7,7 @@ module early_branch_detect(
     // outputs
     output logic d_zero_flag,
     output logic d_neg_flag,
-    output logic ra_handle,
-    output logic branch_used
+    output logic ra_handle
 );
 // Instruction Decoding
     opcode_t d_opcode;
@@ -23,21 +22,17 @@ module early_branch_detect(
     always_comb begin 
         d_zero_flag = 'b0;
         d_neg_flag  = 'b0;
-        branch_used = 'b0;
         case (d_opcode)
             BEQ,BNE: begin
                 d_zero_flag = rs_equal_rt;
-                branch_used = 'b1;
             end
             BLT_BGEZ,BLEZ,BGTZ:begin
                 d_zero_flag = rs_equal_zero;
                 d_neg_flag  = rs_less_zero;
-                branch_used = 'b1;
             end 
             default:begin
                 d_zero_flag = 'b0;
                 d_neg_flag  = 'b0;
-                branch_used = 'b0;
             end 
         endcase
     end

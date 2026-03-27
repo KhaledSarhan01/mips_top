@@ -1,0 +1,79 @@
+Thermal Power Dissipation by Hierarchy report for mips_top
+Fri Mar 27 03:23:11 2026
+Quartus Prime Version 18.1.0 Build 625 09/12/2018 SJ Standard Edition
+
+
+---------------------
+; Table of Contents ;
+---------------------
+  1. Legal Notice
+  2. Thermal Power Dissipation by Hierarchy
+
+
+
+----------------
+; Legal Notice ;
+----------------
+Copyright (C) 2018  Intel Corporation. All rights reserved.
+Your use of Intel Corporation's design tools, logic functions 
+and other software and tools, and its AMPP partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Intel Program License 
+Subscription Agreement, the Intel Quartus Prime License Agreement,
+the Intel FPGA IP License Agreement, or other applicable license
+agreement, including, without limitation, that your use is for
+the sole purpose of programming logic devices manufactured by
+Intel and sold by Intel or its authorized distributors.  Please
+refer to the applicable agreement for further details.
+
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Thermal Power Dissipation by Hierarchy                                                                                                                                                                                                                                                                                         ;
++-------------------------------------------------------------+--------------------------------------+---------------------------------+-----------------------------------+-----------------------------------+-----------------------------------------------------------------------------------------------------------------+
+; Compilation Hierarchy Node                                  ; Total Thermal Power by Hierarchy (1) ; Block Thermal Dynamic Power (1) ; Block Thermal Static Power (1)(2) ; Routing Thermal Dynamic Power (1) ; Full Hierarchy Name                                                                                             ;
++-------------------------------------------------------------+--------------------------------------+---------------------------------+-----------------------------------+-----------------------------------+-----------------------------------------------------------------------------------------------------------------+
+; |mips_top                                                   ; 23.26 mW (11.81 mW)                  ; 12.52 mW (6.32 mW)              ; 2.02 mW (2.02 mW)                 ; 8.72 mW (3.47 mW)                 ; |mips_top                                                                                                       ;
+;     |hard_block:auto_generated_inst                         ; 0.00 mW (0.00 mW)                    ; 0.00 mW (0.00 mW)               ; --                                ; 0.00 mW (0.00 mW)                 ; |mips_top|hard_block:auto_generated_inst                                                                        ;
+;     |data_mem:u_data_mem                                    ; 0.51 mW (0.00 mW)                    ; 0.45 mW (0.00 mW)               ; --                                ; 0.06 mW (0.00 mW)                 ; |mips_top|data_mem:u_data_mem                                                                                   ;
+;         |altsyncram:M10k_mem_rtl_0                          ; 0.51 mW (0.00 mW)                    ; 0.45 mW (0.00 mW)               ; --                                ; 0.06 mW (0.00 mW)                 ; |mips_top|data_mem:u_data_mem|altsyncram:M10k_mem_rtl_0                                                         ;
+;             |altsyncram_f0p1:auto_generated                 ; 0.51 mW (0.51 mW)                    ; 0.45 mW (0.45 mW)               ; --                                ; 0.06 mW (0.06 mW)                 ; |mips_top|data_mem:u_data_mem|altsyncram:M10k_mem_rtl_0|altsyncram_f0p1:auto_generated                          ;
+;     |debugger:u_debugger                                    ; 0.14 mW (0.13 mW)                    ; 0.03 mW (0.02 mW)               ; --                                ; 0.11 mW (0.11 mW)                 ; |mips_top|debugger:u_debugger                                                                                   ;
+;         |bin2hex:nipple_0                                   ; 0.00 mW (0.00 mW)                    ; 0.00 mW (0.00 mW)               ; --                                ; 0.00 mW (0.00 mW)                 ; |mips_top|debugger:u_debugger|bin2hex:nipple_0                                                                  ;
+;         |bin2hex:nipple_1                                   ; 0.00 mW (0.00 mW)                    ; 0.00 mW (0.00 mW)               ; --                                ; 0.00 mW (0.00 mW)                 ; |mips_top|debugger:u_debugger|bin2hex:nipple_1                                                                  ;
+;         |bin2hex:nipple_2                                   ; 0.00 mW (0.00 mW)                    ; 0.00 mW (0.00 mW)               ; --                                ; 0.00 mW (0.00 mW)                 ; |mips_top|debugger:u_debugger|bin2hex:nipple_2                                                                  ;
+;         |bin2hex:nipple_3                                   ; 0.00 mW (0.00 mW)                    ; 0.00 mW (0.00 mW)               ; --                                ; 0.00 mW (0.00 mW)                 ; |mips_top|debugger:u_debugger|bin2hex:nipple_3                                                                  ;
+;         |bin2hex:nipple_5                                   ; 0.00 mW (0.00 mW)                    ; 0.00 mW (0.00 mW)               ; --                                ; 0.00 mW (0.00 mW)                 ; |mips_top|debugger:u_debugger|bin2hex:nipple_5                                                                  ;
+;     |instr_mem:u_instr_mem                                  ; 0.12 mW (0.12 mW)                    ; 0.10 mW (0.10 mW)               ; --                                ; 0.02 mW (0.02 mW)                 ; |mips_top|instr_mem:u_instr_mem                                                                                 ;
+;     |mips_core:u_mips_core                                  ; 10.69 mW (0.00 mW)                   ; 5.62 mW (0.00 mW)               ; --                                ; 5.07 mW (0.00 mW)                 ; |mips_top|mips_core:u_mips_core                                                                                 ;
+;         |decode_stage:u_mips_decode_stage                   ; 5.85 mW (0.74 mW)                    ; 3.82 mW (0.21 mW)               ; --                                ; 2.03 mW (0.53 mW)                 ; |mips_top|mips_core:u_mips_core|decode_stage:u_mips_decode_stage                                                ;
+;             |mux8:u_decode_bypass_rs_data                   ; 0.06 mW (0.06 mW)                    ; 0.04 mW (0.04 mW)               ; --                                ; 0.02 mW (0.02 mW)                 ; |mips_top|mips_core:u_mips_core|decode_stage:u_mips_decode_stage|mux8:u_decode_bypass_rs_data                   ;
+;             |mux8:u_decode_bypass_rt_data                   ; 0.87 mW (0.87 mW)                    ; 0.67 mW (0.67 mW)               ; --                                ; 0.21 mW (0.21 mW)                 ; |mips_top|mips_core:u_mips_core|decode_stage:u_mips_decode_stage|mux8:u_decode_bypass_rt_data                   ;
+;             |mips_controller:u_decode_controller            ; 0.04 mW (0.04 mW)                    ; 0.03 mW (0.03 mW)               ; --                                ; 0.01 mW (0.01 mW)                 ; |mips_top|mips_core:u_mips_core|decode_stage:u_mips_decode_stage|mips_controller:u_decode_controller            ;
+;             |early_branch_detect:u_decode_earlyBranchDetect ; 0.01 mW (0.01 mW)                    ; 0.00 mW (0.00 mW)               ; --                                ; 0.01 mW (0.01 mW)                 ; |mips_top|mips_core:u_mips_core|decode_stage:u_mips_decode_stage|early_branch_detect:u_decode_earlyBranchDetect ;
+;             |reg_file:u_decode_regfile                      ; 4.11 mW (4.11 mW)                    ; 2.85 mW (2.85 mW)               ; --                                ; 1.26 mW (1.26 mW)                 ; |mips_top|mips_core:u_mips_core|decode_stage:u_mips_decode_stage|reg_file:u_decode_regfile                      ;
+;             |sign_extended:u_decode_signExtent              ; 0.01 mW (0.01 mW)                    ; 0.01 mW (0.01 mW)               ; --                                ; 0.00 mW (0.00 mW)                 ; |mips_top|mips_core:u_mips_core|decode_stage:u_mips_decode_stage|sign_extended:u_decode_signExtent              ;
+;         |execute_stage:u_mips_execute_stage                 ; 1.36 mW (0.74 mW)                    ; 0.84 mW (0.27 mW)               ; --                                ; 0.52 mW (0.47 mW)                 ; |mips_top|mips_core:u_mips_core|execute_stage:u_mips_execute_stage                                              ;
+;             |alu:u_execute_alu                              ; 0.20 mW (0.20 mW)                    ; 0.18 mW (0.18 mW)               ; --                                ; 0.02 mW (0.02 mW)                 ; |mips_top|mips_core:u_mips_core|execute_stage:u_mips_execute_stage|alu:u_execute_alu                            ;
+;             |mux8:u_execute_bypass_rs_data                  ; 0.06 mW (0.06 mW)                    ; 0.05 mW (0.05 mW)               ; --                                ; 0.00 mW (0.00 mW)                 ; |mips_top|mips_core:u_mips_core|execute_stage:u_mips_execute_stage|mux8:u_execute_bypass_rs_data                ;
+;             |mux8:u_execute_bypass_rt_data                  ; 0.08 mW (0.08 mW)                    ; 0.05 mW (0.05 mW)               ; --                                ; 0.03 mW (0.03 mW)                 ; |mips_top|mips_core:u_mips_core|execute_stage:u_mips_execute_stage|mux8:u_execute_bypass_rt_data                ;
+;             |multipler:u_execute_mult                       ; 0.22 mW (0.22 mW)                    ; 0.22 mW (0.22 mW)               ; --                                ; 0.00 mW (0.00 mW)                 ; |mips_top|mips_core:u_mips_core|execute_stage:u_mips_execute_stage|multipler:u_execute_mult                     ;
+;             |mux4:u_execute_srcbmux                         ; 0.06 mW (0.06 mW)                    ; 0.06 mW (0.06 mW)               ; --                                ; 0.00 mW (0.00 mW)                 ; |mips_top|mips_core:u_mips_core|execute_stage:u_mips_execute_stage|mux4:u_execute_srcbmux                       ;
+;         |fetch_stage:u_mips_fetch_stage                     ; 1.29 mW (0.94 mW)                    ; 0.35 mW (0.16 mW)               ; --                                ; 0.95 mW (0.78 mW)                 ; |mips_top|mips_core:u_mips_core|fetch_stage:u_mips_fetch_stage                                                  ;
+;             |pc_reg:u_fetch_pc                              ; 0.36 mW (0.36 mW)                    ; 0.19 mW (0.19 mW)               ; --                                ; 0.17 mW (0.17 mW)                 ; |mips_top|mips_core:u_mips_core|fetch_stage:u_mips_fetch_stage|pc_reg:u_fetch_pc                                ;
+;         |hazard_unit:u_mips_hazard_unit                     ; 0.32 mW (0.32 mW)                    ; 0.08 mW (0.08 mW)               ; --                                ; 0.24 mW (0.24 mW)                 ; |mips_top|mips_core:u_mips_core|hazard_unit:u_mips_hazard_unit                                                  ;
+;         |mem_stage:u_mips_memory_stage                      ; 1.13 mW (0.65 mW)                    ; 0.43 mW (0.24 mW)               ; --                                ; 0.70 mW (0.41 mW)                 ; |mips_top|mips_core:u_mips_core|mem_stage:u_mips_memory_stage                                                   ;
+;             |mux4:u_mem_bypass_rs_data                      ; 0.11 mW (0.11 mW)                    ; 0.02 mW (0.02 mW)               ; --                                ; 0.09 mW (0.09 mW)                 ; |mips_top|mips_core:u_mips_core|mem_stage:u_mips_memory_stage|mux4:u_mem_bypass_rs_data                         ;
+;             |mux4:u_mem_bypass_rt_data                      ; 0.12 mW (0.12 mW)                    ; 0.02 mW (0.02 mW)               ; --                                ; 0.10 mW (0.10 mW)                 ; |mips_top|mips_core:u_mips_core|mem_stage:u_mips_memory_stage|mux4:u_mem_bypass_rt_data                         ;
+;             |lo_hi_reg:u_mem_lo_hi_reg                      ; 0.22 mW (0.22 mW)                    ; 0.13 mW (0.13 mW)               ; --                                ; 0.09 mW (0.09 mW)                 ; |mips_top|mips_core:u_mips_core|mem_stage:u_mips_memory_stage|lo_hi_reg:u_mem_lo_hi_reg                         ;
+;             |sign_extended:u_mem_write_back_signextent      ; 0.02 mW (0.02 mW)                    ; 0.02 mW (0.02 mW)               ; --                                ; 0.00 mW (0.00 mW)                 ; |mips_top|mips_core:u_mips_core|mem_stage:u_mips_memory_stage|sign_extended:u_mem_write_back_signextent         ;
+;         |wb_stage:u_mips_writeBack_stage                    ; 0.73 mW (0.00 mW)                    ; 0.11 mW (0.00 mW)               ; --                                ; 0.63 mW (0.00 mW)                 ; |mips_top|mips_core:u_mips_core|wb_stage:u_mips_writeBack_stage                                                 ;
+;             |mux8:u_WriteBack_datamux                       ; 0.73 mW (0.73 mW)                    ; 0.11 mW (0.11 mW)               ; --                                ; 0.63 mW (0.63 mW)                 ; |mips_top|mips_core:u_mips_core|wb_stage:u_mips_writeBack_stage|mux8:u_WriteBack_datamux                        ;
++-------------------------------------------------------------+--------------------------------------+---------------------------------+-----------------------------------+-----------------------------------+-----------------------------------------------------------------------------------------------------------------+
+(1) Value in parentheses is the power consumed at that level of hierarchy. Value not in parentheses is the power consumed at that level of hierarchy plus the power consumed by all levels of hierarchy below it.
+
+(2) The "Block Thermal Static Power" for all levels of hierarchy except the top-level hierarchy is part of the "Core Static Thermal Power Dissipation" value found on the PowerPlay Power Analyzer-->Summary report panel. The "Core Static Thermal Power Dissipation" also contains the thermal static power dissipated by the routing.
+
+

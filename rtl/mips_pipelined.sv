@@ -25,7 +25,6 @@ module mips_core (
     logic d2e_stall,d2e_flush;
     logic e2m_stall,e2m_flush;
     logic m2wb_stall,m2wb_flush;
-    logic branch_used;
     logic [2:0] bypass_decode_rs_sel;
     logic [2:0] bypass_decode_rt_sel;
     logic [2:0] bypass_execute_rs_sel; 
@@ -133,7 +132,6 @@ module mips_core (
             // Hazards
             .bypass_decode_rs_sel(bypass_decode_rs_sel),
             .bypass_decode_rt_sel(bypass_decode_rt_sel),
-            .branch_used(branch_used),
             .d2e_flush(d2e_flush),
             .d2e_stall(d2e_stall)
         ); 
@@ -303,7 +301,6 @@ module mips_core (
         .e_wbaddr(e_wbaddr),
         .m_wbaddr(m_wbaddr),
         .wb_addr(wb_addr),
-        .branch_used(branch_used),
         .f_pcsrc(f_pcsrc),
         // ouptuts
         .pc_stall(pc_stall),

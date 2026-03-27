@@ -1,0 +1,76 @@
+Resource Utilization by Entity report for mips_top
+Fri Mar 27 03:18:58 2026
+Quartus Prime Version 18.1.0 Build 625 09/12/2018 SJ Standard Edition
+
+
+---------------------
+; Table of Contents ;
+---------------------
+  1. Legal Notice
+  2. Analysis & Synthesis Resource Utilization by Entity
+
+
+
+----------------
+; Legal Notice ;
+----------------
+Copyright (C) 2018  Intel Corporation. All rights reserved.
+Your use of Intel Corporation's design tools, logic functions 
+and other software and tools, and its AMPP partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Intel Program License 
+Subscription Agreement, the Intel Quartus Prime License Agreement,
+the Intel FPGA IP License Agreement, or other applicable license
+agreement, including, without limitation, that your use is for
+the sole purpose of programming logic devices manufactured by
+Intel and sold by Intel or its authorized distributors.  Please
+refer to the applicable agreement for further details.
+
+
+
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Resource Utilization by Entity                                                                                                                                                                                                                                                                       ;
++-----------------------------------------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+-----------------------------------------------------------------------------------------------------------------+---------------------+--------------+
+; Compilation Hierarchy Node                                ; Combinational ALUTs ; Dedicated Logic Registers ; Block Memory Bits ; DSP Blocks ; Pins ; Virtual Pins ; Full Hierarchy Name                                                                                             ; Entity Name         ; Library Name ;
++-----------------------------------------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+-----------------------------------------------------------------------------------------------------------------+---------------------+--------------+
+; |mips_top                                                 ; 2382 (0)            ; 1745 (0)                  ; 2048              ; 3          ; 70   ; 0            ; |mips_top                                                                                                       ; mips_top            ; work         ;
+;    |data_mem:u_data_mem|                                  ; 0 (0)               ; 0 (0)                     ; 2048              ; 0          ; 0    ; 0            ; |mips_top|data_mem:u_data_mem                                                                                   ; data_mem            ; work         ;
+;       |altsyncram:M10k_mem_rtl_0|                         ; 0 (0)               ; 0 (0)                     ; 2048              ; 0          ; 0    ; 0            ; |mips_top|data_mem:u_data_mem|altsyncram:M10k_mem_rtl_0                                                         ; altsyncram          ; work         ;
+;          |altsyncram_f0p1:auto_generated|                 ; 0 (0)               ; 0 (0)                     ; 2048              ; 0          ; 0    ; 0            ; |mips_top|data_mem:u_data_mem|altsyncram:M10k_mem_rtl_0|altsyncram_f0p1:auto_generated                          ; altsyncram_f0p1     ; work         ;
+;    |debugger:u_debugger|                                  ; 86 (51)             ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |mips_top|debugger:u_debugger                                                                                   ; debugger            ; work         ;
+;       |bin2hex:nipple_0|                                  ; 7 (7)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |mips_top|debugger:u_debugger|bin2hex:nipple_0                                                                  ; bin2hex             ; work         ;
+;       |bin2hex:nipple_1|                                  ; 7 (7)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |mips_top|debugger:u_debugger|bin2hex:nipple_1                                                                  ; bin2hex             ; work         ;
+;       |bin2hex:nipple_2|                                  ; 7 (7)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |mips_top|debugger:u_debugger|bin2hex:nipple_2                                                                  ; bin2hex             ; work         ;
+;       |bin2hex:nipple_3|                                  ; 7 (7)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |mips_top|debugger:u_debugger|bin2hex:nipple_3                                                                  ; bin2hex             ; work         ;
+;       |bin2hex:nipple_5|                                  ; 7 (7)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |mips_top|debugger:u_debugger|bin2hex:nipple_5                                                                  ; bin2hex             ; work         ;
+;    |instr_mem:u_instr_mem|                                ; 97 (97)             ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |mips_top|instr_mem:u_instr_mem                                                                                 ; instr_mem           ; work         ;
+;    |mips_core:u_mips_core|                                ; 2199 (0)            ; 1745 (0)                  ; 0                 ; 3          ; 0    ; 0            ; |mips_top|mips_core:u_mips_core                                                                                 ; mips_core           ; work         ;
+;       |decode_stage:u_mips_decode_stage|                  ; 1013 (36)           ; 1145 (153)                ; 0                 ; 0          ; 0    ; 0            ; |mips_top|mips_core:u_mips_core|decode_stage:u_mips_decode_stage                                                ; decode_stage        ; work         ;
+;          |early_branch_detect:u_decode_earlyBranchDetect| ; 25 (25)             ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |mips_top|mips_core:u_mips_core|decode_stage:u_mips_decode_stage|early_branch_detect:u_decode_earlyBranchDetect ; early_branch_detect ; work         ;
+;          |mips_controller:u_decode_controller|            ; 48 (48)             ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |mips_top|mips_core:u_mips_core|decode_stage:u_mips_decode_stage|mips_controller:u_decode_controller            ; mips_controller     ; work         ;
+;          |mux8:u_decode_bypass_rs_data|                   ; 66 (66)             ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |mips_top|mips_core:u_mips_core|decode_stage:u_mips_decode_stage|mux8:u_decode_bypass_rs_data                   ; mux8                ; work         ;
+;          |mux8:u_decode_bypass_rt_data|                   ; 422 (422)           ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |mips_top|mips_core:u_mips_core|decode_stage:u_mips_decode_stage|mux8:u_decode_bypass_rt_data                   ; mux8                ; work         ;
+;          |reg_file:u_decode_regfile|                      ; 384 (384)           ; 992 (992)                 ; 0                 ; 0          ; 0    ; 0            ; |mips_top|mips_core:u_mips_core|decode_stage:u_mips_decode_stage|reg_file:u_decode_regfile                      ; reg_file            ; work         ;
+;          |sign_extended:u_decode_signExtent|              ; 32 (32)             ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |mips_top|mips_core:u_mips_core|decode_stage:u_mips_decode_stage|sign_extended:u_decode_signExtent              ; sign_extended       ; work         ;
+;       |execute_stage:u_mips_execute_stage|                ; 881 (44)            ; 261 (164)                 ; 0                 ; 3          ; 0    ; 0            ; |mips_top|mips_core:u_mips_core|execute_stage:u_mips_execute_stage                                              ; execute_stage       ; work         ;
+;          |alu:u_execute_alu|                              ; 560 (560)           ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |mips_top|mips_core:u_mips_core|execute_stage:u_mips_execute_stage|alu:u_execute_alu                            ; alu                 ; work         ;
+;          |multipler:u_execute_mult|                       ; 46 (46)             ; 97 (97)                   ; 0                 ; 3          ; 0    ; 0            ; |mips_top|mips_core:u_mips_core|execute_stage:u_mips_execute_stage|multipler:u_execute_mult                     ; multipler           ; work         ;
+;          |mux4:u_execute_srcbmux|                         ; 64 (64)             ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |mips_top|mips_core:u_mips_core|execute_stage:u_mips_execute_stage|mux4:u_execute_srcbmux                       ; mux4                ; work         ;
+;          |mux8:u_execute_bypass_rs_data|                  ; 70 (70)             ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |mips_top|mips_core:u_mips_core|execute_stage:u_mips_execute_stage|mux8:u_execute_bypass_rs_data                ; mux8                ; work         ;
+;          |mux8:u_execute_bypass_rt_data|                  ; 97 (97)             ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |mips_top|mips_core:u_mips_core|execute_stage:u_mips_execute_stage|mux8:u_execute_bypass_rt_data                ; mux8                ; work         ;
+;       |fetch_stage:u_mips_fetch_stage|                    ; 64 (1)              ; 100 (68)                  ; 0                 ; 0          ; 0    ; 0            ; |mips_top|mips_core:u_mips_core|fetch_stage:u_mips_fetch_stage                                                  ; fetch_stage         ; work         ;
+;          |pc_reg:u_fetch_pc|                              ; 63 (63)             ; 32 (32)                   ; 0                 ; 0          ; 0    ; 0            ; |mips_top|mips_core:u_mips_core|fetch_stage:u_mips_fetch_stage|pc_reg:u_fetch_pc                                ; pc_reg              ; work         ;
+;       |hazard_unit:u_mips_hazard_unit|                    ; 81 (81)             ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |mips_top|mips_core:u_mips_core|hazard_unit:u_mips_hazard_unit                                                  ; hazard_unit         ; work         ;
+;       |mem_stage:u_mips_memory_stage|                     ; 96 (2)              ; 239 (175)                 ; 0                 ; 0          ; 0    ; 0            ; |mips_top|mips_core:u_mips_core|mem_stage:u_mips_memory_stage                                                   ; mem_stage           ; work         ;
+;          |lo_hi_reg:u_mem_lo_hi_reg|                      ; 4 (4)               ; 64 (64)                   ; 0                 ; 0          ; 0    ; 0            ; |mips_top|mips_core:u_mips_core|mem_stage:u_mips_memory_stage|lo_hi_reg:u_mem_lo_hi_reg                         ; lo_hi_reg           ; work         ;
+;          |mux4:u_mem_bypass_rs_data|                      ; 32 (32)             ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |mips_top|mips_core:u_mips_core|mem_stage:u_mips_memory_stage|mux4:u_mem_bypass_rs_data                         ; mux4                ; work         ;
+;          |mux4:u_mem_bypass_rt_data|                      ; 33 (33)             ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |mips_top|mips_core:u_mips_core|mem_stage:u_mips_memory_stage|mux4:u_mem_bypass_rt_data                         ; mux4                ; work         ;
+;          |sign_extended:u_mem_write_back_signextent|      ; 25 (25)             ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |mips_top|mips_core:u_mips_core|mem_stage:u_mips_memory_stage|sign_extended:u_mem_write_back_signextent         ; sign_extended       ; work         ;
+;       |wb_stage:u_mips_writeBack_stage|                   ; 64 (0)              ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |mips_top|mips_core:u_mips_core|wb_stage:u_mips_writeBack_stage                                                 ; wb_stage            ; work         ;
+;          |mux8:u_WriteBack_datamux|                       ; 64 (64)             ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |mips_top|mips_core:u_mips_core|wb_stage:u_mips_writeBack_stage|mux8:u_WriteBack_datamux                        ; mux8                ; work         ;
++-----------------------------------------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+-----------------------------------------------------------------------------------------------------------------+---------------------+--------------+
+Note: For table entries with two numbers listed, the numbers in parentheses indicate the number of resources of the given type used by the specific entity alone. The numbers listed outside of parentheses indicate the total resources of the given type used by the specific entity and all of its sub-entities in the hierarchy.
+
+

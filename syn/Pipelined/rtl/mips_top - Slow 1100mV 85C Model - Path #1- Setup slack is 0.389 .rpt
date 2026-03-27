@@ -1,0 +1,138 @@
+Slow 1100mV 85C Model - Path #1: Setup slack is 0.954  report for mips_top
+Fri Mar 27 03:06:02 2026
+Quartus Prime Version 18.1.0 Build 625 09/12/2018 SJ Standard Edition
+
+
+---------------------
+; Table of Contents ;
+---------------------
+  1. Legal Notice
+  2. Path #1: Setup slack is 0.954 
+
+
+
+----------------
+; Legal Notice ;
+----------------
+Copyright (C) 2018  Intel Corporation. All rights reserved.
+Your use of Intel Corporation's design tools, logic functions 
+and other software and tools, and its AMPP partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Intel Program License 
+Subscription Agreement, the Intel Quartus Prime License Agreement,
+the Intel FPGA IP License Agreement, or other applicable license
+agreement, including, without limitation, that your use is for
+the sole purpose of programming logic devices manufactured by
+Intel and sold by Intel or its authorized distributors.  Please
+refer to the applicable agreement for further details.
+
+
+
+Path #1: Setup slack is 0.954 
+===============================================================================
++------------------------------------------------------------------------------------------------------------------------+
+; Path Summary                                                                                                           ;
++--------------------+---------------------------------------------------------------------------------------------------+
+; Property           ; Value                                                                                             ;
++--------------------+---------------------------------------------------------------------------------------------------+
+; From Node          ; mips_core:u_mips_core|decode_stage:u_mips_decode_stage|reg_file:u_decode_regfile|registers[8][11] ;
+; To Node            ; mips_core:u_mips_core|decode_stage:u_mips_decode_stage|e_pcsrc[0]                                 ;
+; Launch Clock       ; CLOCK_50 (INVERTED)                                                                               ;
+; Latch Clock        ; CLOCK_50                                                                                          ;
+; Data Arrival Time  ; 22.243                                                                                            ;
+; Data Required Time ; 23.197                                                                                            ;
+; Slack              ; 0.954                                                                                             ;
++--------------------+---------------------------------------------------------------------------------------------------+
+
++------------------------------------------------------------------------------------+
+; Statistics                                                                         ;
++------------------------+--------+-------+-------------+------------+-------+-------+
+; Property               ; Value  ; Count ; Total Delay ; % of Total ; Min   ; Max   ;
++------------------------+--------+-------+-------------+------------+-------+-------+
+; Setup Relationship     ; 10.000 ;       ;             ;            ;       ;       ;
+; Clock Skew             ; -0.591 ;       ;             ;            ;       ;       ;
+; Data Delay             ; 8.285  ;       ;             ;            ;       ;       ;
+; Number of Logic Levels ;        ; 8     ;             ;            ;       ;       ;
+; Physical Delays        ;        ;       ;             ;            ;       ;       ;
+;  Arrival Path          ;        ;       ;             ;            ;       ;       ;
+;   Clock                ;        ;       ;             ;            ;       ;       ;
+;    IC                  ;        ; 3     ; 2.129       ; 54         ; 0.000 ; 1.806 ;
+;    Cell                ;        ; 3     ; 1.829       ; 46         ; 0.278 ; 0.991 ;
+;   Data                 ;        ;       ;             ;            ;       ;       ;
+;    IC                  ;        ; 9     ; 5.197       ; 63         ; 0.000 ; 1.337 ;
+;    Cell                ;        ; 10    ; 3.088       ; 37         ; 0.000 ; 0.480 ;
+;    uTco                ;        ; 1     ; 0.000       ; 0          ; 0.000 ; 0.000 ;
+;  Required Path         ;        ;       ;             ;            ;       ;       ;
+;   Clock                ;        ;       ;             ;            ;       ;       ;
+;    IC                  ;        ; 3     ; 2.007       ; 60         ; 0.000 ; 1.679 ;
+;    Cell                ;        ; 3     ; 1.320       ; 40         ; 0.252 ; 0.661 ;
++------------------------+--------+-------+-------------+------------+-------+-------+
+Note: Negative delays are omitted from totals when calculating percentages
+
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Data Arrival Path                                                                                                                                                 ;
++----------+---------+----+------+--------+---------------------+---------------------------------------------------------------------------------------------------+
+; Total    ; Incr    ; RF ; Type ; Fanout ; Location            ; Element                                                                                           ;
++----------+---------+----+------+--------+---------------------+---------------------------------------------------------------------------------------------------+
+; 10.000   ; 10.000  ;    ;      ;        ;                     ; launch edge time                                                                                  ;
+; 13.958   ; 3.958   ;    ;      ;        ;                     ; clock path                                                                                        ;
+;   10.000 ;   0.000 ;    ;      ;        ;                     ; source latency                                                                                    ;
+;   10.000 ;   0.000 ;    ;      ; 1      ; PIN_AF14            ; CLOCK_50                                                                                          ;
+;   10.000 ;   0.000 ; FF ; IC   ; 1      ; IOIBUF_X32_Y0_N1    ; CLOCK_50~input|i                                                                                  ;
+;   10.991 ;   0.991 ; FF ; CELL ; 1      ; IOIBUF_X32_Y0_N1    ; CLOCK_50~input|o                                                                                  ;
+;   11.314 ;   0.323 ; FF ; IC   ; 1      ; CLKCTRL_G6          ; CLOCK_50~inputCLKENA0|inclk                                                                       ;
+;   11.592 ;   0.278 ; FF ; CELL ; 1859   ; CLKCTRL_G6          ; CLOCK_50~inputCLKENA0|outclk                                                                      ;
+;   13.398 ;   1.806 ; FF ; IC   ; 1      ; FF_X72_Y21_N1       ; u_mips_core|u_mips_decode_stage|u_decode_regfile|registers[8][11]|clk                             ;
+;   13.958 ;   0.560 ; FR ; CELL ; 1      ; FF_X72_Y21_N1       ; mips_core:u_mips_core|decode_stage:u_mips_decode_stage|reg_file:u_decode_regfile|registers[8][11] ;
+; 22.243   ; 8.285   ;    ;      ;        ;                     ; data path                                                                                         ;
+;   13.958 ;   0.000 ;    ; uTco ; 1      ; FF_X72_Y21_N1       ; mips_core:u_mips_core|decode_stage:u_mips_decode_stage|reg_file:u_decode_regfile|registers[8][11] ;
+;   13.958 ;   0.000 ; FF ; CELL ; 2      ; FF_X72_Y21_N1       ; u_mips_core|u_mips_decode_stage|u_decode_regfile|registers[8][11]|q                               ;
+;   15.295 ;   1.337 ; FF ; IC   ; 1      ; LABCELL_X71_Y13_N51 ; u_mips_core|u_mips_decode_stage|u_decode_bypass_rt_data|Mux20~6|datae                             ;
+;   15.547 ;   0.252 ; FF ; CELL ; 1      ; LABCELL_X71_Y13_N51 ; u_mips_core|u_mips_decode_stage|u_decode_bypass_rt_data|Mux20~6|combout                           ;
+;   16.658 ;   1.111 ; FF ; IC   ; 1      ; LABCELL_X74_Y19_N45 ; u_mips_core|u_mips_decode_stage|u_decode_bypass_rt_data|Mux20~9|datab                             ;
+;   17.133 ;   0.475 ; FF ; CELL ; 1      ; LABCELL_X74_Y19_N45 ; u_mips_core|u_mips_decode_stage|u_decode_bypass_rt_data|Mux20~9|combout                           ;
+;   18.101 ;   0.968 ; FF ; IC   ; 1      ; LABCELL_X68_Y17_N48 ; u_mips_core|u_mips_decode_stage|u_decode_bypass_rt_data|Mux20~10|datac                            ;
+;   18.516 ;   0.415 ; FF ; CELL ; 1      ; LABCELL_X68_Y17_N48 ; u_mips_core|u_mips_decode_stage|u_decode_bypass_rt_data|Mux20~10|combout                          ;
+;   18.704 ;   0.188 ; FF ; IC   ; 1      ; LABCELL_X68_Y17_N54 ; u_mips_core|u_mips_decode_stage|u_decode_bypass_rt_data|Mux20~11|datac                            ;
+;   19.145 ;   0.441 ; FF ; CELL ; 1      ; LABCELL_X68_Y17_N54 ; u_mips_core|u_mips_decode_stage|u_decode_bypass_rt_data|Mux20~11|combout                          ;
+;   19.329 ;   0.184 ; FF ; IC   ; 1      ; LABCELL_X68_Y17_N0  ; u_mips_core|u_mips_decode_stage|u_decode_bypass_rt_data|Mux20~12|datad                            ;
+;   19.615 ;   0.286 ; FF ; CELL ; 2      ; LABCELL_X68_Y17_N0  ; u_mips_core|u_mips_decode_stage|u_decode_bypass_rt_data|Mux20~12|combout                          ;
+;   19.826 ;   0.211 ; FF ; IC   ; 1      ; LABCELL_X68_Y17_N36 ; u_mips_core|u_mips_decode_stage|u_decode_earlyBranchDetect|Selector0~9|dataa                      ;
+;   20.306 ;   0.480 ; FF ; CELL ; 1      ; LABCELL_X68_Y17_N36 ; u_mips_core|u_mips_decode_stage|u_decode_earlyBranchDetect|Selector0~9|combout                    ;
+;   21.320 ;   1.014 ; FF ; IC   ; 1      ; LABCELL_X67_Y18_N42 ; u_mips_core|u_mips_decode_stage|u_decode_earlyBranchDetect|Selector0~14|datac                     ;
+;   21.761 ;   0.441 ; FF ; CELL ; 1      ; LABCELL_X67_Y18_N42 ; u_mips_core|u_mips_decode_stage|u_decode_earlyBranchDetect|Selector0~14|combout                   ;
+;   21.945 ;   0.184 ; FF ; IC   ; 1      ; LABCELL_X67_Y18_N0  ; u_mips_core|u_mips_decode_stage|u_decode_controller|Selector9~3|dataf                             ;
+;   22.024 ;   0.079 ; FR ; CELL ; 1      ; LABCELL_X67_Y18_N0  ; u_mips_core|u_mips_decode_stage|u_decode_controller|Selector9~3|combout                           ;
+;   22.024 ;   0.000 ; RR ; IC   ; 1      ; FF_X67_Y18_N2       ; u_mips_core|u_mips_decode_stage|e_pcsrc[0]|d                                                      ;
+;   22.243 ;   0.219 ; RR ; CELL ; 1      ; FF_X67_Y18_N2       ; mips_core:u_mips_core|decode_stage:u_mips_decode_stage|e_pcsrc[0]                                 ;
++----------+---------+----+------+--------+---------------------+---------------------------------------------------------------------------------------------------+
+
++--------------------------------------------------------------------------------------------------------------------------------+
+; Data Required Path                                                                                                             ;
++----------+---------+----+------+--------+------------------+-------------------------------------------------------------------+
+; Total    ; Incr    ; RF ; Type ; Fanout ; Location         ; Element                                                           ;
++----------+---------+----+------+--------+------------------+-------------------------------------------------------------------+
+; 20.000   ; 20.000  ;    ;      ;        ;                  ; latch edge time                                                   ;
+; 23.367   ; 3.367   ;    ;      ;        ;                  ; clock path                                                        ;
+;   20.000 ;   0.000 ;    ;      ;        ;                  ; source latency                                                    ;
+;   20.000 ;   0.000 ;    ;      ; 1      ; PIN_AF14         ; CLOCK_50                                                          ;
+;   20.000 ;   0.000 ; RR ; IC   ; 1      ; IOIBUF_X32_Y0_N1 ; CLOCK_50~input|i                                                  ;
+;   20.661 ;   0.661 ; RR ; CELL ; 1      ; IOIBUF_X32_Y0_N1 ; CLOCK_50~input|o                                                  ;
+;   20.989 ;   0.328 ; RR ; IC   ; 1      ; CLKCTRL_G6       ; CLOCK_50~inputCLKENA0|inclk                                       ;
+;   21.241 ;   0.252 ; RR ; CELL ; 1859   ; CLKCTRL_G6       ; CLOCK_50~inputCLKENA0|outclk                                      ;
+;   22.920 ;   1.679 ; RR ; IC   ; 1      ; FF_X67_Y18_N2    ; u_mips_core|u_mips_decode_stage|e_pcsrc[0]|clk                    ;
+;   23.327 ;   0.407 ; RR ; CELL ; 1      ; FF_X67_Y18_N2    ; mips_core:u_mips_core|decode_stage:u_mips_decode_stage|e_pcsrc[0] ;
+;   23.367 ;   0.040 ;    ;      ;        ;                  ; clock pessimism removed                                           ;
+; 23.197   ; -0.170  ;    ;      ;        ;                  ; clock uncertainty                                                 ;
+; 23.197   ; 0.000   ;    ; uTsu ; 1      ; FF_X67_Y18_N2    ; mips_core:u_mips_core|decode_stage:u_mips_decode_stage|e_pcsrc[0] ;
++----------+---------+----+------+--------+------------------+-------------------------------------------------------------------+
+
+----------------------------
+; Extra Fitter Information ;
+----------------------------
+HTML report is unavailable in plain text report export.
+
+
+
