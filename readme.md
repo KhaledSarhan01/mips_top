@@ -70,6 +70,10 @@ A robust SystemVerilog environment was utilized to ensure architectural integrit
 * Implement the coprocessor0 to handle exceptions, considering its instructions in `Appendix B`.
 * Integrate coprocessor0 to MIPS project.
 
+### Phase 2 Part 4
+* Implement the L1 Cache and see the prefromance environment.
+* Integrate L1 Cache to MIPS project.
+
 
 # Phase 3: SoC Phase
 * Implement MIPS-AHB Bridge.
