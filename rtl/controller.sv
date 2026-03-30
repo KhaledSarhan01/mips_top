@@ -116,14 +116,14 @@ module mips_controller (
                         lo_write      = 'b1;
                         hi_select     = 'b10;
                         lo_select     = 'b10;
-                        unsigned_mult = 'b1;
+                        unsigned_div = 'b1;
                     end
                     MULTU: begin //MULTU
-                        hi_write     = 'b1;
-                        lo_write     = 'b1;
-                        hi_select    = 'b11;
-                        lo_select    = 'b11;
-                        unsigned_div = 'b1;
+                        hi_write      = 'b1;
+                        lo_write      = 'b1;
+                        hi_select     = 'b11;
+                        lo_select     = 'b11;
+                        unsigned_mult = 'b1;
                     end
                     JR:begin// Jump Register
                         alusrc   = 'b10;

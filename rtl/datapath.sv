@@ -126,16 +126,15 @@ module mips_datapath(
             .out_hi(mult_hi),
             .out_lo(mult_lo)
         ); 
-    //    divider u_mips_datapath_div(
-    //        // input clk,rst_n,
-    //        .operand_a(data_rs),
-    //        .operand_b(data_rt),
-    //        .unsigned_div(unsigned_div),
-    //        .out_hi(div_hi),
-    //        .out_lo(div_lo)
-    //    ); 
-        assign div_hi = 'b0;
-        assign div_lo = 'b0;
+       divider u_mips_datapath_div(
+           // input clk,rst_n,
+           .operand_a(data_rs),
+           .operand_b(data_rt),
+           .unsigned_div(unsigned_div),
+           .out_hi(div_hi),
+           .out_lo(div_lo)
+       ); 
+
     // LO and HI Registers
         lo_hi_reg u_mips_datapath_lo_hi_reg(
             // Clock and Active Low Reset
