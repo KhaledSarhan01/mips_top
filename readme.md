@@ -35,9 +35,9 @@ A robust SystemVerilog environment was utilized to ensure architectural integrit
 
 ## Post Phase 1
 - Multiplier/Divsion
-    - [ ] Create unsigned/signed multiplication.
-    - [ ] Create unsigned/signed division.
-    - [ ] run `[Test_6]`
+    - [x] Create unsigned/signed multiplication.
+    - [x] Create unsigned/signed division.
+    - [x] run `[Test_6]`
     - [ ] try to see how to improve the division performance by pipelining.
 
 # Phase 2: Pipelined MIPS Processor
